@@ -7,7 +7,7 @@ Graded on:
 
 ## Initial Project Plan
 - A management plan. How is your team organized? How is the work divided among team members? How does your team make decisions? How will your team meet and how will it communicate.
-- Work breakdown schedule (with > 10 milestones) and project schedule (who will do what).
+-   Work breakdown schedule (with > 10 milestones) and project schedule (who will do what).
 - Monitoring and reporting: How individual and project progress will be monitored to keep track of who did what and when did they do it?
 - A build plan. What is the sequence of steps you will take to build the system? When will each "build" of the system take place
 - A rationale for the build plan. Why have you broken the system into these parts, and why have you chosen these particular steps to build the system? What are your risks and your risk reduction strategies?
