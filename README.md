@@ -28,5 +28,36 @@ https://classes.cs.uoregon.edu/24W/cs422/index_files/activities.png![image](http
       - Walk through and practice presentation
   - #10: Turn in project 02/05/24
   - #11: Present project to the class 02/06/24
+ 
+## Meeting schedule:
+- Our team has organized a series of meetings as follows:
+  - Friday, 01/12/24: In-person
+  - Monday, 01/15/24: Zoom/Discord
+  - Thursday, 01/18/24: In-person
+  - Thursday, 01/25/24: In-person
+  - Thursday, 02/01/24: In-person
+  - Saturday, 02/03/24: In-person
+- These meetings are essential for discussing project updates, addressing any challenges, and ensuring effective communication among team members.
+- Our team communicates through text. 
+
+## Rationale for Build Plan:
+We divided the system into these specific parts to use each team member's expertise effectively. The chosen steps align with the project requirements and contribute to a comprehensive and well-organized system. Risks, such as potential delays or issues with data correctness, are incorporated through regular monitoring and reporting, providing prompt identification and resolution of any challenges that may arise during the project. The collaborative decision-making process within the team also contributes to risk reduction. 
+
+# SDS:
+## Description of the product:
+The product, EasyA (or JustPass), is a system designed for students to evaluate and compare professors' grading histories. It aims to help students make informed decisions when selecting classes or instructors. The system will provide side-by-side visualizations of grading patterns, allowing users to see the distribution of As and Ds/Fs for different instructors teaching the same class or across different class levels. Users, students, and administrators will be able to interact with the system to view data in various ways, such as by class, department, or instructor. The system will utilize grade data from the years 2013-2016 at the University of Oregon, provided by the Daily Emerald. 
+
+## Overall Design Description:
+- The major parts of the system include:
+  -  Data Ingestion and Storage: 
+    - Handles the acquisition of grade data from the provided source and stores it in a structured format.
+  - Data Processing and Analysis: 
+    - Analyzes the grade data to generate meaningful visualizations and insights.
+  - User Interface (UI): 
+    - Provides an interactive interface for users to explore and compare grading histories. 
+    - Allows users to choose different views and options.
+  - System Administration Tools: 
+    - Facilitates the process of updating the system with new data, including a program for administrators to replace all data quickly and easily
+
 
 
