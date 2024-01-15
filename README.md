@@ -59,5 +59,24 @@ The product, EasyA (or JustPass), is a system designed for students to evaluate 
   - System Administration Tools: 
     - Facilitates the process of updating the system with new data, including a program for administrators to replace all data quickly and easily
 
+## System Structure:
+- Data Ingestion and Storage: 
+  - Utilizes a data storage component to store grade data, either locally or on ix.cs.uoregon.edu using mysql or mongo.
+- Data Processing and Analysis: 
+  - Involves algorithms and methods for analyzing grade data and generating visualizations.
+- User Interface (UI): 
+  - Includes components for user interaction, displaying graphs, and providing options for different views.
+- System Administration Tools: 
+  - Separate standalone applications for data loading and scraping, ensuring clean and accurate data.
+ 
+## Static Model and Dynamic Model:
+- Static Model: 
+  - Utilizes class diagrams to represent the structure of major components (Data Ingestion, Data Processing, UI, Admin Tools) and their relationships.
+- Dynamic Model: 
+  - Uses sequence diagrams to illustrate the interactions and flow of information between the major subsystems during tasks such as data analysis and user interactions.
+
+## Design Rationale:
+The design choice prioritizes simplicity, modularity, and ease of use. Breaking the system into distinct components allows for independent development and maintenance of each part. The choice of data storage options (local or ix.cs.uoregon.edu) provides flexibility. The use of standard libraries and limited external imports (mysql, pymongo, and matplotlib) aligns with the programming constraints and provides a straightforward implementation. The design aims to fulfill the project requirements efficiently while maintaining clarity and user-friendly interactions.
+
 
 
