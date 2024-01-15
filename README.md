@@ -4,8 +4,8 @@ a system called EasyA that students can use to figure out which professors in wh
 https://classes.cs.uoregon.edu/24W/cs422/index_files/activities.png![image](https://github.com/simonebadaruddin/EasyA/assets/115610746/5e6d9719-1e29-46c7-b260-291a6b7f1852)
 
 
-## Project Plan:
-# Management plan:
+# Project Plan:
+## Management plan:
 - Our team is organized with distinct roles for each member:
   - Nithi is responsible for creating the Project 1 Plan document and parsing data into categories by class, professor, level, and class category.
   - Luke will build object graphs.
@@ -23,10 +23,10 @@ https://classes.cs.uoregon.edu/24W/cs422/index_files/activities.png![image](http
   - #6: Finish rough draft of code and documentation
   - #7: Second code checkpoint (fifth meeting)
     - Peer review
-- #8: Make revisions
-- #9: Final code changes and documentation
-    - Walk through and practice presentation
-- #10: Turn in project 02/05/24
-- #11: Present project to the class 02/06/24
+  - #8: Make revisions
+  - #9: Final code changes and documentation
+      - Walk through and practice presentation
+  - #10: Turn in project 02/05/24
+  - #11: Present project to the class 02/06/24
 
 
