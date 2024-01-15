@@ -25,15 +25,15 @@ Our work breakdown schedule outlines 11 milestones, with specific tasks assigned
 3. Finalize outline of code duing the third meeting.
 4. Start code production individually in between third and fourth meetings.
 5. Code checkpoint duing fourth meeting.
-  - Everyone knows what they are doing and has started implementing their part of the project
-  - Initial code review
+    - Everyone knows what they are doing and has started implementing their part of the project
+    - Initial code review
 6. Finish rough draft of code and documentation in between fourth and fifth meetings 
 7. Second code checkpoint during the fifth meeting.
-  - Group peer review
+    - Group peer review
 8. Make revisions individually based on review in between fifth and sixth meetings.
 9. Finalize code and documentation in sixth meeting
-  - Code walk through 
-  - Practice presentation
+    - Code walk through 
+    - Practice presentation
 10. Turn in project 02/05/24
 11. Present project to the class 02/06/24
 
@@ -79,18 +79,18 @@ The major parts of the system include:
 ## System Structure:
 The system has a number of individual components that the the group has tasked its members with individually implementing:
 1. Data input, parsing, and storage: 
-  - The system accepts gradedata.js as input to retrieve the data.
-    - To change the data used, the admin will need to replace this file with another which holds the new data but in the same format. 
-  - Upon validation, the data in the file will be parsed into particlar Python dictionaries depending on command line input from the user specifying what type of graphs need to be displayed and with which options.
+    - The system accepts gradedata.js as input to retrieve the data.
+      - To change the data used, the admin will need to replace this file with another which holds the new data but in the same format. 
+    - Upon validation, the data in the file will be parsed into particlar Python dictionaries depending on command line input from the user specifying what type of graphs need to be displayed and with which options.
 2. User input
-  - The user will be shown a series of messages through their terminal.
-  - The messages will prompt them for input as to which graphs they would like displayed, and which options they would like to format the graphs with.
-  - Upon validation of the user input, the correct graphs will be displayed side-by-side through the use of functions and a graphing object.
+    - The user will be shown a series of messages through their terminal.
+    - The messages will prompt them for input as to which graphs they would like displayed, and which options they would like to format the graphs with.
+    - Upon validation of the user input, the correct graphs will be displayed side-by-side through the use of functions and a graphing object.
 3. Data processing: 
-  - The user input will define the processing and parsing that the data from the input file will undergo.
-  - The appropriate data will end up in a Python dictionary.
+    - The user input will define the processing and parsing that the data from the input file will undergo.
+    - The appropriate data will end up in a Python dictionary.
 4. Graph creation:
-  - The graphs will be created through the use of a graph object which accepts the appropriate Python dicts as input, creates the figure objects as processing, and outputs the figure object as an output.
+    - The graphs will be created through the use of a graph object which accepts the appropriate Python dicts as input, creates the figure objects as processing, and outputs the figure object as an output.
 
 The system is a series of steps that begins with file and user input processing, data processing based on that data and user input, and finally output of the requested graphs in a side-by-side view based on the data, user input, and processing.
  
