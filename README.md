@@ -4,4 +4,4 @@ a system called EasyA that students can use to figure out which professors in wh
 https://classes.cs.uoregon.edu/24W/cs422/index_files/activities.png![image](https://github.com/simonebadaruddin/EasyA/assets/115610746/5e6d9719-1e29-46c7-b260-291a6b7f1852)
 
 -gj
-#^  - kj
+  - 
