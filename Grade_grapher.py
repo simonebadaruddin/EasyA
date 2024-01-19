@@ -11,7 +11,7 @@ from typing import Union
 class Graph_grades(object):
     """
     Object representing the process of setting the data, and subsequently graphing a
-    that data, for a certain subset of the Univerity of Oregon 2013-2016 grade data.
+    that data, for a certain subset of the University of Oregon 2013-2016 grade data.
      
     Attributes:
         As_data (dict): a dict containing dicts that are each within the category of groups 
