@@ -16,12 +16,12 @@ class Graph_grades(object):
     Attributes:
         As_data (dict): a dict containing dicts that are each within the category of groups 
         that a user has optioned to graph, each containing the name of the group as a key, and 
-        the  proportion of the classes in that group which received an A in the class as a 
+        the proportion of the classes in that group which received an A in the class as a 
         percentage
 
         DsFs_data (dict): a dict containing dicts that are each within the category of groups 
         that a user has optioned to graph, each containing the name of the group as a key, and 
-        the  proportion of the classes in that group which received a D or an F in the class as a 
+        the proportion of the classes in that group which received a D or an F in the class as a 
         percentage
 
         Each dict consists of a an outer dict, having keys which are the names of the groups in a 
