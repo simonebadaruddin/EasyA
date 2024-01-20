@@ -177,6 +177,13 @@ class Depts_By_Prof_Grapher(Grapher):
 class Depts_And_Level_By_Prof_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         super().__init__(natty_science_courses, faculty)
+        parsed_data_all_instructors = self.parse_for_all_instructors()
+        parsed_data_faculty_only = self.parse_for_faculty_only()
+        self.As_data_all_instructors = parsed_data_all_instructors[0]
+        self.As_data_faculty_only = parsed_data_faculty_only[0]
+        self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
+        self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
+
 
     def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
         # grades_for_dept_and_lvl_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts and level
@@ -194,27 +201,28 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
             grades_for_dept_and_lvl_by_prof_As[dept_lvl] = {}
             grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl] = {}
         for course in self.natty_science_courses: # iterate through the courses in the natural science dept
-            for dept in self.natty_science_depts: # iterate through the depts in the natural sciences
-                if dept in course: # check if the dept string is a substring of the course name
-                    for dept_lvl in dept_levels: # iterate through the dept-level strings in dept_levels
-                        if dept_lvl[:len(dept)+1] in course: # check if the dept-level substring, dept concatenated with the
-                            # first number of the level, is a substring in the course code
-                            for instance in self.natty_science_courses[course]: # if it is, iterate through the class instances for that course
-                                instructor = instance["instructor"] # instructor (str): instructor name for the class instance
-                                if instructor in grades_for_dept_and_lvl_by_prof_As[dept_lvl]:
-                                    # if the instructor is already in the dict corresponding to the dept and level,add the %As 
-                                    # or %Ds and %Fs to the respective dicts and increment their class count 
-                                    grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor][0] += float(instance["aprec"])
-                                    grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor][1] += 1
-                                    grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
-                                    grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor][1] += 1
-                                else:
-                                    # if the instructor is not in the dict corresponding to the dept and level, initialize them to 
-                                    # the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
-                                    grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor] = [float(instance["aprec"]), 1]
-                                    grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
-                            break
-                    break
+            depts = [dept for dept in self.natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            if len(depts) == 1:
+                this_dept = depts[0]
+                dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels
+                if len(dept_lvls) == 1:
+                    this_dept_lvl = dept_lvls[0]
+                    # first number of the level, is a substring in the course code
+                    for instance in self.natty_science_courses[course]: # if it is, iterate through the class instances for that course
+                        instructor = instance["instructor"] # instructor (str): instructor name for the class instance
+                        if instructor in grades_for_dept_and_lvl_by_prof_As[this_dept_lvl]:
+                            # if the instructor is already in the dict corresponding to the dept and level,add the %As 
+                            # or %Ds and %Fs to the respective dicts and increment their class count 
+                            grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor][0] += float(instance["aprec"])
+                            grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor][1] += 1
+                            grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
+                            grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor][1] += 1
+                        else:
+                            # if the instructor is not in the dict corresponding to the dept and level, initialize them to 
+                            # the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
+                            grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor] = [float(instance["aprec"]), 1]
+                            grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
+                    
         
         return [grades_for_dept_and_lvl_by_prof_As, grades_for_dept_and_lvl_by_prof_DsFs]
     
@@ -234,30 +242,118 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
             grades_for_dept_and_lvl_by_prof_As[dept_lvl] = {}
             grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl] = {}
         for course in self.natty_science_courses: # iterate through the courses in the natural science dept
-            for dept in self.natty_science_depts: # iterate through the depts in the natural sciences
-                if dept in course: # check if the dept string is a substring of the course name
-                    for dept_lvl in dept_levels: # iterate through the dept-level strings in dept_levels
-                        if dept_lvl[:len(dept)+1] in course: # check if the dept-level substring, dept concatenated with the
-                            # first number of the level, is a substring in the course code
-                            for instance in self.natty_science_courses[course]: # if it is, iterate through the class instances for that course
-                                if (instructor := instance["instructor"]) in self.faculty: # instructor (str): instructor name for the class instance
-                                    if instructor in grades_for_dept_and_lvl_by_prof_As[dept_lvl]:
-                                        # if the instructor is already in the dict corresponding to the dept and level,add the %As 
-                                        # or %Ds and %Fs to the respective dicts and increment their class count 
-                                        grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor][0] += float(instance["aprec"])
-                                        grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor][1] += 1
-                                        grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
-                                        grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor][1] += 1
-                                    else:
-                                        # if the instructor is not in the dict corresponding to the dept and level, initialize them to 
-                                        # the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
-                                        grades_for_dept_and_lvl_by_prof_As[dept_lvl][instructor] = [float(instance["aprec"]), 1]
-                                        grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
-                                break
-                        break
-                
+            depts = [dept for dept in self.natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            if len(depts) == 1:
+                this_dept = depts[0]
+                dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels
+                if len(dept_lvls) == 1:
+                    this_dept_lvl = dept_lvls[0]
+                    # first number of the level, is a substring in the course code
+                    for instance in self.natty_science_courses[course]: # if it is, iterate through the class instances for that course
+                        if (instructor := instance["instructor"]) in self.faculty: # instructor (str): instructor name for the class instance
+                            if instructor in grades_for_dept_and_lvl_by_prof_As[this_dept_lvl]:
+                                # if the instructor is already in the dict corresponding to the dept and level,add the %As 
+                                # or %Ds and %Fs to the respective dicts and increment their class count 
+                                grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor][0] += float(instance["aprec"])
+                                grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor][1] += 1
+                                grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
+                                grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor][1] += 1
+                            else:
+                                # if the instructor is not in the dict corresponding to the dept and level, initialize them to 
+                                # the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
+                                grades_for_dept_and_lvl_by_prof_As[this_dept_lvl][instructor] = [float(instance["aprec"]), 1]
+                                grades_for_dept_and_lvl_by_prof_DsFs[this_dept_lvl][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
+        
+        return [grades_for_dept_and_lvl_by_prof_As, grades_for_dept_and_lvl_by_prof_DsFs]
+    
+class Depts_And_Level_by_Class_Grapher(Grapher):
+    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+        super().__init__(natty_science_courses, faculty)
+        parsed_data_all_instructors = self.parse_for_all_instructors()
+        parsed_data_faculty_only = self.parse_for_faculty_only()
+        self.As_data_all_instructors = parsed_data_all_instructors[0]
+        self.As_data_faculty_only = parsed_data_faculty_only[0]
+        self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
+        self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
 
+    def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
+        # levels (list[str]): a list of the course levels 100 through 600 as strings
+        levels = ['100', '200', '300', '400', '500', '600']
+        # dept_levels (list[str]): a list of the departments concatenated with each level in levels
+        dept_levels = [dept+lvl for dept in self.natty_science_depts for lvl in levels]
+        # grades_for_dept_and_lvl_by_class_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts and level
+        # represented by dept code concatenated with a level 100-600; values are dicts. Nested value dicts have course code
+        # as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances for that course 
+        # taught in that dept at that level and the second element being the number of instances that course was taught as values
+        grades_for_dept_and_lvl_by_class_As = {}
+        grades_for_dept_and_lvl_by_class_DsFs = {}
+        for dept_lvl in dept_levels:
+            # initialize the dicts with strings from depts_levels as keys and empty dicts as values
+            grades_for_dept_and_lvl_by_class_As[dept_lvl] = {}
+            grades_for_dept_and_lvl_by_class_DsFs[dept_lvl] = {}
+        for course in self.natty_science_courses: # iterate through the courses in the natural science dept
+            depts = [dept for dept in self.natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            if len(depts) == 1:
+                this_dept = depts[0]
+                dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels
+                if len(dept_lvls) == 1:
+                    this_dept_lvl = dept_lvls[0]
+                    # first number of the level, is a substring in the course code
+                    for instance in self.natty_science_courses[course]: # if it is, iterate through the class insatnces for that course
+                        if course in grades_for_dept_and_lvl_by_class_As[this_dept_lvl]:
+                            # if the course is already in the dict corresponding to its dept and level, add the %As or
+                            # %Ds and %Fs to the respective dicts and increment the class count
+                            grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course][0] += float(instance["aprec"])
+                            grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course][1] += 1
+                            grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course][0] += (float(instance["dprec"]) + float(instance["fprec"]))
+                            grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course][1] += 1
+                        else:
+                            # if the course is not in the dict corresponding to the dept and level, initialize them to 
+                            # the %As or %Ds and %Fs, and the class count to 1 in their respective dicts
+                            grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course] = [float(instance["aprec"]), 1]
+                            grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
+        
+        return [grades_for_dept_and_lvl_by_class_As, grades_for_dept_and_lvl_by_class_DsFs]
 
+    def parse_for_faculty_only(self) -> Dict[str, Dict[str, str]]:
+        # levels (list[str]): a list of the course levels 100 through 600 as strings
+        levels = ['100', '200', '300', '400', '500', '600']
+        # dept_levels (list[str]): a list of the departments concatenated with each level in levels
+        dept_levels = [dept+lvl for dept in self.natty_science_depts for lvl in levels]
+        # grades_for_dept_and_lvl_by_class_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts and level
+        # represented by dept code concatenated with a level 100-600; values are dicts. Nested value dicts have course code
+        # as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances for that course 
+        # taught in that dept at that level and the second element being the number of instances that course was taught as values
+        grades_for_dept_and_lvl_by_class_As = {}
+        grades_for_dept_and_lvl_by_class_DsFs = {}
+        for dept_lvl in dept_levels:
+            # initialize the dicts with strings from depts_levels as keys and empty dicts as values
+            grades_for_dept_and_lvl_by_class_As[dept_lvl] = {}
+            grades_for_dept_and_lvl_by_class_DsFs[dept_lvl] = {}
+        for course in self.natty_science_courses: # iterate through the courses in the natural science dept
+            depts = [dept for dept in self.natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            if len(depts) == 1:
+                this_dept = depts[0]
+                dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels
+                if len(dept_lvls) == 1:
+                    this_dept_lvl = dept_lvls[0]
+                    # first number of the level, is a substring in the course code
+                    for instance in self.natty_science_courses[course]: # if it is, iterate through the class insatnces for that course
+                        if instance["instructor"] in self.faculty:
+                            if course in grades_for_dept_and_lvl_by_class_As[this_dept_lvl]:
+                                # if the course is already in the dict corresponding to its dept and level, add the %As or
+                                # %Ds and %Fs to the respective dicts and increment the class count
+                                grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course][0] += float(instance["aprec"])
+                                grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course][1] += 1
+                                grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course][0] += (float(instance["dprec"]) + float(instance["fprec"]))
+                                grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course][1] += 1
+                            else:
+                                # if the course is not in the dict corresponding to the dept and level, initialize them to 
+                                # the %As or %Ds and %Fs, and the class count to 1 in their respective dicts
+                                grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course] = [float(instance["aprec"]), 1]
+                                grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
+
+        return [grades_for_dept_and_lvl_by_class_As, grades_for_dept_and_lvl_by_class_DsFs]   
 
 
 
