@@ -13,9 +13,9 @@ class Grapher(ABC):
         self.natty_science_courses = natty_science_courses
         self.faculty = faculty
         self.natty_sciences = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                          'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+                                    'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
         self.natty_science_depts = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'ERTH', 'ENVS', 
-                                'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+                                         'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
 
     @abstractmethod
     def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
