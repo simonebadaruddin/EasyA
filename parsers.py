@@ -89,7 +89,7 @@ def main():
                 grades_for_courses_by_prof_As[course][instructor] = [float(instance["aprec"]), 1]
                 grades_for_courses_by_prof_DsFs[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
 
-
+    print(grades_for_courses_by_prof_As)
     ######### Make dicts for each department; for graphs of instructor x grades for particular department #######################################
                 
     # grades_for_dept_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts represented by 

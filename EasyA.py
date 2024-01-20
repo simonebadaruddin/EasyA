@@ -27,8 +27,9 @@ def main():
                           'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
     
     ################ CREATE DICT WITH ONLY THE CLASS DATA OF CLASSES IN THE NATURAL SCIENCE DEPARTMENTS ##################################    
-    
-    # check to make sure the garde data is correct at surface level
+    ###### passed as argument to Grapher objects during construction ##############
+
+    # check to make sure the grade data is correct at surface level
     if not isinstance(grade_data, dict):
         raise ValueError("The data from gradedata.json was incorrectly loaded.")
     

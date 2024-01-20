@@ -3,7 +3,7 @@ Module containing Graph_grades Python Object
 """
 
 
-import matplotlib as plt
+from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
 from typing import Union, Dict, List
 from abc import ABC, abstractmethod
@@ -23,6 +23,10 @@ class Grapher(ABC):
 
     @abstractmethod
     def parse_for_faculty_only(self) -> Dict[str, Dict[str, str]]:
+        pass
+
+    @abstractmethod
+    def graph_data(self, category: str, level=None, faculty_only=False):
         pass
 
 
@@ -91,6 +95,59 @@ class Courses_By_Prof_Grapher(Grapher):
                     
         return [grades_for_courses_by_prof_As_faculty_only, grades_for_courses_by_prof_DsFs_faculty_only]
     
+    def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        if level:
+            raise TypeError(f"graph_data() method given 1 extra keyword argument: level. Courses_By_Prof_Grapher object does not have a level option.")
+        if not category:
+            raise TypeError(f"graph_data() method missing 1 positional argument: category")
+        try:
+            if faculty_only:
+                course_data_dict_As = self.As_data_faculty_only[category]
+                course_data_dict_DsFs = self.DsFs_data_faculty_only[category]
+            else:
+                course_data_dict_As = self.As_data_all_instructors[category]
+                course_data_dict_DsFs = self.DsFs_data_all_instructors[category]
+        except KeyError as e:
+            print(f"KeyError has occured: {e}")
+        
+        course_data_list_As = list(course_data_dict_As.items())
+        course_data_list_DsFs = list(course_data_dict_DsFs.items())
+
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+
+        course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        ax.set_title(f"{category}", fontweight='bold')
+        ax.set_xlable(f"{'instructors' if not faculty_only else 'faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('As_graph.jpg')
+
+        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+
+        ax.set_title(f"{category}", fontweight='bold')
+        ax.set_xlable(f"{'instructors' if not faculty_only else 'faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('ADsFs_graph.jpg')
+
+        return
+
+
 
 class Depts_By_Prof_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
