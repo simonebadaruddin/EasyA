@@ -405,5 +405,5 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
 
         
 
-#     def plot_DsFs_data(self, faculty_only=None, with_num_classes=None) -> Figure:
-#         pass
+    def plot_DsFs_data(self, faculty_only=None, with_num_classes=None) -> Figure:
+        pass
