@@ -1,7 +1,27 @@
 """Code module for CS 422 project 1"""
 
 import json
+import data_maintainer
 
+
+def new_main():
+    """ Erin:
+    with the new data_maintainer file, there is a lot of code repetition here 
+    and I think this "new_main" could replace main if it sounds good, or we
+    can integrate the two some other way. Let me know your thoughts!
+
+    """
+    grade_data_obj = data_maintainer.Data_Maintainer()
+    grade_data = grade_data_obj.get_grade_data()
+    # if there is no stored grade data, check for local 'gradedata.json' file
+    if grade_data is None:
+        # default, use local 'gradedata.json'
+        data_maintainer.update_grade_data('gradedata.json')
+    else:
+        # otherwise, grade data has already been stored/updated.
+        return
+
+    pass
 
 def main():
 
