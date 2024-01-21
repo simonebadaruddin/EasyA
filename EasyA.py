@@ -10,6 +10,21 @@ def new_main():
     and I think this "new_main" could replace main if it sounds good, or we
     can integrate the two some other way. Let me know your thoughts!
 
+    thoughts: if it ends up working, sounds good. while the functional programming with lambdas,
+    filter, and mapping along with regex is cool, I dont know if theres a way to implement it 
+    without another check in there for the two letter course codes, and at that point it most 
+    likely becomes larger and less efficient than brute force. If you can get it to work in a
+    a couple more tries then great, otherwise i'd just stick with the one written in old main.
+
+    the admin functionality needs a way to fix any discrepencies between the faculty list
+    and the instructor names in the grade data e.g. a prompt that says 'these names in the 
+    faculty list are not in the grade data:'
+
+    The admin functionality needs a way for the admin to quickly and easily replace the data, either
+    by inputting a json object and the program writing it into the gradedata file or inputting
+    a json file and the program writing its data into the gradedata file. either way validation 
+    needs to occur before the overwriting happens.
+
     """
     grade_data_obj = data_maintainer.Data_Maintainer()
     grade_data = grade_data_obj.get_grade_data()

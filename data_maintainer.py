@@ -8,14 +8,15 @@ import json
 import re
 
 class Data_Maintainer:
-    def init():
+    def init(self): # !!!! added self so I could test
         # ----------- Globals ---------------------
         # Initail set of natural sciences
-        __NATURAL_SCIENCES = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
+        self.__NATURAL_SCIENCES = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
                                   'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        # !!!! for some reason the accessing of this attribute isn't working
 
         # to store grade data as a python dictionary, initially None
-        __GRADE_DATA = None
+        self.__GRADE_DATA = None
 
 
     # ----------- Administrator Functions ---------------------
@@ -42,16 +43,13 @@ class Data_Maintainer:
         # ie. updating CIS to CS
         pass
 
-
-
-
-    # ----------- Helper Functions ---------------------
+    # ----------- Helper methods ---------------------
 
     def nat_sci_filter(self, data):
         # this function takes a course data set and removes all course
         # data that does not have a natural science course key
 
-        nat_sci_list = self.get_nat_sci()
+        nat_sci_list = self.get_nat_sci() ### !!!! it doesn't like this, i replaced it with the set itself for testing
         nums = r'[0-9]'
 
         all_courses_keys = list(data.keys())
@@ -69,6 +67,13 @@ class Data_Maintainer:
             if not a_nat_sci(code, nat_sci_list):
                 # remove the course from the set of natural science courses.
                 nat_sci_course_keys.remove(course)
+            # !!!! this produces a somewhat filtered list, the 2 letter dept codes mess with it
+            # because of the in operator and its testing for substrings 
+            # e.g. CH is in CH for chemistry but its also in CHIN for Chinese language and literature
+            # I solved this by checking if a 2 letter course code matches, to check that the next
+            # character after is a digit e.g. CH101 vs CHIN101, you could check length since you got 
+            # rid of the numbers but that may require brute force and at that point youve jumped the shark
+
 
         nat_sci_course_keys = set(nat_sci_course_keys)
 
@@ -79,10 +84,8 @@ class Data_Maintainer:
             if key in nat_sci_course_keys:
                 nat_sci_course_data[key] = data[key]
 
+        print(list(nat_sci_course_data.keys()))
         return nat_sci_course_data
-
-
-
 
     def get_nat_sci(self):
         # this function retrieves the set of natural science course codes
