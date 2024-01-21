@@ -123,7 +123,7 @@ class Courses_By_Prof_Grapher(Grapher):
 
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlable(f"{'instructors' if not faculty_only else 'faculty'}", fontweight='bold')
+        ax.set_xlable(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
         ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
@@ -138,12 +138,12 @@ class Courses_By_Prof_Grapher(Grapher):
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlable(f"{'instructors' if not faculty_only else 'faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
-        plt.savefig('ADsFs_graph.jpg')
+        plt.savefig('DsFs_graph.jpg')
 
         return
 
@@ -230,6 +230,58 @@ class Depts_By_Prof_Grapher(Grapher):
                 raise AttributeError(f"A course {course} has been foud to fit under more than one department: {this_dept}.")
             
         return [grades_for_dept_by_prof_As, grades_for_dept_by_prof_DsFs]
+    
+    def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        if level:
+            raise TypeError(f"graph_data() method given 1 extra keyword argument: level. Depts_By_Prof_Grapher object does not have a level option.")
+        if not category:
+            raise TypeError(f"graph_data() method missing 1 positional argument: category")
+        try:
+            if faculty_only:
+                course_data_dict_As = self.As_data_faculty_only[category]
+                course_data_dict_DsFs = self.DsFs_data_faculty_only[category]
+            else:
+                course_data_dict_As = self.As_data_all_instructors[category]
+                course_data_dict_DsFs = self.DsFs_data_all_instructors[category]
+        except KeyError as e:
+            print(f"KeyError has occured: {e}")
+        
+        course_data_list_As = list(course_data_dict_As.items())
+        course_data_list_DsFs = list(course_data_dict_DsFs.items())
+
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+
+        course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        ax.set_title(f"All {category} Classes", fontweight='bold')
+        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('As_graph.jpg')
+
+        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+
+        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_title(f"All {category} Classes", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('DsFs_graph.jpg')
+
+        return
     
 class Depts_And_Level_By_Prof_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
@@ -323,6 +375,60 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
         
         return [grades_for_dept_and_lvl_by_prof_As, grades_for_dept_and_lvl_by_prof_DsFs]
     
+    def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        if not level:
+            raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
+        if not category:
+            raise TypeError(f"graph_data() method missing 1 positional argument: category")
+        
+        category += str(level)
+        try:
+            if faculty_only:
+                course_data_dict_As = self.As_data_faculty_only[category]
+                course_data_dict_DsFs = self.DsFs_data_faculty_only[category]
+            else:
+                course_data_dict_As = self.As_data_all_instructors[category]
+                course_data_dict_DsFs = self.DsFs_data_all_instructors[category]
+        except KeyError as e:
+            print(f"KeyError has occured: {e}")
+        
+        course_data_list_As = list(course_data_dict_As.items())
+        course_data_list_DsFs = list(course_data_dict_DsFs.items())
+
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+
+        course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        ax.set_title(f"{category - str(level)} {level}-level", fontweight='bold')
+        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('As_graph.jpg')
+
+        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+
+        ax.set_title(f"All {category - str(level)} {level}-level", fontweight='bold')
+        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('DsFs_graph.jpg')
+
+        return
+    
 class Depts_And_Level_by_Class_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         super().__init__(natty_science_courses, faculty)
@@ -410,7 +516,61 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
                                 grades_for_dept_and_lvl_by_class_As[this_dept_lvl][course] = [float(instance["aprec"]), 1]
                                 grades_for_dept_and_lvl_by_class_DsFs[this_dept_lvl][course] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
 
-        return [grades_for_dept_and_lvl_by_class_As, grades_for_dept_and_lvl_by_class_DsFs]   
+        return [grades_for_dept_and_lvl_by_class_As, grades_for_dept_and_lvl_by_class_DsFs]
+    
+    def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        if not level:
+            raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
+        if not category:
+            raise TypeError(f"graph_data() method missing 1 positional argument: category")
+        
+        category += str(level)
+        try:
+            if faculty_only:
+                course_data_dict_As = self.As_data_faculty_only[category]
+                course_data_dict_DsFs = self.DsFs_data_faculty_only[category]
+            else:
+                course_data_dict_As = self.As_data_all_instructors[category]
+                course_data_dict_DsFs = self.DsFs_data_all_instructors[category]
+        except KeyError as e:
+            print(f"KeyError has occured: {e}")
+        
+        course_data_list_As = list(course_data_dict_As.items())
+        course_data_list_DsFs = list(course_data_dict_DsFs.items())
+
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+
+        course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        ax.set_title(f"{category - str(level)} {level}-level", fontweight='bold')
+        ax.set_xlable(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('As_graph.jpg')
+
+        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
+
+        fig, ax = plt.subplots()
+
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+
+        ax.set_title(f"All {category - str(level)} {level}-level", fontweight='bold')
+        ax.set_xlable(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        
+        plt.savefig('DsFs_graph.jpg')
+
+        return   
 
 
 
