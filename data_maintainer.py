@@ -51,46 +51,31 @@ class Data_Maintainer:
 
     # ----------- Helper methods ---------------------
 
-    def nat_sci_filter(self, data):
-        # this function takes a course data set and removes all course
-        # data that does not have a natural science course key
+    def nat_sci_filter(self, all_courses):
+        # this function takes a course data python dictionary and 
+        # creates a new dictionary of only natural science course data
 
-        nat_sci_list = self.get_nat_sci() ### !!!! it doesn't like this, i replaced it with the set itself for testing
+        nat_sci_list = self.__natural_sciences
         nums = r'[0-9]'
 
-        all_courses_keys = list(data.keys())
+        # dictionary will store course data for all natural science courses in the given dict
+        nat_sci_course_data = {}
 
-        # start with the full list of course keys...
-        nat_sci_course_keys = all_courses_keys
 
-        # filter out non-natural science courses.
-        for course in all_courses_keys: 
-            # remove numbers from the course code
+        # check every course in the dictionary to see if it is a natural science course
+        for course in all_courses: 
+            # remove numbers from the course code to compare codes with natural science set
             code = re.sub(nums, '', course)
 
-            # if the course does not contain a course code in the set of natural science course codes...
+            # function to check if a course code is a natural science course code
             a_nat_sci = lambda code, nat_sci_list: any(map(lambda w: w == code, nat_sci_list))
-            if not a_nat_sci(code, nat_sci_list):
-                # remove the course from the set of natural science courses.
-                nat_sci_course_keys.remove(course)
-                #print(len(nat_sci_course_keys))
-                #print(f"Should have removed {course}")
-            #else:
-            #    print(code)
-        ###### UNDER CONSTRUCTION #########
-        #print(nat_sci_course_keys)
-        # I see it isnt actually removing the courses it should. Will Fix.
-        nat_sci_course_keys = set(nat_sci_course_keys)
-        
-
-        # dictionary to contain all course data of natural science courses
-        nat_sci_course_data = {}
-        # now copy only courses with a natural science course key to the new dictionary 
-        for key in all_courses_keys:
-            if key in nat_sci_course_keys:
-                nat_sci_course_data[key] = data[key]
-
-        #print(list(nat_sci_course_data.keys()))
+            
+            # if the course contains a course code in the set of natural science course codes...
+            if a_nat_sci(code, nat_sci_list):
+                # ... add the course to the dict
+                nat_sci_course_data[course] = all_courses[course]
+                
+            
         return nat_sci_course_data
 
     def get_nat_sci(self):
