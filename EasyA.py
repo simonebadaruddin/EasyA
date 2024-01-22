@@ -16,12 +16,18 @@ def new_main():
     # if there is no stored grade data, check for local 'gradedata.json' file
     if grade_data is None:
         # default, use local 'gradedata.json'
-        data_maintainer.update_grade_data('gradedata.json')
+        grade_data_obj.update_grade_data('gradedata.json')
     else:
         # otherwise, grade data has already been stored/updated.
+        
+        #######
+        # Setup done.
+        # Now do graphing stuff!
+        ######
+        
         return
 
-    pass
+    
 
 def main():
 

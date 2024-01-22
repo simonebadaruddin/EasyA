@@ -8,28 +8,30 @@ import json
 import re
 
 class Data_Maintainer:
-    def init():
-        # ----------- Globals ---------------------
+    def __init__(self, data_file='gradedata.json'):
         # Initail set of natural sciences
-        __NATURAL_SCIENCES = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
+        self.__natural_sciences = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
                                   'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
-
-        # to store grade data as a python dictionary, initially None
-        __GRADE_DATA = None
+        # to store the grade data file name
+        self.__data_file = data_file
+        # to store grade data as a python dictionary
+        self.__grade_data = None 
 
 
     # ----------- Administrator Functions ---------------------
 
-    def update_grade_data(self, new_data):
+    def update_grade_data(self, new_data_file):
         # this function takes a new json data file and stores this data set to be used by the system
-        validated_data = self.validate_data(new_data)
+        extracted_data = self.validate_data(new_data_file)
+        self.__data_file = new_data_file
 
         # if data is found to be invalid, exit
-        if validated_data is None:
+        if extracted_data is None:
             return
         #^^^ may not be necesary if the exception exits program and not just the function
 
-        data_dict = self.nat_sci_filter(validated_data)
+        data_dict = self.nat_sci_filter(extracted_data)
+        self.__grade_data = data_dict
         print("Grade Data has been successfully updated.")
         return
 
@@ -37,10 +39,10 @@ class Data_Maintainer:
     # possibly change this to 3 separate functions; add, remove and replace.
     # this would be good for ease of administrator use, they do not need to know anything about
     # the format of the set or every natural science course code to update/add/remove one code
-    def set_nat_sci():
+    def set_nat_sci(self, new_set):
         # this function updates the set of natural science course codes
         # ie. updating CIS to CS
-        pass
+        self.__natural_sciences = new_set
 
 
 
@@ -65,10 +67,12 @@ class Data_Maintainer:
             code = re.sub(nums, '', course)
 
             # if the course does not contain a course code in the set of natural science course codes...
-            a_nat_sci = lambda code, nat_sci_list: any(map(lambda w: w in code, nat_sci_list))
+            a_nat_sci = lambda code, nat_sci_list: any(map(lambda w: w == code, nat_sci_list))
             if not a_nat_sci(code, nat_sci_list):
                 # remove the course from the set of natural science courses.
                 nat_sci_course_keys.remove(course)
+            #else:
+            #    print(code)
 
         nat_sci_course_keys = set(nat_sci_course_keys)
 
@@ -86,10 +90,17 @@ class Data_Maintainer:
 
     def get_nat_sci(self):
         # this function retrieves the set of natural science course codes
-        return self.__NATURAL_SCIENCES
+        return self.__natural_sciences
 
     def get_grade_data(self):
-        return self.__GRADE_DATA
+        return self.__grade_data
+    
+    def get_data_file(self):
+        return self.__data_file
+    
+    def set_data_file(self, new_data_file):
+        self.__data_file = new_data_file
+    
 
     def validate_data(self, data):
         # this function takes a json file and verifies that it is in the appropriate 
