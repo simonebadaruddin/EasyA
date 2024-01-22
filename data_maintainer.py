@@ -25,7 +25,7 @@ class Data_Maintainer:
 
     # ----------- Administrator Functions ---------------------
 
-    def update_grade_data(self, new_data_file):
+    def update_grade_data(self, new_data_file='gradedata.json'):
         # this function takes a new json data file and stores this data set to be used by the system
         extracted_data = self.validate_data(new_data_file)
         self.__data_file = new_data_file
@@ -73,10 +73,15 @@ class Data_Maintainer:
             if not a_nat_sci(code, nat_sci_list):
                 # remove the course from the set of natural science courses.
                 nat_sci_course_keys.remove(course)
+                #print(len(nat_sci_course_keys))
+                #print(f"Should have removed {course}")
             #else:
             #    print(code)
-
+        ###### UNDER CONSTRUCTION #########
+        #print(nat_sci_course_keys)
+        # I see it isnt actually removing the courses it should. Will Fix.
         nat_sci_course_keys = set(nat_sci_course_keys)
+        
 
         # dictionary to contain all course data of natural science courses
         nat_sci_course_data = {}
@@ -85,7 +90,7 @@ class Data_Maintainer:
             if key in nat_sci_course_keys:
                 nat_sci_course_data[key] = data[key]
 
-        print(list(nat_sci_course_data.keys()))
+        #print(list(nat_sci_course_data.keys()))
         return nat_sci_course_data
 
     def get_nat_sci(self):
