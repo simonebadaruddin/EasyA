@@ -15,10 +15,12 @@ def new_main():
     without another check in there for the two letter course codes, and at that point it most 
     likely becomes larger and less efficient than brute force. If you can get it to work in a
     a couple more tries then great, otherwise i'd just stick with the one written in old main.
+    ^^ I think this is fixed now, but I am still testing this ^^
 
     the admin functionality needs a way to fix any discrepencies between the faculty list
     and the instructor names in the grade data e.g. a prompt that says 'these names in the 
     faculty list are not in the grade data:'
+    ^^ Noted! thanks! ^^
 
     The admin functionality needs a way for the admin to quickly and easily replace the data, either
     by inputting a json object and the program writing it into the gradedata file or inputting
