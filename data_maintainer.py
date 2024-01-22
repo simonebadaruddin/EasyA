@@ -8,7 +8,6 @@ import json
 import re
 
 class Data_Maintainer:
-<<<<<<< HEAD
     def __init__(self, data_file='gradedata.json'):
         # Initail set of natural sciences
         self.__natural_sciences = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
@@ -17,18 +16,12 @@ class Data_Maintainer:
         self.__data_file = data_file
         # to store grade data as a python dictionary
         self.__grade_data = None 
-=======
-    def init(self): # !!!! added self so I could test
-        # ----------- Globals ---------------------
-        # Initail set of natural sciences
-        self.__NATURAL_SCIENCES = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                  'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
-        # !!!! for some reason the accessing of this attribute isn't working
 
-        # to store grade data as a python dictionary, initially None
-        self.__GRADE_DATA = None
->>>>>>> 21595ade60bb6b381c03c75080173734ef498ba7
 
+    #TODO:
+    #  the admin functionality needs a way to fix any discrepencies between the faculty list
+    # and the instructor names in the grade data e.g. a prompt that says 'these names in the 
+    # faculty list are not in the grade data:'
 
     # ----------- Administrator Functions ---------------------
 
@@ -80,18 +73,8 @@ class Data_Maintainer:
             if not a_nat_sci(code, nat_sci_list):
                 # remove the course from the set of natural science courses.
                 nat_sci_course_keys.remove(course)
-<<<<<<< HEAD
             #else:
             #    print(code)
-=======
-            # !!!! this produces a somewhat filtered list, the 2 letter dept codes mess with it
-            # because of the in operator and its testing for substrings 
-            # e.g. CH is in CH for chemistry but its also in CHIN for Chinese language and literature
-            # I solved this by checking if a 2 letter course code matches, to check that the next
-            # character after is a digit e.g. CH101 vs CHIN101, you could check length since you got 
-            # rid of the numbers but that may require brute force and at that point youve jumped the shark
-
->>>>>>> 21595ade60bb6b381c03c75080173734ef498ba7
 
         nat_sci_course_keys = set(nat_sci_course_keys)
 
