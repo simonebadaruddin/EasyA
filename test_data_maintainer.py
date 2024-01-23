@@ -79,6 +79,40 @@ class test_nat_sci_filter(unittest.TestCase):
         data = dm.validate_data(file)
         filtered = dm.nat_sci_filter(data)
         # test here that filtered only contains nat sci courses
+        # not sure how I can test this here without making the same assumptions the method makes
+        # ideas welcome.  - Erin
+        
+        # print(filtered.keys())
+
+class test_upgrade_grade_data(unittest.TestCase):
+    def test_basic_compilation(self):
+        # with default file
+        dm = Data_Maintainer()
+        dm.update_grade_data()
+        
+    def test_exceptions(self):
+        dm = Data_Maintainer()
+        og_file = dm.get_data_file()
+        og_data = dm.get_grade_data()
+        # with a file not pressent
+        with self.assertRaises(FileNotFoundError):
+            dm.update_grade_data('pi')
+        # check wronge format file
+        with self.assertRaises(ValueError):
+            dm.update_grade_data('gui.py')
+        # check that data file was not changed
+        file = dm.get_data_file()
+        self.assertEqual(file, og_file)
+        # check that grade data was not changed
+        data = dm.get_grade_data()
+        self.assertEqual(data, og_data)
+
+    def test_true_update(self):
+        # create new file, a smaller copy of default
+        # update with this file
+        # check update is successful
+        # remove test file
+        pass
 
 
 if __name__ == '__main__' :

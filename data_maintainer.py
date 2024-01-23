@@ -22,19 +22,20 @@ class Data_Maintainer:
     #  the admin functionality needs a way to fix any discrepencies between the faculty list
     # and the instructor names in the grade data e.g. a prompt that says 'these names in the 
     # faculty list are not in the grade data:'
+        """
+        When replacing the system data, ideally, discrepancies between names found in
+        “gradedata.js” and the names found in the scraped instructor data would be easy to resolve
+        using the administrator tools, to ensure that the data in your tables is clean, consistent and
+        accurate. (Optionally, as the two sources of data are brought into alignment, the tools could
+        generate statistics such as lists of names from both data sources that have yet to find a match,
+        so you can see how your data resolving process needs to be further improved.)"""
 
     # ----------- Administrator Functions ---------------------
 
     def update_grade_data(self, new_data_file='gradedata.json'):
-        # this function takes a new json data file and stores this data set to be used by the system
+        # this function takes a new json data file and stores this data to be used by the system
         extracted_data = self.validate_data(new_data_file)
         self.__data_file = new_data_file
-
-        # if data is found to be invalid, exit
-        if extracted_data is None:
-            return
-        #^^^ may not be necesary if the exception exits program and not just the function
-
         data_dict = self.nat_sci_filter(extracted_data)
         self.__grade_data = data_dict
         print("Grade Data has been successfully updated.")
@@ -55,7 +56,10 @@ class Data_Maintainer:
         # this function takes a course data python dictionary and 
         # creates a new dictionary of only natural science course data
 
-        nat_sci_list = self.__natural_sciences
+        # creating a local variable to point to private variable so the lambda can access it later
+        nat_sci_set = self.__natural_sciences
+        
+        # regex for any number
         nums = r'[0-9]'
 
         # dictionary will store course data for all natural science courses in the given dict
@@ -68,10 +72,10 @@ class Data_Maintainer:
             code = re.sub(nums, '', course)
 
             # function to check if a course code is a natural science course code
-            a_nat_sci = lambda code, nat_sci_list: any(map(lambda w: w == code, nat_sci_list))
+            a_nat_sci = lambda code, nat_sci_set: any(map(lambda w: w == code, nat_sci_set))
             
             # if the course contains a course code in the set of natural science course codes...
-            if a_nat_sci(code, nat_sci_list):
+            if a_nat_sci(code, nat_sci_set):
                 # ... add the course to the dict
                 nat_sci_course_data[course] = all_courses[course]
                 
