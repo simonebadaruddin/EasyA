@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import time
+from time import sleep
+import timeit
 
 # urls defined by subjects
 bio = "https://web.archive.org/web/20141107201402/http://catalog.uoregon.edu/arts_sciences/biology/#facultytext"
@@ -25,18 +27,25 @@ url = ""
 url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, neuro, earthsci, anth, geo]
 subject_list = ['bio', 'biochem', 'cis', 'envs', 'huphys', 'math', 'physics', 'psy', 'neuro', 'earthsci', 'anth', 'geo']
 
+'''
 # open csv file
 with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
     # write in csv file
     writer = csv.writer(file)
 
     # csv headers for the rows
-    writer.writerow(['Faculty', '', '', 'Emeriti', '', '', 'Courtesy', '', '', 'Special Staff', '', '', 'Participating Faculty'])  # Header row
+    writer.writerow(['Subject', '', '', 'Faculty', '', '', 'Emeriti', '', '', 'Courtesy', '', '', 'Special Staff', '', '', 'Participating Faculty'])  # Header row
+'''
+
+
+def scrape_faculty_names(u):
+    faculty_names = []
 
     # go through the url list
     for index in range(len(url_list)):
-        # time it
-        time.time()
+        time.sleep(10)
+        # time.time()
+        # timeit.timeit()
 
         # url is set equal to the index (each time it runs through)
         url = url_list[index]
@@ -55,11 +64,12 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
 
         # strings to look for
         start = BeautSoup.find('h3', string="Faculty")
-        middle_part1 = BeautSoup.find('h3', string = "Courtesy")
-        middle_part2 = BeautSoup.find('h3', string = "Special Staff")
+        middle_part1 = BeautSoup.find('h3', string="Courtesy")
+        middle_part2 = BeautSoup.find('h3', string="Special Staff")
         end = BeautSoup.find('h3', string="Emeriti")
 
-        last_sentence = BeautSoup.find('p', string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
+        last_sentence = BeautSoup.find('p',
+                                       string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
 
         # urls in list to look for
         if url == url_list[2] or url == url_list[7] or url == url_list[10]:
@@ -68,7 +78,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if facultyNames == end:
                     break
                 else:
-                    faculty = facultyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
 
             # generate emeriti list
@@ -76,7 +86,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if emeritiNames == last_sentence:
                     break
                 else:
-                    emeriti = emeritiNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
 
         # url in list to look for
@@ -86,7 +96,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if facultyNames == last_sentence:
                     break
                 else:
-                    faculty = facultyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
 
         # urls in list to look for
@@ -96,7 +106,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if facultyNames == middle_part1:
                     break
                 else:
-                    faculty = facultyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
 
             # get list of courtesy
@@ -104,7 +114,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if courtesyNames == end:
                     break
                 else:
-                    courtesy = courtesyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    courtesy = courtesyNames.get_text().split(',')[0]
                     courtesy_list.append(courtesy)
 
             # get list of emeriti
@@ -112,7 +122,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if emeritiNames == last_sentence:
                     break
                 else:
-                    emeriti = emeritiNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
 
         # look for urls in list
@@ -122,7 +132,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if facultyNames == middle_part2:
                     break
                 else:
-                    faculty = facultyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
 
             # get list of special staff
@@ -130,7 +140,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if specialNames == end:
                     break
                 else:
-                    special = specialNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    special = specialNames.get_text().split(',')[0]
                     ss_list.append(special)
 
             # get list of emeriti
@@ -138,15 +148,15 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if emeritiNames == last_sentence:
                     break
                 else:
-                    emeriti = emeritiNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
 
         # look for url in list
         if url == url_list[8]:
             # get list of participating faculty
             for parFacNames in data.find(string='Participating Faculty').parent.find_next_siblings():
-                    participating = parFacNames.get_text().split(',')[0] + " = " + subject_list[index]
-                    pf_list.append(participating)
+                participating = parFacNames.get_text().split(',')[0]
+                pf_list.append(participating)
 
         # look for url in list
         if url == url_list[9]:
@@ -155,7 +165,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if facultyNames == middle_part1:
                     break
                 else:
-                    faculty = facultyNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
 
             # get list of courtesy
@@ -171,7 +181,7 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if specialNames == end:
                     break
                 else:
-                    special = specialNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    special = specialNames.get_text().split(',')[0]
                     ss_list.append(special)
 
             # get list of emeriiti
@@ -179,20 +189,53 @@ with open('professorData.csv', mode='w', newline='', encoding='utf-8') as file:
                 if emeritiNames == last_sentence:
                     break
                 else:
-                    emeriti = emeritiNames.get_text().split(',')[0] + " = " + subject_list[index]
+                    emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
 
+        # Add faculty names to the overall list
+        faculty_names.extend(faculty_list)
+
+    return faculty_names
+
+def return_faculty_list():
+    url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, neuro, earthsci, anth, geo]
+    faculty_list = scrape_faculty_names(url_list)
+    return faculty_list
+
+# example use case for importing it to different file
+# get_faculty_list = return_faculty_list()
+
+
+# print("done")
+
+
+# Print or use faculty_list as needed
+# print(faculty_list)
+
+'''
         # use the lists
-        max_len = max(len(faculty_list), len(emeriti_list), len(courtesy_list), len(ss_list), len(pf_list))
+        max_len = max(len(subject_list), len(faculty_list), len(emeriti_list), len(courtesy_list), len(ss_list), len(pf_list))
 
         # go through the range of the length and list professor names
+        subject_name = subject_list[index]
         for i in range(max_len):
             faculty_name = faculty_list[i] if i < len(faculty_list) else ''
-            emeriti_name = emeriti_list[i] if i < len(emeriti_list) else ''  
+            emeriti_name = emeriti_list[i] if i < len(emeriti_list) else ''
             courtesy_name = courtesy_list[i] if i < len(courtesy_list) else ''
             ss_name = ss_list[i] if i < len(ss_list) else ''
             pf_name = pf_list[i] if i < len(pf_list) else ''
             empty_name = ''
-            writer.writerow([faculty_name, empty_name, empty_name, emeriti_name, empty_name, empty_name, courtesy_name, empty_name, empty_name, ss_name, empty_name, empty_name, pf_name])
+            writer.writerow([subject_name, empty_name, empty_name, faculty_name, empty_name, empty_name, emeriti_name, empty_name, empty_name, courtesy_name, empty_name, empty_name, ss_name, empty_name, empty_name, pf_name])
 
 print("CSV file generated successfully.")
+
+names = []
+with open('professorData.csv', 'r') as data_file:
+    csv_data = csv.reader(data_file)
+    csv_list_data = list(csv_data)
+    for line in csv_list_data:
+        names.append(f"{line[3]}")
+
+for name in names:
+    print(name)
+'''
