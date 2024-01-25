@@ -207,7 +207,7 @@ class Courses_By_Prof_Grapher(Grapher):
             
         Raises:
             TypeError if faculty is not a list, or if the faculty list contains any non-strings."""
-        return super().set_faculty(faculty)
+        super().set_faculty(faculty)
     
     def get_faculty(self) -> List[str]:
         """Getter method for the faculty attribute
@@ -218,27 +218,46 @@ class Courses_By_Prof_Grapher(Grapher):
     # ================== Data Parsing Methods =======================================================================================
 
     def parse_for_all_instructors(self) -> List[Dict[str, Dict[str, List[str]]]]:
-        # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[int, int]}): keys are course names; values are dicts.
+        """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
+        specified by the Grapher subclass and the methods used.
+        
+        The catgories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
+        science department for each of the instructors who taught it, along with the number of times they were taught it.
+        This is iteratively parsed from the data and represented as a dict with keys that are names of the courses
+        (e.g. MATH111, PSY201) and values that are dicts. The inner dict has the names of all the instructors who taught that 
+        class as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
+        %Ds and %Fs for all the instances of the class they taught, stored as a float; and the second element being the number 
+        of instances they taught the class  (e.g. if an instructor has taught MATH 111 3 times and the %As were 
+        45%, 65%, and 55% then thefirst element in the list will be 110.0, and the second element will be 3). The average 
+        percentage of the grades can then be calculated from the two list items by dividing the first by the second when 
+        graphing. 
+
+        Returns:
+            The dict of parsed natty_science_courses data described above
+        """
+        # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[float, int]}): keys are course names; values are dicts.
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
-        # and the second element being the number of times the instructor taught that course as values
+        # for all the instances of the class they have taught and the second element being the number of instances the instructor
+        # taught the course
         grades_for_courses_by_prof_As = {}
         grades_for_courses_by_prof_DsFs = {}
-        for course in self.natty_science_courses: # iterate through the courses in natty_science_courses dict
-            # initialize the course as a key to an empty dict value
+        for course in self.natty_science_courses: # iterate through the courses in the natty_science_courses attribute
+            # initialize the course as a keys to empty dicts to keep track of %As and %DsFs separately
             grades_for_courses_by_prof_As[course] = {}
             grades_for_courses_by_prof_DsFs[course] = {}
-            for instance in self.natty_science_courses[course]: # iterate through the instances in which the class was taught
+            for instance in self.natty_science_courses[course]: # iterate through the instances of the course
                 instructor = instance["instructor"] # instructor (str): the instructor for each instance
                 if instructor in grades_for_courses_by_prof_As[course]:
-                    # if the instructor is already in the dict correponding to the course, add the %As or %Ds and %Fs
-                    # to the respective dicts and increment their class count
+                    # if the instructor is already in the dict correponding to the course, add the %As, and %Ds and %Fs
+                    # to their corresponding dicts according to the instructor and increment their class count
                     grades_for_courses_by_prof_As[course][instructor][0] += float(instance["aprec"])
                     grades_for_courses_by_prof_As[course][instructor][1] += 1
                     grades_for_courses_by_prof_DsFs[course][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
                     grades_for_courses_by_prof_DsFs[course][instructor][1] += 1
                 else:
                     # if the instructor is not in the dict corresponding to the course, initialize them to the %As or 
-                    # %Ds and %Fs, and their class count to 1 in the respective dicts
+                    # %Ds and %Fs for the first instance of that class taught by them; and their class count to 1, marking 
+                    # the initial instance in the respective dicts
                     grades_for_courses_by_prof_As[course][instructor] = [float(instance["aprec"]), 1]
                     grades_for_courses_by_prof_DsFs[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
                 
@@ -396,7 +415,7 @@ class Depts_By_Prof_Grapher(Grapher):
             
         Raises:
             TypeError if faculty is not a list, or if the faculty list contains any non-strings."""
-        return super().set_faculty(faculty)
+        super().set_faculty(faculty)
     
     def get_faculty(self) -> List[str]:
         """Getter method for the faculty attribute
@@ -602,7 +621,7 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
             
         Raises:
             TypeError if faculty is not a list, or if the faculty list contains any non-strings."""
-        return super().set_faculty(faculty)
+        super().set_faculty(faculty)
     
     def get_faculty(self) -> List[str]:
         """Getter method for the faculty attribute
@@ -817,7 +836,7 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
             
         Raises:
             TypeError if faculty is not a list, or if the faculty list contains any non-strings."""
-        return super().set_faculty(faculty)
+        super().set_faculty(faculty)
     
     def get_faculty(self) -> List[str]:
         """Getter method for the faculty attribute
