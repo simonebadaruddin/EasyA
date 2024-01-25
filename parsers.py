@@ -1,4 +1,3 @@
-"""Practice for helping group with project 1 in cs 422"""
 
 
 import json
@@ -56,9 +55,7 @@ def main():
     # natty_science_courses (dict{str: list[dict{str, str}]}): a subdict of the original grade_data dict that only contains
     # the data for the courses in the natural sciences
     natty_science_courses = {}
-    for course in all_courses: # iterate through the keys in the all_courses dict
-        if course in natty_science_course_names: # check if the key (course) is in the course names for all the courses in
-            # the natural science dept; if it is, add it to the natty_science_courses dict
+    for course in natty_science_course_names: 
             natty_science_courses[course] = grade_data[course]
 
     ################# PARSE CLASS DATA INTO CATEGORIES BASED ON WHAT SHOULD BE GRAPHED ###################################################

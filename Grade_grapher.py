@@ -55,7 +55,7 @@ class Grapher(ABC):
         return self.As_data_all_instructors
 
     @abstractmethod
-    def get_As_data(self) -> dict:
+    def get_As_data_faculty_only(self) -> dict:
         """Getter method for the As_data_faculty_only attribute
         
         Returns: the As_data_faculty_only attribute"""
@@ -96,6 +96,7 @@ class Grapher(ABC):
         return self.faculty
 
 
+
 class Courses_By_Prof_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         super().__init__(natty_science_courses, faculty)
@@ -105,6 +106,30 @@ class Courses_By_Prof_Grapher(Grapher):
         self.As_data_faculty_only = parsed_data_faculty_only[0]
         self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
         self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
+
+    def __str__(self) -> str:
+        return super().__str__()
+    
+    def __rep__repr__(self) -> str:
+        return super().__repr__()
+    
+    def get_As_data_all_instructors(self):
+        return super().get_As_data_all_instructors()
+    
+    def get_As_data_faculty_only(self) -> dict:
+        return super().get_As_data_faculty_only()
+    
+    def get_DsFs_data_all_instructors(self):
+        return super().get_DsFs_data_all_instructors()
+    
+    def get_DsFs_data_faculty_only(self) -> dict:
+        return super().get_DsFs_data_faculty_only()
+    
+    def set_faculty(self, faculty):
+        return super().set_faculty(faculty)
+    
+    def get_faculty(self):
+        return super().get_faculty()
 
     def parse_for_all_instructors(self) -> List[Dict[str, Dict[str, str]]]:
         # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[int, int]}): keys are course names; values are dicts.
@@ -224,6 +249,30 @@ class Depts_By_Prof_Grapher(Grapher):
         self.As_data_faculty_only = parsed_data_faculty_only[0]
         self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
         self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
+
+    def __str__(self) -> str:
+        return super().__str__()
+    
+    def __rep__repr__(self) -> str:
+        return super().__repr__()
+    
+    def get_As_data_all_instructors(self):
+        return super().get_As_data_all_instructors()
+    
+    def get_As_data_faculty_only(self) -> dict:
+        return super().get_As_data_faculty_only()
+    
+    def get_DsFs_data_all_instructors(self):
+        return super().get_DsFs_data_all_instructors()
+    
+    def get_DsFs_data_faculty_only(self) -> dict:
+        return super().get_DsFs_data_faculty_only()
+    
+    def set_faculty(self, faculty):
+        return super().set_faculty(faculty)
+    
+    def get_faculty(self):
+        return super().get_faculty()
 
     def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
         # grades_for_dept_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts represented by 
@@ -349,6 +398,7 @@ class Depts_By_Prof_Grapher(Grapher):
 
         return
     
+
 class Depts_And_Level_By_Prof_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         super().__init__(natty_science_courses, faculty)
@@ -359,6 +409,29 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
         self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
         self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
 
+    def __str__(self) -> str:
+        return super().__str__()
+    
+    def __rep__repr__(self) -> str:
+        return super().__repr__()
+    
+    def get_As_data_all_instructors(self):
+        return super().get_As_data_all_instructors()
+    
+    def get_As_data_faculty_only(self) -> dict:
+        return super().get_As_data_faculty_only()
+    
+    def get_DsFs_data_all_instructors(self):
+        return super().get_DsFs_data_all_instructors()
+    
+    def get_DsFs_data_faculty_only(self) -> dict:
+        return super().get_DsFs_data_faculty_only()
+    
+    def set_faculty(self, faculty):
+        return super().set_faculty(faculty)
+    
+    def get_faculty(self):
+        return super().get_faculty()
 
     def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
         # grades_for_dept_and_lvl_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts and level
@@ -495,6 +568,7 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
 
         return
     
+    
 class Depts_And_Level_by_Class_Grapher(Grapher):
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         super().__init__(natty_science_courses, faculty)
@@ -504,6 +578,30 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
         self.As_data_faculty_only = parsed_data_faculty_only[0]
         self.DsFs_data_all_instructors = parsed_data_all_instructors[1]
         self.DsFs_data_faculty_only = parsed_data_faculty_only[1]
+
+    def __str__(self) -> str:
+        return super().__str__()
+    
+    def __rep__repr__(self) -> str:
+        return super().__repr__()
+
+    def get_As_data_all_instructors(self):
+        return super().get_As_data_all_instructors()
+    
+    def get_As_data_faculty_only(self) -> dict:
+        return super().get_As_data_faculty_only()
+    
+    def get_DsFs_data_all_instructors(self):
+        return super().get_DsFs_data_all_instructors()
+    
+    def get_DsFs_data_faculty_only(self) -> dict:
+        return super().get_DsFs_data_faculty_only()
+    
+    def set_faculty(self, faculty):
+        return super().set_faculty(faculty)
+    
+    def get_faculty(self):
+        return super().get_faculty()
 
     def parse_for_all_instructors(self) -> Dict[str, Dict[str, str]]:
         # levels (list[str]): a list of the course levels 100 through 600 as strings
