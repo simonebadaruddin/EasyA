@@ -233,7 +233,8 @@ class Courses_By_Prof_Grapher(Grapher):
         graphing. 
 
         Returns:
-            The dict of parsed natty_science_courses data described above
+            The dicts of parsed natty_science_courses data described above, in a list with parsed %As data being the first
+            element, and the parsed %DsFs data being the second element
         """
         # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[float, int]}): keys are course names; values are dicts.
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
@@ -260,7 +261,8 @@ class Courses_By_Prof_Grapher(Grapher):
                     # the initial instance in the respective dicts
                     grades_for_courses_by_prof_As[course][instructor] = [float(instance["aprec"]), 1]
                     grades_for_courses_by_prof_DsFs[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
-                
+
+        # return the parsed data as a list of the the two parsed data dicts   
         return [grades_for_courses_by_prof_As ,grades_for_courses_by_prof_DsFs]
     
     def parse_for_faculty_only(self) -> Dict[str, Dict[str, List[str]]]:
