@@ -21,7 +21,6 @@
 #
 ####
 import tkinter as tk
-from tkinter import *
 from tkinter import filedialog # To get the dialog box to open when required 
 from PIL import ImageTk, Image # loading Python Imaging Library
 import json 
