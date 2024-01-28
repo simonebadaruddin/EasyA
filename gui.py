@@ -11,10 +11,23 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 # The Graphical User Interface (GUI) Library
 import tkinter as tk
+from tkinter import ttk
 import numpy as np
 
 
-def plot():
+def get_data(selected_department, selected_visual, selected_by_level, selected_class, selected_faculty):
+    """
+    Dummy function to generate example data.
+    Replace this with actual logic to retrieve data from Grade_grapher.py.
+    """
+    # Example data
+    x_data = np.linspace(1, 5, 100)
+    y_data = np.sin(x_data)  # using a sine function as an example
+
+    return x_data, y_data
+
+
+def plot(selected_department, selected_visual, selected_by_level, selected_class, selected_faculty):
     """
     Our plotting function gets the selections inputted by the user plus
     the corresponding data from Grade_grapher.py and plots the
@@ -51,40 +64,72 @@ def plot():
     """
     # Old graph clears before new one
     ax.clear()
-    x = np.random.randint(0, 10, 10)  # PLACEHOLDER UNTIL OUR DATA FIXME
-    y = np.random.randint(0, 10, 10)  # PLACEHOLDER UNTIL OUR DATA FIXME
+
+    # Get data (replace with actual data retrieval logic)
+    x, y = get_data(selected_department, selected_visual, selected_by_level, selected_class, selected_faculty)
+
     ax.plot(x, y)
-    # This call updates the graph:
-    canvas.draw()
+
+    # Explicitly update the canvas
+    canvas.draw_idle()
 
 
-# Initialize Tkinter
-root = tk.Tk()
-root.geometry("1000x1000")
-# (a) Create matplotlib figure with access to subplots
-fig, ax = plt.subplots()
+def main():
+    # Initialize Tkinter
+    root = tk.Tk()
+    root.geometry("1000x1000")
+    # (a) Create matplotlib figure with access to subplots
+    fig, ax = plt.subplots()
 
-# Tkinter Application + Visuals
-frame = tk.Frame(root)
-label = tk.Label(text="Math 111")
-label.config(font=("Courier", 32))
-label.pack()
+    # Tkinter Application + Visuals
+    frame = tk.Frame(root)
+    label = tk.Label(text="Viewing Options")
+    label.config(font=("Courier", 20))
+    label.pack(pady=20)
 
-# Create button to plot with prev. plot func, link plotted data here #FIXME
-tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
+    # Dropdown menu to select department
+    department_options = [
+        "Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
+        "General Science Program", "Human Physiology", "Mathematics", "Neuroscience",
+        "Physics", "Psychology"
+    ]
+    selected_department = tk.StringVar()
+    selected_department.set("Select a department")
+    department_dropdown = ttk.Combobox(frame, textvariable=selected_department, values=department_options)
+    department_dropdown.pack()
 
-# Create a canvas which requires:
-# (a) matplotlib figure
-# (b) tkinter application
-canvas = FigureCanvasTkAgg(fig, master=frame)
-# Integrate canvas into the application
-canvas.get_tk_widget().pack()
+    # Visual options dropdown menu
+    visual_options = ["Whole department", "Particular level", "Particular class"]
+    selected_visual = tk.StringVar()
+    selected_visual.set("What data would you like to see?")
+    visual_dropdown = ttk.Combobox(frame, textvariable=selected_visual, values=visual_options)
+    visual_dropdown.pack()
 
-toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
-toolbar.update()
-toolbar.pack(anchor="w", fill=tk.X)
+    # Other dropdown menus (similar to the first two) can be added here
 
-# Place label
-frame.pack()
+    # Create button to plot with prev. plot func, link plotted data here
+    tk.Button(frame, text="Plot Graph", command=lambda: plot(
+        selected_department.get(),
+        selected_visual.get(),
+        # Add other selected values here
+    )).pack(pady=10, side=tk.BOTTOM)
 
-root.mainloop()
+    # Create a canvas which requires:
+    # (a) matplotlib figure
+    # (b) tkinter application
+    canvas = FigureCanvasTkAgg(fig, master=frame)
+    # Integrate canvas into the application
+    canvas.get_tk_widget().pack()
+
+    toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
+    toolbar.update()
+    toolbar.pack(anchor="w", fill=tk.X)
+
+    # Place label
+    frame.pack()
+
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
