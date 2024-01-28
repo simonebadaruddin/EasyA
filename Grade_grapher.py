@@ -1,5 +1,5 @@
 """
-Module containing Graph_grades Python Object
+Module containing Grapher Python class and its subclasses
 """
 
 
@@ -27,7 +27,13 @@ class Grapher(ABC):
         faculty (List[str]): a list of all the regular faculty in the natural science department.
         natty_science_courses (Set[str]): a set of the course codes for all the courses in the natural science department
         natty_science_depts (Set[str]): a set of the course codes for all the departments in the natural science dapartment
-        
+        As_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %As
+        DsFs_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %DsFs
+
     Methods:
         str: for external string representation of the class
         repr: for internal string representation of the class
@@ -37,6 +43,8 @@ class Grapher(ABC):
         get_DsFs_data_faculty_only: Getter method for the DsFs_data_faculty_only attribute
         set_faculty: Setter method for the faculty attribute
         get_faculty: Getter method for the faculty attribute
+        filter_names: creates a names list if it isn't given as an argument, otherwise accepting the names list if it is,
+        and filters it for faculty members if the keyword argument faculty_only is set to True
         
     Abstract methods:
         parse_for_all_instructors: parses the natty_science_course_data attribute into the As_data_all_instructors and 
@@ -54,7 +62,8 @@ class Grapher(ABC):
     
     """
 
-    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], 
+                 faculty: List[str], names_list=[], faculty_only=False) -> None:
         """Constructor method for the Grapher abstract base class, not to be used.
         All Grapher subclasses inherit the attributes defined below"""
         # natty_science_course_data (Dict[str, List[Dict[str, str]]]): A dict holding the grade data for only those classes
@@ -70,18 +79,15 @@ class Grapher(ABC):
                                          'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
         
         # parse the data
-        parsed_data_all_instructors = self.parse_for_all_instructors()
-        parsed_data_faculty_only = self.parse_for_faculty_only()
+        parsed_data = self.parse_data()
 
-        # %As data for the graphing grades x instructors/faculty who taught each course that 
-        # is part of the natty_sciences attribute
-        self.__As_data_all_instructors = parsed_data_all_instructors[0]
-        self.__As_data_faculty_only = parsed_data_faculty_only[0]
+        # %As data from the parsed natty_science_course_data for all the possible graphs with all the data necessary being 
+        # oriented to be as accessible as possible for graphing
+        self.__As_data = parsed_data[0]
 
-        # %DsFs data for the graphing grades x instructors/faculty who taught each course that 
-        # is part of the natty_sciences attribute
-        self.__DsFs_data_all_instructors = parsed_data_all_instructors[1]
-        self.__DsFs_data_faculty_only = parsed_data_faculty_only[1]
+        # %DsFs data from the parsed natty_science_course_data for all the possible graphs with all the data necessary being 
+        # oriented to be as accessible as possible for graphing
+        self.__DsFs_data= parsed_data[1]
         
     # =============== Representational Methods ===========================================================================================
 
@@ -89,47 +95,32 @@ class Grapher(ABC):
         """Returns: string representation of the instance attributes for output purposes
         Represents all the instance attributes of the graph subclasses as their length except for the faculty"""
 
-        return f"As_data_all_instructors has {len(self.__As_data_all_instructors) if self.__As_data_all_instructors else 0} items,
-                As_data_faculty_only has {len(self.__As_data_faculty_only) if self.__As_data_faculty_only else 0} items,  
-                DsFs_data_all_instructors has {len(self.__DsFs_data_all_instructors) if self.__DsFs_data_all_instructors else 0} items, 
-                DsFs_data_faculty_only has {len(self.__DsFs_data_faculty_only) if self.__DsFs_data_faculty_only else 0} items, 
+        return f"As_data_all_instructors has {len(self.__As_data) if self.__As_data else 0} items,
+                DsFs_data has {len(self.__DsFs_data) if self.__DsFs_data else 0} items, 
                 faculty = {str(self.__faculty) if self.__faculty else None}"
     
     def __repr__(self) -> str:
         """Returns: string representation of the instance attributes for internal representation purposes
-        Represents all the instance attributes of the graph subclasses as their length except for the faculty"""
+        Represents all the instance attributes of the graph subclasses as their length except for the faculty
+        which is represented by the list itself"""
 
-        return f"As_data_all_instructors has {len(self.__As_data_all_instructors) if self.__As_data_all_instructors else 0} items,
-                As_data_faculty_only has {len(self.__As_data_faculty_only) if self.__As_data_faculty_only else 0} items,  
-                DsFs_data_all_instructors has {len(self.__DsFs_data_all_instructors) if self.__DsFs_data_all_instructors else 0} items, 
-                DsFs_data_faculty_only has {len(self.__DsFs_data_faculty_only) if self.__DsFs_data_faculty_only else 0} items, 
+        return f"As_data has {len(self.__As_data) if self.__As_data else 0} items,
+                DsFs_data has {len(self.__DsFs_data) if self.__DsFs_data else 0} items, 
                 faculty = {str(self.__faculty) if self.__faculty else None}"
     
     # =============== Getter and Setter Methods ======================================================================================
 
-    def get_As_data_all_instructors(self):
+    def get_As_data(self):
         """Getter method for the As_data_all_instructors attribute
         
         Returns: the As_data_all_instructors attribute"""
-        return self.__As_data_all_instructors
-
-    def get_As_data_faculty_only(self) -> dict:
-        """Getter method for the As_data_faculty_only attribute
-        
-        Returns: the As_data_faculty_only attribute"""
-        return self.__As_data_faculty_only
+        return self.__As_data
     
-    def get_DsFs_data_all_instructors(self):
+    def get_DsFs_data(self):
         """Getter method for the DsFs_data_all_instructors sttribute
         
         Returns: the DsFs_data_all_instructors attribute"""
-        return self.__DsFs_data_all_instructors
-    
-    def get_DsFs_data_faculty_only(self) -> dict:
-        """Getter method for the DsFs_data_faculty_only attribute
-        
-        Returns: the DsFs_data_faculty_only attribute"""
-        return self.__DsFs_data_faculty_only
+        return self.__DsFs_data
     
     def set_faculty(self, faculty: List[str]):
         """Setter method for the faculty attribute
@@ -155,6 +146,14 @@ class Grapher(ABC):
     # ================== Data Parsing Method =======================================================================================
 
     def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """If names list is empty a list of all the names from the data is created.
+        Takes names list and filters out non-faculty members if the faculty_only paremeter is set to True
+        
+        args: 
+            names_list (List[str]): A list of names the user wants to use in limited graphing; or an empty list by default so 
+            the graphing is not limited to a subset of names
+            faculty_only (bool): A bool value, defaults to False, which determines if the names_list (either given or created) should 
+            be filtered to only hold faculty names"""
         if not names_list:
             names_list = [instance["instructor"] for course in self.natty_science_course_data for instance in course]
         if faculty_only:
@@ -192,14 +191,20 @@ class Courses_By_Prof_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single course in the natural science department
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught the 
-    course and the Y-axis measurement being the %As or %Ds and %Fs depending on user input.
+    course and the Y-axis measurement being the %As or %Ds and %Fs.
 
-    Attributes inherited from Grapher base class:"
+    Attributes inherited from Grapher base class:
         natty_science_course_data (Dict[str, List[Dict[str, str]]]): the grade data for all the course instances for
         courses in the natural science department.
         faculty (List[str]): a list of all the regular faculty in the natural science department.
         natty_science_courses (Set[str]): a set of the course codes for all the courses in the natural science department
         natty_science_depts (Set[str]): a set of the course codes for all the departments in the natural science dapartment
+        As_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %As
+        DsFs_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %DsFs
 
     Methods inherited from Grapher base class:
         str: for external string representation of the class
@@ -221,7 +226,7 @@ class Courses_By_Prof_Grapher(Grapher):
     """
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty)
+        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
 
     # ================== Data Parsing Method =======================================================================================
 
@@ -229,8 +234,8 @@ class Courses_By_Prof_Grapher(Grapher):
         """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
         specified by the Grapher subclass and the methods used.
         
-        The catgories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
-        science department for each of the instructors who taught it, along with the number of times they were taught it.
+        The categories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
+        science departments for each of the instructors who taught it, along with the number of times they were taught it.
         This is iteratively parsed from the data and represented as a dict with keys that are names of the courses
         (e.g. MATH111, PSY201) and values that are dicts. The inner dict has the names of all the instructors who taught that 
         class as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
@@ -249,52 +254,53 @@ class Courses_By_Prof_Grapher(Grapher):
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
         # for all the instances of the class they have taught and the second element being the number of instances the instructor
         # taught the course
-        grades_for_courses_by_prof_As_faculty_only = {}
-        grades_for_courses_by_prof_DsFs_faculty_only = {}
-        for course in self.natty_science_course_data: # iterate through the courses in natty_science_courses dict
-            # initialize the course as a key to an empty dict value
-            grades_for_courses_by_prof_As_faculty_only[course] = {}
-            grades_for_courses_by_prof_DsFs_faculty_only[course] = {}
+        grades_for_courses_by_prof_As = {}
+        grades_for_courses_by_prof_DsFs = {}
+        for course in self.natty_science_course_data: # iterate through the courses in natty_science_course_data dict
+            # initialize the course code as a key to an empty dict value
+            grades_for_courses_by_prof_As[course] = {}
+            grades_for_courses_by_prof_DsFs[course] = {}
             for instance in self.natty_science_course_data[course]: # iterate through the instances in which the class was taught
-                # instructor (str): the instructor for each instance
-                if (instructor := instance["instructor"]) in names_list: # check if the instructor is part of the regular faculty
-                    if instructor in grades_for_courses_by_prof_As_faculty_only[course]:
+                # instructor (str): the name of the instructor for each instance
+                if (instructor := instance["instructor"]) in names_list: # check if the instructor is part of the names_list
+                    if instructor in grades_for_courses_by_prof_As[course]:
                         # if the instructor is already in the dict correponding to the course and is in the regular faculty,
                         # add the %As or %Ds and %Fs to the respective dicts and increment their class count
-                        grades_for_courses_by_prof_As_faculty_only[course][instructor][0] += float(instance["aprec"])
-                        grades_for_courses_by_prof_As_faculty_only[course][instructor][1] += 1
-                        grades_for_courses_by_prof_DsFs_faculty_only[course][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
-                        grades_for_courses_by_prof_DsFs_faculty_only[course][instructor][1] += 1
+                        grades_for_courses_by_prof_As[course][instructor][0] += float(instance["aprec"])
+                        grades_for_courses_by_prof_As[course][instructor][1] += 1
+                        grades_for_courses_by_prof_DsFs[course][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
+                        grades_for_courses_by_prof_DsFs[course][instructor][1] += 1
                     else:
-                        # if the instructor is not in the dict corresponding to the course, but is in the regular faculty, 
+                        # if the instructor is not in the dict corresponding to the course, but is in the names_list, 
                         # initialize them to the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
-                        grades_for_courses_by_prof_As_faculty_only[course][instructor] = [float(instance["aprec"]), 1]
-                        grades_for_courses_by_prof_DsFs_faculty_only[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
+                        grades_for_courses_by_prof_As[course][instructor] = [float(instance["aprec"]), 1]
+                        grades_for_courses_by_prof_DsFs[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
                     
-        return [grades_for_courses_by_prof_As_faculty_only, grades_for_courses_by_prof_DsFs_faculty_only]
+        return [grades_for_courses_by_prof_As, grades_for_courses_by_prof_DsFs]
     
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if level:
+        if level: # level isn't an available argument for this particular subgraph 
             raise TypeError(f"graph_data() method given 1 extra keyword argument: level. Courses_By_Prof_Grapher object does not have a level option.")
-        if not category:
+        if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
-            if faculty_only:
-                course_data_dict_As = self.__As_data_faculty_only[category]
-                course_data_dict_DsFs = self.__DsFs_data_faculty_only[category]
-            else:
-                course_data_dict_As = self.__As_data_all_instructors[category]
-                course_data_dict_DsFs = self.__DsFs_data_all_instructors[category]
-        except KeyError as e:
-            print(f"KeyError has occured: {e}")
-        
+            # course_data_dict_(As/DsFs) (Dict[str, List[float, int]]): the inner dict of the As_data and DsFs_data 
+            # corresponding to category
+            course_data_dict_As = self.__As_data[category]
+            course_data_dict_DsFs = self.__DsFs_data[category]
+        except KeyError as e: # the category is not in the data
+            print(f"Attempt to graph a category that doesn't exist: {e}")
+
+        # course_data_list_(As/DsFs) (Tuple[str, List[float, int]]): a list of tuples of the key-value pairs in course_data_dict_(As/DsFs)
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
-        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
-        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+        # The second element in the tuple is a list with 2 values, this sorts the tuples in terms of the quotient of its
+        # first and second terms
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True ) # sorts in descending order
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] ) # sorts in ascending order
 
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
@@ -334,9 +340,45 @@ class Courses_By_Prof_Grapher(Grapher):
 
 
 class Depts_By_Prof_Grapher(Grapher):
+    """Subclass of Grapher, representing a graph of a single department in the natural science department
+    
+    The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were 
+    in the department and the Y-axis measurement being the %As or %Ds and %Fs.
+
+    Attributes inherited from Grapher base class:
+        natty_science_course_data (Dict[str, List[Dict[str, str]]]): the grade data for all the course instances for
+        courses in the natural science department.
+        faculty (List[str]): a list of all the regular faculty in the natural science department.
+        natty_science_courses (Set[str]): a set of the course codes for all the courses in the natural science department
+        natty_science_depts (Set[str]): a set of the course codes for all the departments in the natural science dapartment
+        As_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %As
+        DsFs_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %DsFs
+
+    Methods inherited from Grapher base class:
+        str: for external string representation of the class
+        repr: for internal string representation of the class
+        get_As_data_all_instructors: Getter method for the As_data_all_instructors attribute
+        get_As_data_faculty_only: Getter method for the As_data_faculty_only attribute
+        get_DsFs_data_all_instructors: Getter method for the DsFs_data_all_instructors attribute
+        get_DsFs_data_faculty_only: Getter method for the DsFs_data_faculty_only attribute
+        set_faculty: Setter method for the faculty attribute
+        get_faculty: Getter method for the faculty attribute
+        filter_names: creates a names list if it isn't given as an argument, otherwise accepting the names list if it is,
+        and filters it for faculty only if the user chooses that option
+
+    Implemented methods:
+        parse_data: Parses the natty_science_course_data dict into a dict with categories corresponding to a single graph each
+        as keys and all it graphable data and options within the values
+        graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
+        faculty only, class counts included)
+    """
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty)
+        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -385,12 +427,9 @@ class Depts_By_Prof_Grapher(Grapher):
         if not category:
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
-            if faculty_only:
-                course_data_dict_As = self.__As_data_faculty_only[category]
-                course_data_dict_DsFs = self.__DsFs_data_faculty_only[category]
-            else:
-                course_data_dict_As = self.__As_data_all_instructors[category]
-                course_data_dict_DsFs = self.__DsFs_data_all_instructors[category]
+            course_data_dict_As = self.__As_data[category]
+            course_data_dict_DsFs = self.__DsFs_data[category]
+            
         except KeyError as e:
             print(f"KeyError has occured: {e}")
         
@@ -438,9 +477,43 @@ class Depts_By_Prof_Grapher(Grapher):
 
 
 class Depts_And_Level_By_Prof_Grapher(Grapher):
+    """Subclass of Grapher, representing a graph of a single department level in the natural science department
+    
+    The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
+    in the department in the given level and the Y-axis measurement being the %As or %Ds and %Fs.
+
+    Attributes inherited from Grapher base class:
+        natty_science_course_data (Dict[str, List[Dict[str, str]]]): the grade data for all the course instances for
+        courses in the natural science department.
+        faculty (List[str]): a list of all the regular faculty in the natural science department.
+        natty_science_courses (Set[str]): a set of the course codes for all the courses in the natural science department
+        natty_science_depts (Set[str]): a set of the course codes for all the departments in the natural science dapartment
+        As_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %As
+        DsFs_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %DsFs
+
+    Methods inherited from Grapher base class:
+        str: for external string representation of the class
+        repr: for internal string representation of the class
+        get_As_data: Getter method for the As_data attribute
+        get_DsFs_data: Getter method for the DsFs_data attribute
+        set_faculty: Setter method for the faculty attribute
+        get_faculty: Getter method for the faculty attribute
+        filter_names: creates a names list if it isn't given as an argument, otherwise accepting the names list if it is,
+        and filters it for faculty only if the user chooses that option
+
+    Implemented methods:
+        parse_data: Parses the natty_science_course_data dict into a dict with categories corresponding to a single graph each
+        as keys and all it graphable data and options within the values
+        graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
+        faculty only, class counts included)
+    """
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty)
+        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -493,12 +566,9 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
         
         category += str(level)
         try:
-            if faculty_only:
-                course_data_dict_As = self.__As_data_faculty_only[category]
-                course_data_dict_DsFs = self.__DsFs_data_faculty_only[category]
-            else:
-                course_data_dict_As = self.__As_data_all_instructors[category]
-                course_data_dict_DsFs = self.__DsFs_data_all_instructors[category]
+            course_data_dict_As = self.__As_data[category]
+            course_data_dict_DsFs = self.__DsFs_data[category]
+
         except KeyError as e:
             print(f"KeyError has occured: {e}")
         
@@ -546,6 +616,40 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
 
     
 class Depts_And_Level_by_Class_Grapher(Grapher):
+    """Subclass of Grapher, representing a graph of a single department level in the natural science department
+    
+    The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
+    in the department in the given level and the Y-axis measurement being the %As or %Ds and %Fs.
+
+    Attributes inherited from Grapher base class:
+        natty_science_course_data (Dict[str, List[Dict[str, str]]]): the grade data for all the course instances for
+        courses in the natural science department.
+        faculty (List[str]): a list of all the regular faculty in the natural science department.
+        natty_science_courses (Set[str]): a set of the course codes for all the courses in the natural science department
+        natty_science_depts (Set[str]): a set of the course codes for all the departments in the natural science dapartment
+        As_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %As
+        DsFs_data (Dict[str, Dict[str, List[float, int]]]): data from the natty_science_course_data, parsed into a dict of 
+        possible graphs, with the keys being the categories for the graph and the values being the data for each graph, data 
+        only references the values for %DsFs
+
+    Methods inherited from Grapher base class:
+        str: for external string representation of the class
+        repr: for internal string representation of the class
+        get_As_data: Getter method for the As_data attribute
+        get_DsFs_data: Getter method for the DsFs_data attribute
+        set_faculty: Setter method for the faculty attribute
+        get_faculty: Getter method for the faculty attribute
+        filter_names: creates a names list if it isn't given as an argument, otherwise accepting the names list if it is,
+        and filters it for faculty only if the user chooses that option
+
+    Implemented methods:
+        parse_data: Parses the natty_science_course_data dict into a dict with categories corresponding to a single graph each
+        as keys and all it graphable data and options within the values
+        graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
+        faculty only, class counts included)
+    """
     def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
         """Constructor method for instance of class."""
         super().__init__(natty_science_courses, faculty)
@@ -603,12 +707,9 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
         
         category += str(level)
         try:
-            if faculty_only:
-                course_data_dict_As = self.__As_data_faculty_only[category]
-                course_data_dict_DsFs = self.__DsFs_data_faculty_only[category]
-            else:
-                course_data_dict_As = self.__As_data_all_instructors[category]
-                course_data_dict_DsFs = self.__DsFs_data_all_instructors[category]
+            course_data_dict_As = self.__As_data[category]
+            course_data_dict_DsFs = self.__DsFs_data[category]
+            
         except KeyError as e:
             print(f"KeyError has occured: {e}")
         
