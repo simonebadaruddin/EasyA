@@ -7,8 +7,8 @@ A system called EasyA that students can use to figure out which professors in wh
 
 ### Team organization
 Our team is organized with distinct roles for each member:
-- Nithi will create the Project 1 Plan document and parse the data into categories by class, professor, level, and class category.
-- Luke will build graph objects.
+- Nithi will create the Project 1 Plan document
+- Luke will build graph objects that include parsing
 - Erin will translate, document, and annotate the project in Jupyter Notebook.
 - Simone will accept and read the JavaScript file into the Python module, isolate and validate the data, accept and validate input from the command line to collect user option choices on how to display the data in the graphs.
 - Isabella will web scrape faculty names using BeautifulSoup; monitor and report individual and project progress.
@@ -62,7 +62,7 @@ The system is divided and assigned in order to use each team member's expertise 
 
 # SDS:
 ## Description of the product:
-The product, EasyA (or JustPass), is a system designed for students to evaluate and compare instructors' grading histories. It aims to help students make informed decisions when selecting classes or instructors. The system will provide side-by-side visualizations of grading patterns, allowing users to see the distribution of As and Ds/Fs as average percentages of the grades given for different instructors teaching the same class, across different class levels, across one department and level and different classes, or across one department and level across instructors (see assignment outline for full description). Users, students, and administrators will be able to interact with the system to view data in various ways, such as by class, department, or instructor. The system will utilize grade data from the years 2013-2016 at the University of Oregon, provided by the Daily Emerald. 
+The product, EasyA (or JustPass), is a system designed for students to evaluate and compare instructors' grading histories. It aims to help students make informed decisions when selecting classes or instructors. The system will provide side-by-side visualizations of grading patterns, allowing users to see the distribution of As and Ds/Fs as average percentages of the grades given for different instructors teaching the same class, across different class levels, across one subject and level and different classes, or across one subject and level across instructors (see assignment outline for full description). Users, students, and administrators will be able to interact with the system to view data in various ways, such as by class, subject, or instructor. The system will utilize grade data from the years 2013-2016 at the University of Oregon, provided by the Daily Emerald. 
 
 ## Overall Design Description:
 The major parts of the system include:

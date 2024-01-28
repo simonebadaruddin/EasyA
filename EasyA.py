@@ -24,11 +24,11 @@ def new_main():
         if input has specific class:
             initialize courses_by_prof_grapher object
         if input has specific class code:
-            inititalize depts_by_prof_grapher object
-        if input has specific department AND specific level AND user wants it categorized by instructor:
-            initialize depts_and_level_by_prof object
-        if input has specific department AND specific level AND user wants it categorized by grade:
-            initialize depts_and_level_by_class object
+            inititalize subjs_by_prof_grapher object
+        if input has specific subject AND specific level AND user wants it categorized by instructor:
+            initialize subjs_and_level_by_prof object
+        if input has specific subject AND specific level AND user wants it categorized by grade:
+            initialize subjs_and_level_by_class object
             
         call graphing method on object initialized, giving appropriate arguments for its graph type"""
         

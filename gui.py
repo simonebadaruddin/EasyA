@@ -31,9 +31,9 @@ def plot():
     resulting graph whenever the "Plot Graph" button is pressed.
 
     graph1_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
+        A single class name, A single subject name, a single
+        subject name and class level combination, or a single
+        subject name plus class level combination
 
     graph1_x_axis_data:
 
@@ -41,9 +41,9 @@ def plot():
         % A's
 
     graph1_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
+        A single class name, A single subject name, a single
+        subject name and class level combination, or a single
+        subject name plus class level combination
 
     ########
 
@@ -53,9 +53,9 @@ def plot():
         % D's / F's
 
     graph2_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
+        A single class name, A single subject name, a single
+        subject name and class level combination, or a single
+        subject name plus class level combination
     """
     # Old graph clears before new one
     ax.clear()
@@ -98,11 +98,11 @@ def main():
     label.config(font=("Courier", 50))
     label.pack()
 
-    # Department dropdown
-    department = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
+    # subject dropdown
+    subject = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
                   "General Science", "Human Physiology", "Mathematics", "Neuroscience",
                   "Physics", "Psychology"]
-    selected_department = create_dropdown_menu(frame, department, "Select department")
+    selected_subject = create_dropdown_menu(frame, subject, "Select subject")
 
     # Class level dropdown
     class_level = ["100", "200", "300", "400", "500", "600"]
