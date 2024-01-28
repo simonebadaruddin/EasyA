@@ -1,9 +1,7 @@
-"""
-GUI.py takes choices from the user and graphs them. Created 01/12/24
-by Simone Badaruddin and Nithi Deivanayagam.
-It takes data to graph from Grade_grapher.py
-Modifications made by: FIXME to FIXME
-"""
+# GUI.py takes choices from the user and graphs them. Created 01/12/24
+# by Simone Badaruddin and Nithi Deivanayagam.
+# It takes data to graph from Grade_grapher.py
+# Modifications made by: FIXME to FIXME
 
 # The graphing library
 import matplotlib.pyplot as plt
@@ -13,7 +11,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import tkinter as tk
 import numpy as np
 
- 
+
 def get_data():
     """
     Dummy function to generate example data.
@@ -39,7 +37,6 @@ def plot():
 
     graph1_x_axis_data:
 
-
     graph1_y_axis_data:
         % A's
 
@@ -51,7 +48,6 @@ def plot():
     ########
 
     graph2_x_axis_data:
-
 
     graph2_y_axis_data:
         % D's / F's
@@ -79,28 +75,58 @@ root.geometry("1000x1000")
 # (a) Create matplotlib figure with access to subplots
 fig, ax = plt.subplots()
 
-# Tkinter Application + Visuals
-frame = tk.Frame(root)
-label = tk.Label(text="Math 111")
-label.config(font=("Courier", 32))
-label.pack()
 
-# Create button to plot with prev. plot func, link plotted data here #FIXME
-tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
+def create_dropdown_menu(frame, options, selected_option, callback):
+    selected_var = tk.StringVar()
+    selected_var.set(selected_option)
 
-# Create a canvas which requires:
-# (a) matplotlib figure
-# (b) tkinter application
-canvas = FigureCanvasTkAgg(fig, master=frame)
-# Integrate canvas into the application
-canvas.get_tk_widget().pack()
+    def on_select(*args):
+        callback(selected_var.get())
 
-toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
-toolbar.update()
-toolbar.pack(anchor="w", fill=tk.X)
+    selected_var.trace_add('write', on_select)
 
-# Place label
-frame.pack()
+    dropdown_menu = tk.OptionMenu(frame, selected_var, *options)
+    dropdown_menu.pack(pady=15, side=tk.TOP)
 
-root.mainloop()
+    return selected_var
 
+
+def main():
+    # Tkinter Application + Visuals
+    frame = tk.Frame(root)
+    label = tk.Label(text="Group 3 Easy A Program", font="Helvetica")
+    label.config(font=("Courier", 50))
+    label.pack()
+
+    # Department dropdown
+    department = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
+                  "General Science", "Human Physiology", "Mathematics", "Neuroscience",
+                  "Physics", "Psychology"]
+    selected_department = create_dropdown_menu(frame, department, "Select department")
+
+    # Class level dropdown
+    class_level = ["100", "200", "300", "400", "500", "600"]
+    selected_class_level = create_dropdown_menu(frame, class_level, "Select class level")
+
+    # Create button to plot with prev. plot func, link plotted data here #FIXME
+    tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
+
+    # Create a canvas which requires:
+    # (a) matplotlib figure
+    # (b) tkinter application
+    canvas = FigureCanvasTkAgg(fig, master=frame)
+    # Integrate canvas into the application
+    canvas.get_tk_widget().pack()
+
+    toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
+    toolbar.update()
+    toolbar.pack(anchor="w", fill=tk.X)
+
+    # Place label
+    frame.pack()
+
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
