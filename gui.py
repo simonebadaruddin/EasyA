@@ -13,7 +13,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import tkinter as tk
 import numpy as np
 
-
+ 
 def get_data():
     """
     Dummy function to generate example data.
