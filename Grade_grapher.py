@@ -72,11 +72,13 @@ class Grapher(ABC):
         # faculty (List[str]): List of the names of the regular faculty as found on the web pages for the natural sciences
         self.__faculty = set(faculty)
         # natty_science_courses (Set[str]): set containing the course codes for classes within the natural science departments
-        self.__natty_science_courses = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                    'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY' ])
+        self.__natty_science_courses = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                            'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STATS' ])
         # natty_science_depts (Set[str]): set containing the department codes for the natural science departments
-        self.__natty_science_depts = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'ERTH', 'ENVS', 
-                                         'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        # self.__natty_science_depts = { 'ASTR': 'PHYS', 'BI': 'BI', 'BIOE': 'BIOE', 'CH': 'CH', 'CIS': 'SCDS', 'CIT': 'SCDS', 
+        #                               'CSPY': 'PSY', 'DSCI': 'SCDS', 'ERTH': 'ERTH', 'ENVS': 'ERTH', 'GEOG': 'ERTH', 
+        #                               'HPHY': 'HPHY', 'MATH': 'MATH', 'NEUR': 'NEUR', 'PHYS':'PHYS', 'PSY': 'PSY', 
+        #                               'SPSY': 'PSY', 'STATS': 'MATH' }
         
         # parse the data
         parsed_data = self.parse_data()
@@ -235,7 +237,7 @@ class Courses_By_Prof_Grapher(Grapher):
         specified by the Grapher subclass and the methods used.
         
         The categories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
-        science departments for each of the instructors who taught it, along with the number of times they were taught it.
+        science departments for each of the instructors who taught it, along with the number of times they taught it.
         This is iteratively parsed from the data and represented as a dict with keys that are names of the courses
         (e.g. MATH111, PSY201) and values that are dicts. The inner dict has the names of all the instructors who taught that 
         class as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
@@ -246,8 +248,7 @@ class Courses_By_Prof_Grapher(Grapher):
         when graphing. 
 
         Returns:
-            The dicts of parsed natty_science_courses data described above, in a list with parsed %As data being the first
-            element, and the parsed %DsFs data being the second element
+            The dicts of parsed natty_science_courses data described above
         """
         names_list = set(self.filter_names(names_list, faculty_only))
         # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[float, int]}): keys are course names; values are dicts.
@@ -264,18 +265,19 @@ class Courses_By_Prof_Grapher(Grapher):
                 # instructor (str): the name of the instructor for each instance
                 if (instructor := instance["instructor"]) in names_list: # check if the instructor is part of the names_list
                     if instructor in grades_for_courses_by_prof_As[course]:
-                        # if the instructor is already in the dict correponding to the course and is in the regular faculty,
-                        # add the %As or %Ds and %Fs to the respective dicts and increment their class count
+                        # if the instructor is already in the dict correponding to the course and is in the names_list,
+                        # add the %As or %Ds and %Fs to the respective dicts and increment their class instance count
                         grades_for_courses_by_prof_As[course][instructor][0] += float(instance["aprec"])
                         grades_for_courses_by_prof_As[course][instructor][1] += 1
                         grades_for_courses_by_prof_DsFs[course][instructor][0] += (float(instance["dprec"]) + float(instance["fprec"]))
                         grades_for_courses_by_prof_DsFs[course][instructor][1] += 1
                     else:
                         # if the instructor is not in the dict corresponding to the course, but is in the names_list, 
-                        # initialize them to the %As or %Ds and %Fs, and their class count to 1 in the respective dicts
+                        # initialize them to the %As or %Ds and %Fs, and their class instance count to 1 in the respective dicts
                         grades_for_courses_by_prof_As[course][instructor] = [float(instance["aprec"]), 1]
                         grades_for_courses_by_prof_DsFs[course][instructor] = [(float(instance["dprec"]) + float(instance["fprec"])), 1]
-                    
+
+        # return the two dicts as elements of a list            
         return [grades_for_courses_by_prof_As, grades_for_courses_by_prof_DsFs]
     
     # =================== Graphing Method ======================================================================================
@@ -383,6 +385,23 @@ class Depts_By_Prof_Grapher(Grapher):
     # ================== Data Parsing Method =======================================================================================
 
     def parse_data(self, names_list=[], faculty_only=False) -> Dict[str, Dict[str, List[str]]]:
+        """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
+        specified by the Grapher subclass and the methods used.
+        
+        The categories for this parser are grade data in terms of %A or %Ds and %Fs for each of the course subjects in the 
+        natural science departments for each of the instructors who taught it, along with the number of times they taught it.
+        This is iteratively parsed from the data and represented as a dict with keys that are names of the subjects
+        (e.g. MATH, PSY, SPSY) and values that are dicts. The inner dict has the names of all the instructors who taught that 
+        subject as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
+        %Ds and %Fs for all the instances of the subject they taught, stored as a float; and the second element being the number 
+        of instances they taught the siubject (e.g. if an instructor has taught MATH 3 times and the %As were 
+        45%, 65%, and 55% then the first element in the list will be 110.0, and the second element will be 3). The average 
+        percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
+        when graphing. 
+
+        Returns:
+            The dicts of parsed natty_science_courses_data described above
+        """
         names_list = set(self.filter_names(names_list, faculty_only))
         # grades_for_dept_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts represented by 
         # dept code; values are dicts. Nested value dicts have instructor names as keys and lists with the first element being the 
@@ -390,12 +409,12 @@ class Depts_By_Prof_Grapher(Grapher):
         # as values
         grades_for_dept_by_prof_As = {}
         grades_for_dept_by_prof_DsFs = {}
-        for dept in self.__natty_science_depts: # initialize each department key to an empty dict value
+        for dept in self.__natty_science_courses: # initialize each department key to an empty dict value
             grades_for_dept_by_prof_As[dept] = {}
             grades_for_dept_by_prof_DsFs[dept] = {}
         for course in self.natty_science_course_data: # iterate through the natural science courses
             # depts (list[str]): list of the natural science departments that a course is in
-            depts = [dept for dept in self.__natty_science_depts if dept in course] # finds all natural science depts a course is in
+            depts = [dept for dept in self.__natty_science_courses if dept in course[:len(dept)]] # finds all natural science depts a course is in
             if len(this_dept) == 1: # check if the course only falls under one department in the natural sciences
                 # this_dept (str): the department in the natural sciences that the course falls under
                 this_dept = depts[0] 
@@ -528,13 +547,13 @@ class Depts_And_Level_By_Prof_Grapher(Grapher):
         # levels (list[str]): a list of the course levels 100 through 600 as strings
         levels = ['100', '200', '300', '400', '500', '600']
         # dept_levels (list[str]): a list of the departments concatenated with each level in levels
-        dept_levels = [dept+lvl for dept in self.__natty_science_depts for lvl in levels]
+        dept_levels = [dept+lvl for dept in self.__natty_science_courses for lvl in levels]
         for dept_lvl in dept_levels:
             # initialize the dicts with strings from depts_levels as keys and empty dicts as values
             grades_for_dept_and_lvl_by_prof_As[dept_lvl] = {}
             grades_for_dept_and_lvl_by_prof_DsFs[dept_lvl] = {}
         for course in self.natty_science_course_data: # iterate through the courses in the natural science dept
-            depts = [dept for dept in self.__natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            depts = [dept for dept in self.__natty_science_courses if dept in course] # iterate through the depts in the natural sciences
             if len(depts) == 1:
                 this_dept = depts[0]
                 dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels
@@ -660,7 +679,7 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
         # levels (list[str]): a list of the course levels 100 through 600 as strings
         levels = ['100', '200', '300', '400', '500', '600']
         # dept_levels (list[str]): a list of the departments concatenated with each level in levels
-        dept_levels = [dept+lvl for dept in self.__natty_science_depts for lvl in levels]
+        dept_levels = [dept+lvl for dept in self.__natty_science_courses for lvl in levels]
         names_list = set(self.filter_names(names_list, faculty_only))
         # grades_for_dept_and_lvl_by_class_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science depts and level
         # represented by dept code concatenated with a level 100-600; values are dicts. Nested value dicts have course code
@@ -673,7 +692,7 @@ class Depts_And_Level_by_Class_Grapher(Grapher):
             grades_for_dept_and_lvl_by_class_As[dept_lvl] = {}
             grades_for_dept_and_lvl_by_class_DsFs[dept_lvl] = {}
         for course in self.natty_science_course_data: # iterate through the courses in the natural science dept
-            depts = [dept for dept in self.__natty_science_depts if dept in course] # iterate through the depts in the natural sciences
+            depts = [dept for dept in self.__natty_science_courses if dept in course] # iterate through the depts in the natural sciences
             if len(depts) == 1:
                 this_dept = depts[0]
                 dept_lvls = [dept_lvl for dept_lvl in dept_levels if dept_lvl[:len(this_dept)+1] in course] # iterate through the dept-level strings in dept_levels

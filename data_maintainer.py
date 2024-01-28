@@ -10,8 +10,8 @@ import re
 class Data_Maintainer:
     def __init__(self, data_file='gradedata.json'):
         # Initial set of natural sciences
-        self.__natural_sciences = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                  'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        self.__natural_sciences = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                        'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STATS' ])
         # to store the grade data file name
         self.__data_file = data_file
         # to store grade data as a python dictionary
