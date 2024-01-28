@@ -1,5 +1,8 @@
 """
-GUI
+GUI.py takes choices from the user and graphs them. Created 01/12/24
+by Simone Badaruddin and Nithi Deivanayagam.
+It takes data to graph from Grade_grapher.py
+Modifications made by: FIXME to FIXME
 """
 
 # The graphing library
@@ -13,8 +16,9 @@ import numpy as np
 
 def plot():
     """
-    Our plotting function gets the selections inputted by the user plus the
-    corresponding data from Grade_grapher.py and plots the resulting graph.
+    Our plotting function gets the selections inputted by the user plus
+    the corresponding data from Grade_grapher.py and plots the
+    resulting graph whenever the "Plot Graph" button is pressed.
 
     graph1_title:
         A single class name, A single department name, a single
@@ -45,6 +49,7 @@ def plot():
         department name and class level combination, or a single
         department name plus class level combination
     """
+    # Old graph clears before new one
     ax.clear()
     x = np.random.randint(0, 10, 10)  # PLACEHOLDER UNTIL OUR DATA FIXME
     y = np.random.randint(0, 10, 10)  # PLACEHOLDER UNTIL OUR DATA FIXME
@@ -55,6 +60,7 @@ def plot():
 
 # Initialize Tkinter
 root = tk.Tk()
+root.geometry("1000x1000")
 # (a) Create matplotlib figure with access to subplots
 fig, ax = plt.subplots()
 
@@ -63,6 +69,9 @@ frame = tk.Frame(root)
 label = tk.Label(text="Math 111")
 label.config(font=("Courier", 32))
 label.pack()
+
+# Create button to plot with prev. plot func, link plotted data here #FIXME
+tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
 
 # Create a canvas which requires:
 # (a) matplotlib figure
@@ -73,12 +82,9 @@ canvas.get_tk_widget().pack()
 
 toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
 toolbar.update()
-toolbar.pack()
+toolbar.pack(anchor="w", fill=tk.X)
 
 # Place label
 frame.pack()
-
-# Create button to plot with prev. plot func, link plotted data here #FIXME
-tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
 
 root.mainloop()
