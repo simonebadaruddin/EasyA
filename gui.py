@@ -1,7 +1,7 @@
 # GUI.py takes choices from the user and graphs them. Created 01/12/24
 # by Simone Badaruddin and Nithi Deivanayagam.
 # It takes data to graph from Grade_grapher.py
-# Modifications made by: FIXME to FIXME
+# Modifications made to add multiple dropdown menus on 01/26/24
 
 # The graphing library
 import matplotlib.pyplot as plt
