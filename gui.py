@@ -11,6 +11,24 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import tkinter as tk
 import numpy as np
 
+# Initialize Tkinter
+root = tk.Tk()
+root.geometry("1000x1000")
+
+# Create the pink frame
+pink_frame = tk.Frame(root, bg="Pink")
+pink_frame.pack(side="top", fill="x")
+
+# Create the white frame
+white_frame = tk.Frame(root)
+white_frame.pack(side="top", fill="both", expand=True)
+
+# Create matplotlib figure with access to subplots
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+
+# Create canvas in global scope
+canvas = None
+
 
 def get_data():
     """
@@ -19,9 +37,10 @@ def get_data():
     """
     # Example data
     x_data = np.linspace(1, 5, 100)
-    y_data = np.sin(x_data)  # using a sine function as an example
+    y_data1 = np.sin(x_data)  # using a sine function as an example for graph 1
+    y_data2 = np.cos(x_data)  # using a cosine function as an example for graph 2
 
-    return x_data, y_data
+    return x_data, y_data1, y_data2
 
 
 def plot():
@@ -31,9 +50,9 @@ def plot():
     resulting graph whenever the "Plot Graph" button is pressed.
 
     graph1_title:
-        A single class name, A single subject name, a single
-        subject name and class level combination, or a single
-        subject name plus class level combination
+        A single class name, A single department name, a single
+        department name and class level combination, or a single
+        department name plus class level combination
 
     graph1_x_axis_data:
 
@@ -41,9 +60,9 @@ def plot():
         % A's
 
     graph1_title:
-        A single class name, A single subject name, a single
-        subject name and class level combination, or a single
-        subject name plus class level combination
+        A single class name, A single department name, a single
+        department name and class level combination, or a single
+        department name plus class level combination
 
     ########
 
@@ -53,34 +72,52 @@ def plot():
         % D's / F's
 
     graph2_title:
-        A single class name, A single subject name, a single
-        subject name and class level combination, or a single
-        subject name plus class level combination
+        A single class name, A single department name, a single
+        department name and class level combination, or a single
+        department name plus class level combination
     """
-    # Old graph clears before new one
-    ax.clear()
+    global canvas, ax1, ax2  # Declare ax1 and ax2 as global variables
+
+    # Clear previous graphs
+    ax1.clear()
+    ax2.clear()
 
     # Get data (replace with actual data retrieval logic)
-    x, y = get_data()
+    x, y1, y2 = get_data()
 
-    ax.plot(x, y)
+    # Plot the graphs
+    ax1.bar(x, y1, label='Graph 1', color='slateblue')
+    ax1.set_title('Graph 1')
+    ax1.tick_params(axis='both', labelsize=5)
+    ax1.legend()
+
+    ax2.bar(x, y2, label='Graph 2', color='violet')
+    ax2.set_title('Graph 2')
+    ax2.tick_params(axis='both', labelsize=5)
+    ax2.legend()
+
+    # Create a new canvas if it doesn't exist
+    if canvas is None:
+        # Create a canvas which requires:
+        # (a) matplotlib figure
+        # (b) tkinter application
+        canvas = FigureCanvasTkAgg(fig, master=white_frame)  # Use white_frame as the master
+        # Integrate canvas into the white_frame
+        canvas.get_tk_widget().pack()
+
+        toolbar = NavigationToolbar2Tk(canvas, white_frame, pack_toolbar=False)
+        toolbar.update()
+        toolbar.pack(anchor="w", fill=tk.X)
 
     # Explicitly update the canvas
     canvas.draw_idle()
 
 
-# Initialize Tkinter
-root = tk.Tk()
-root.geometry("1000x1000")
-# (a) Create matplotlib figure with access to subplots
-fig, ax = plt.subplots()
-
-
-def create_dropdown_menu(frame, options, selected_option, callback):
+def create_dropdown_menu(frame, options, selected_option):
     selected_var = tk.StringVar()
     selected_var.set(selected_option)
 
-    def on_select(*args):
+    def on_select(callback=None, *args):
         callback(selected_var.get())
 
     selected_var.trace_add('write', on_select)
@@ -93,38 +130,24 @@ def create_dropdown_menu(frame, options, selected_option, callback):
 
 def main():
     # Tkinter Application + Visuals
-    frame = tk.Frame(root)
-    label = tk.Label(text="Group 3 Easy A Program", font="Helvetica")
+    label = tk.Label(pink_frame, text="Group 3 Easy A", font="Helvetica", bg="Pink")
     label.config(font=("Courier", 50))
     label.pack()
 
-    # subject dropdown
-    subject = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
+    # Department dropdown
+    department = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
                   "General Science", "Human Physiology", "Mathematics", "Neuroscience",
                   "Physics", "Psychology"]
-    selected_subject = create_dropdown_menu(frame, subject, "Select subject")
+    selected_department = create_dropdown_menu(white_frame, department, "Select department")
 
     # Class level dropdown
     class_level = ["100", "200", "300", "400", "500", "600"]
-    selected_class_level = create_dropdown_menu(frame, class_level, "Select class level")
+    selected_class_level = create_dropdown_menu(white_frame, class_level, "Select class level")
 
     # Create button to plot with prev. plot func, link plotted data here #FIXME
-    tk.Button(frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
-
-    # Create a canvas which requires:
-    # (a) matplotlib figure
-    # (b) tkinter application
-    canvas = FigureCanvasTkAgg(fig, master=frame)
-    # Integrate canvas into the application
-    canvas.get_tk_widget().pack()
-
-    toolbar = NavigationToolbar2Tk(canvas, frame, pack_toolbar=False)
-    toolbar.update()
-    toolbar.pack(anchor="w", fill=tk.X)
+    tk.Button(white_frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
 
     # Place label
-    frame.pack()
-
     root.mainloop()
 
 
