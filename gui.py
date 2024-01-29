@@ -88,11 +88,15 @@ def plot():
     # Plot the graphs
     ax1.bar(x, y1, label='Graph 1', color='slateblue')
     ax1.set_title('Graph 1')
+    ax1.set_xlabel('X Axis Label for Graph 1')
+    ax1.set_ylabel('Y Axis Label for Graph 1')
     ax1.tick_params(axis='both', labelsize=5)
     ax1.legend()
 
     ax2.bar(x, y2, label='Graph 2', color='violet')
     ax2.set_title('Graph 2')
+    ax2.set_xlabel('X Axis Label for Graph 2')
+    ax2.set_ylabel('Y Axis Label for Graph 2')
     ax2.tick_params(axis='both', labelsize=5)
     ax2.legend()
 
