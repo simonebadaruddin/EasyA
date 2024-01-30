@@ -72,16 +72,18 @@ class Grapher(ABC):
         # faculty (List[str]): List of the names of the regular faculty as found on the web pages for the natural sciences
         self.__faculty = set(faculty)
         # natty_science_courses (Set[str]): set containing the course codes for classes within the natural science subjects
-        self.__natty_science_courses = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
-                                            'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STATS' ])
+        self.natty_science_courses = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                            'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STAT' ])
         # natty_science_subjs (Set[str]): set containing the subject codes for the natural science subjects
-        # self.__natty_science_subjs = { 'ASTR': 'PHYS', 'BI': 'BI', 'BIOE': 'BIOE', 'CH': 'CH', 'CIS': 'SCDS', 'CIT': 'SCDS', 
-        #                               'CSPY': 'PSY', 'DSCI': 'SCDS', 'ERTH': 'ERTH', 'ENVS': 'ERTH', 'GEOG': 'ERTH', 
-        #                               'HPHY': 'HPHY', 'MATH': 'MATH', 'NEUR': 'NEUR', 'PHYS':'PHYS', 'PSY': 'PSY', 
-        #                               'SPSY': 'PSY', 'STATS': 'MATH' }
+        
+        if faculty_only and not faculty: # check if being asked to parse by faculty without a faculty list
+            raise AttributeError("one positional argument missing: parsing by faculty requires a faculty list")
+        
+        # filter names_list:
+        names_list = self.filter_names(names_list, faculty_only)
         
         # parse the data
-        parsed_data = self.parse_data()
+        parsed_data = self.parse_data(names_list)
 
         # %As data from the parsed natty_science_course_data for all the possible graphs with all the data necessary being 
         # oriented to be as accessible as possible for graphing
@@ -97,18 +99,18 @@ class Grapher(ABC):
         """Returns: string representation of the instance attributes for output purposes
         Represents all the instance attributes of the graph subclasses as their length except for the faculty"""
 
-        return f"As_data_all_instructors has {len(self.__As_data) if self.__As_data else 0} items,
+        return f"""As_data_all_instructors has {len(self.__As_data) if self.__As_data else 0} items,
                 DsFs_data has {len(self.__DsFs_data) if self.__DsFs_data else 0} items, 
-                faculty = {str(self.__faculty) if self.__faculty else None}"
+                faculty = {str(self.__faculty) if self.__faculty else None}"""
     
     def __repr__(self) -> str:
         """Returns: string representation of the instance attributes for internal representation purposes
         Represents all the instance attributes of the graph subclasses as their length except for the faculty
         which is represented by the list itself"""
 
-        return f"As_data has {len(self.__As_data) if self.__As_data else 0} items,
+        return f"""As_data has {len(self.__As_data) if self.__As_data else 0} items,
                 DsFs_data has {len(self.__DsFs_data) if self.__DsFs_data else 0} items, 
-                faculty = {str(self.__faculty) if self.__faculty else None}"
+                faculty = {str(self.__faculty) if self.__faculty else None}"""
     
     # =============== Getter and Setter Methods ======================================================================================
 
@@ -157,7 +159,7 @@ class Grapher(ABC):
             faculty_only (bool): A bool value, defaults to False, which determines if the names_list (either given or created) should 
             be filtered to only hold faculty names"""
         if not names_list:
-            names_list = [instance["instructor"] for course in self.natty_science_course_data for instance in course]
+            names_list = [instance["instructor"] for course in self.natty_science_course_data for instance in self.natty_science_course_data[course]]
         if faculty_only:
             names_list = filter(lambda name: name in self.__faculty, names_list)
 
@@ -226,13 +228,12 @@ class Courses_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
-        """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
+    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
 
     # ================== Data Parsing Method =======================================================================================
 
-    def parse_data(self, names_list=[], faculty_only=False) -> List[Dict[str, Dict[str, List[str]]]]:
+    def parse_data(self, names_list=[]) -> List[Dict[str, Dict[str, List[str]]]]:
         """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
         specified by the Grapher subclass and the methods used.
         
@@ -250,7 +251,6 @@ class Courses_By_Prof_Grapher(Grapher):
         Returns:
             The dicts of parsed natty_science_courses data described above
         """
-        names_list = set(self.filter_names(names_list, faculty_only))
         # grades_for_courses_by_prof_(As/DsFs) (dict{str : dict{str: list[float, int]}): keys are course names; values are dicts.
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
         # for all the instances of the class they have taught and the second element being the number of instances the instructor
@@ -342,7 +342,7 @@ class Courses_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
 
-class subjs_By_Prof_Grapher(Grapher):
+class Subjs_By_Prof_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were 
@@ -379,13 +379,12 @@ class subjs_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
-        """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], faculty_only=False)
+    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
-    def parse_data(self, names_list=[], faculty_only=False) -> Dict[str, Dict[str, List[str]]]:
+    def parse_data(self, names_list=[]) -> Dict[str, Dict[str, List[str]]]:
         """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
         specified by the Grapher subclass and the methods used.
         
@@ -403,19 +402,18 @@ class subjs_By_Prof_Grapher(Grapher):
         Returns:
             The dicts of parsed natty_science_courses_data described above
         """
-        names_list = set(self.filter_names(names_list, faculty_only))
         # grades_for_subj_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science subjs represented by 
         # subj code; values are dicts. Nested value dicts have instructor names as keys and lists with the first element being the 
         # total %As or %Ds and %Fs, and the second element being the number of times the instructor taught a course in that subj
         # as values
         grades_for_subj_by_prof_As = {}
         grades_for_subj_by_prof_DsFs = {}
-        for subj in self.__natty_science_courses: # initialize each subject key to an empty dict value
+        for subj in self.natty_science_courses: # initialize each subject key to an empty dict value
             grades_for_subj_by_prof_As[subj] = {}
             grades_for_subj_by_prof_DsFs[subj] = {}
         for course in self.natty_science_course_data: # iterate through the natural science courses
             # subjs (list[str]): list of the natural science subjects that a course is in
-            subjs = [subj for subj in self.__natty_science_courses if course.startswith(subj)] 
+            subjs = [subj for subj in self.natty_science_courses if course.startswith(subj)] 
             if len(this_subj) == 1: # check if the course has only one subject
                 # this_subj (str): the subject of the course
                 this_subj = subjs[0] # retreive the subject of the course from the list
@@ -497,7 +495,7 @@ class subjs_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
 
-class subjs_And_Level_By_Prof_Grapher(Grapher):
+class Subjs_And_Level_By_Prof_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject level in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
@@ -532,14 +530,12 @@ class subjs_And_Level_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
-        """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
+    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
-    def parse_data(self, names_list=[], faculty_only=False) -> Dict[str, Dict[str, List[str]]]:
-        names_list = set(self.filter_names(names_list, faculty_only))
+    def parse_data(self, names_list=[]) -> Dict[str, Dict[str, List[str]]]:
         # grades_for_subj_and_lvl_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science subjects and 
         # level represented by subject code concatenated with a level 100-600; values are dicts. Nested value dicts have 
         # instructor names as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances 
@@ -550,14 +546,14 @@ class subjs_And_Level_By_Prof_Grapher(Grapher):
         # levels (list[str]): a list of the course levels 100 through 600 as strings
         levels = ['100', '200', '300', '400', '500', '600']
         # subj_levels (list[str]): a list of the subject concatenated with each level in levels
-        subj_levels = [subj+lvl for subj in self.__natty_science_courses for lvl in levels]
+        subj_levels = [subj+lvl for subj in self.natty_science_courses for lvl in levels]
         for subj_lvl in subj_levels:
             # initialize the dicts with strings from subj_levels as keys and empty dicts as values
             grades_for_subj_and_lvl_by_prof_As[subj_lvl] = {}
             grades_for_subj_and_lvl_by_prof_DsFs[subj_lvl] = {}
         for course in self.natty_science_course_data: # iterate through the courses in the natural sciences
             # subjs (List[str]): list of all the subjects that a course is in (e.g. CPSY is in CPSY)
-            subjs = [subj for subj in self.__natty_science_courses if course.startswith(subj)]
+            subjs = [subj for subj in self.natty_science_courses if course.startswith(subj)]
             if len(subjs) == 1: # check to make sure there is only one subject per course
                 # this_subj (List[str]): the single subject of course
                 this_subj = subjs[0] # retrieve the subject of the course from the list
@@ -647,7 +643,7 @@ class subjs_And_Level_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
     
-class subjs_And_Level_by_Class_Grapher(Grapher):
+class Subjs_And_Level_by_Class_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject level in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
@@ -682,18 +678,16 @@ class subjs_And_Level_by_Class_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
-        """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty)
+    def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
-    def parse_data(self, names_list=[], faculty_only=False) -> Dict[str, Dict[str, List[str]]]:
+    def parse_data(self, names_list=[]) -> Dict[str, Dict[str, List[str]]]:
         # levels (list[str]): a list of the course levels 100 through 600 as strings
         levels = ['100', '200', '300', '400', '500', '600']
         # subj_levels (list[str]): a list of the subjects concatenated with each level in levels
-        subj_levels = [subj+lvl for subj in self.__natty_science_courses for lvl in levels]
-        names_list = set(self.filter_names(names_list, faculty_only))
+        subj_levels = [subj+lvl for subj in self.natty_science_courses for lvl in levels]
         # grades_for_subj_and_lvl_by_class_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science subjects 
         # and level represented by subj code concatenated with a level 100-600; values are dicts. Nested value dicts have course
         # number as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances for that 
@@ -707,7 +701,7 @@ class subjs_And_Level_by_Class_Grapher(Grapher):
             grades_for_subj_and_lvl_by_class_DsFs[subj_lvl] = {}
         for course in self.natty_science_course_data: # iterate through the courses in the natural science subj
             # subjs (List[str]): list of all the subjects that a course is in (e.g. CPSY is in CPSY)
-            subjs = [subj for subj in self.__natty_science_courses if course.startswith(subj)]
+            subjs = [subj for subj in self.natty_science_courses if course.startswith(subj)]
             if len(subjs) == 1: # check that the course is only in one subject
                 # this_subj (str): the subject of the 
                 this_subj = subjs[0] # retrieve the subject for the course from the list
