@@ -786,6 +786,7 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
 
         ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
         ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        ax.set_xticklabels(course_profs_list_DsFs, rotation=45, fontsize=10)
         ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)

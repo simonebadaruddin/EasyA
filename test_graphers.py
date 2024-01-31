@@ -38,7 +38,7 @@ def test_instances():
     # print(As_data)
     DsFs_data = obj3.get_DsFs_data()
     # print(DsFs_data)
-    obj3.graph_data('CPSY', level='100', class_count=class_count)
+    # obj3.graph_data('CPSY', level='100', class_count=class_count)
 
     obj4 = Subjs_And_Level_by_Class_Grapher(course_data, faculty)
     assert isinstance(obj4, Subjs_And_Level_by_Class_Grapher)
@@ -46,7 +46,7 @@ def test_instances():
     # print(As_data)
     DsFs_data = obj4.get_DsFs_data()
     # print(DsFs_data)
-    # obj4.graph_data('CPSY', level='100', class_count=class_count)
+    obj4.graph_data('CPSY', level='100', class_count=class_count)
     
     # for visual inspection of the parced data, uncomment the print statement corresponding to 
     # it and the assertion below:
