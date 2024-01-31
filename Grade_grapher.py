@@ -291,8 +291,8 @@ class Courses_By_Prof_Grapher(Grapher):
         try:
             # course_data_dict_(As/DsFs) (Dict[str, List[float, int]]): the inner dict of the As_data and DsFs_data 
             # corresponding to category
-            course_data_dict_As = self.__As_data[category]
-            course_data_dict_DsFs = self.__DsFs_data[category]
+            course_data_dict_As = self._Grapher__As_data[category]
+            course_data_dict_DsFs = self._Grapher__DsFs_data[category]
         except KeyError as e: # the category is not in the data
             print(f"Attempt to graph a category that doesn't exist: {e}")
 
@@ -312,8 +312,8 @@ class Courses_By_Prof_Grapher(Grapher):
 
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlable(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -327,8 +327,8 @@ class Courses_By_Prof_Grapher(Grapher):
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -414,7 +414,7 @@ class Subjs_By_Prof_Grapher(Grapher):
         for course in self.natty_science_course_data: # iterate through the natural science courses
             # subjs (list[str]): list of the natural science subjects that a course is in
             subjs = [subj for subj in self.natty_science_courses if course.startswith(subj)] 
-            if len(this_subj) == 1: # check if the course has only one subject
+            if len(subjs) == 1: # check if the course has only one subject
                 # this_subj (str): the subject of the course
                 this_subj = subjs[0] # retreive the subject of the course from the list
                 for instance in self.natty_science_course_data[course]: # iterate through the class instances for the course
@@ -446,8 +446,8 @@ class Subjs_By_Prof_Grapher(Grapher):
         if not category:
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
-            course_data_dict_As = self.__As_data[category]
-            course_data_dict_DsFs = self.__DsFs_data[category]
+            course_data_dict_As = self._Grapher__As_data[category]
+            course_data_dict_DsFs = self._Grapher__DsFs_data[category]
             
         except KeyError as e:
             print(f"KeyError has occured: {e}")
@@ -455,8 +455,8 @@ class Subjs_By_Prof_Grapher(Grapher):
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
-        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
-        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] )
 
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
@@ -465,8 +465,8 @@ class Subjs_By_Prof_Grapher(Grapher):
 
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
         ax.set_title(f"All {category} Classes", fontweight='bold')
-        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -479,9 +479,9 @@ class Subjs_By_Prof_Grapher(Grapher):
 
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
-        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
         ax.set_title(f"All {category} Classes", fontweight='bold')
-        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=15, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -583,7 +583,7 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
             elif len(subjs) > 1: # validate that there is at most one subject per course
                 raise AttributeError(f"A course {course} has been foud to fit under more than one subject: {subjs}.")
         
-        # return the dicts as elements of an array
+        # return the dicts as elements of a list
         return [grades_for_subj_and_lvl_by_prof_As, grades_for_subj_and_lvl_by_prof_DsFs]
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
@@ -591,11 +591,17 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
         if not category:
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
-        
+        if not isinstance(category, str):
+            raise TypeError("category positional argument should be a string.")
+        if not isinstance(level, str):
+            raise TypeError("level positional argument should be a string.")
+        if not level in set(['100', '200', '300', '400', '500', '600']):
+            raise AttributeError(f"level {level} is not an appropriate level")
+
         category += str(level)
         try:
-            course_data_dict_As = self.__As_data[category]
-            course_data_dict_DsFs = self.__DsFs_data[category]
+            course_data_dict_As = self._Grapher__As_data[category]
+            course_data_dict_DsFs = self._Grapher__DsFs_data[category]
 
         except KeyError as e:
             print(f"KeyError has occured: {e}")
@@ -603,18 +609,18 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
-        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
-        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+        course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
+        course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] )
 
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
-        ax.set_title(f"{category - str(level)} {level}-level", fontweight='bold')
-        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.bar(course_profs_list_As, course_grades_list_As, width=0.25, color='blue')
+        ax.set_title(f"{category.rstrip(level)} {level}-level", fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -625,11 +631,11 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
 
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.8)
 
-        ax.set_title(f"All {category - str(level)} {level}-level", fontweight='bold')
-        ax.set_xlable(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -736,11 +742,17 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
         if not category:
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
+        if not isinstance(category, str):
+            raise TypeError("category positional argument should be a string.")
+        if not isinstance(level, str):
+            raise TypeError("level positional argument should be a string.")
+        if not level in set(['100', '200', '300', '400', '500', '600']):
+            raise AttributeError(f"level {level} is not an appropriate level")
         
         category += str(level)
         try:
-            course_data_dict_As = self.__As_data[category]
-            course_data_dict_DsFs = self.__DsFs_data[category]
+            course_data_dict_As = self._Grapher__As_data[category]
+            course_data_dict_DsFs = self._Grapher__DsFs_data[category]
             
         except KeyError as e:
             print(f"KeyError has occured: {e}")
@@ -757,9 +769,9 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
         fig, ax = plt.subplots()
 
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
-        ax.set_title(f"{category - str(level)} {level}-level", fontweight='bold')
-        ax.set_xlable(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_title(f"{category.rstrip(level)} {level}-level", fontweight='bold')
+        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
@@ -772,9 +784,9 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
 
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
-        ax.set_title(f"All {category - str(level)} {level}-level", fontweight='bold')
-        ax.set_xlable(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
-        ax.set_ylabel("%\nDsFs", rotaion=0, labbelpad=10, fontweight='bold')
+        ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
+        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
