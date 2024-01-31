@@ -226,9 +226,9 @@ class Courses_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+    def __init__(self) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
+        super().__init__()
 
     # ================== Data Parsing Method =======================================================================================
 
@@ -342,7 +342,7 @@ class Courses_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
 
-class subjs_By_Prof_Grapher(Grapher):
+class Subjs_By_Prof_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were 
@@ -379,9 +379,9 @@ class subjs_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+    def __init__(self) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], faculty_only=False)
+        super().__init__()
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -497,7 +497,7 @@ class subjs_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
 
-class subjs_And_Level_By_Prof_Grapher(Grapher):
+class Subjs_And_Level_By_Prof_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject level in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
@@ -532,9 +532,9 @@ class subjs_And_Level_By_Prof_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+    def __init__(self) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty, names_list=[], facutly_only=False)
+        super().__init__()
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -647,7 +647,7 @@ class subjs_And_Level_By_Prof_Grapher(Grapher):
 # ==================================================================================================================================
 
     
-class subjs_And_Level_by_Class_Grapher(Grapher):
+class Subjs_And_Level_by_Class_Grapher(Grapher):
     """Subclass of Grapher, representing a graph of a single subject level in the natural science subject
     
     The graph is a bar graph with the X-axis categories being the names of professors who taught classes that were
@@ -682,9 +682,9 @@ class subjs_And_Level_by_Class_Grapher(Grapher):
         graph_data: Graphs the data according to the way it is parsed and the options that the user has chosen (specific names,
         faculty only, class counts included)
     """
-    def __init__(self, natty_science_courses: Dict[str, List[Dict[str, str]]], faculty: List[str]) -> None:
+    def __init__(self) -> None:
         """Constructor method for instance of class."""
-        super().__init__(natty_science_courses, faculty)
+        super().__init__()
     
     # ================== Data Parsing Method =======================================================================================
 
