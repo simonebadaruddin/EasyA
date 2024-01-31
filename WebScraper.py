@@ -1,6 +1,7 @@
 # what to import
 import requests
 from bs4 import BeautifulSoup
+import json
 import csv
 import time
 from time import sleep
@@ -15,17 +16,17 @@ huphys = "https://web.archive.org/web/20141101200118/http://catalog.uoregon.edu/
 math = "https://web.archive.org/web/20141028184934/http://catalog.uoregon.edu/arts_sciences/mathematics/"
 physics = "https://web.archive.org/web/20141107202155/http://catalog.uoregon.edu/arts_sciences/physics/"
 psy = "https://web.archive.org/web/20141107202211/http://catalog.uoregon.edu/arts_sciences/psychology/"
-neuro = "https://web.archive.org/web/20141107202132/http://catalog.uoregon.edu/arts_sciences/neuroscience/"
 earthsci = "https://web.archive.org/web/20141128094827/http://catalog.uoregon.edu/arts_sciences/geologicalsciences/#facultytext"
 anth = "https://web.archive.org/web/20141107201352/http://catalog.uoregon.edu/arts_sciences/anthropology/#facultytext"
 geo = "https://web.archive.org/web/20141128094244/http://catalog.uoregon.edu/arts_sciences/geography/#facultytext"
+# neuro = "https://web.archive.org/web/20141107202132/http://catalog.uoregon.edu/arts_sciences/neuroscience/"
 
 # url set to empty string
 url = ""
 
 # two lists, one with urls and one with subject names (as strings)
-url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, neuro, earthsci, anth, geo]
-subject_list = ['bio', 'biochem', 'cis', 'envs', 'huphys', 'math', 'physics', 'psy', 'neuro', 'earthsci', 'anth', 'geo']
+url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, earthsci, anth, geo]
+subject_list = ['bio', 'biochem', 'cis', 'envs', 'huphys', 'math', 'physics', 'psy', 'earthsci', 'anth', 'geo']
 
 '''
 # open csv file
@@ -68,11 +69,10 @@ def scrape_faculty_names(u):
         middle_part2 = BeautSoup.find('h3', string="Special Staff")
         end = BeautSoup.find('h3', string="Emeriti")
 
-        last_sentence = BeautSoup.find('p',
-                                       string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
+        last_sentence = BeautSoup.find('p', string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
 
         # urls in list to look for
-        if url == url_list[2] or url == url_list[7] or url == url_list[10]:
+        if url == url_list[2] or url == url_list[7] or url == url_list[9]:
             # generate faculty list
             for facultyNames in data.find(string='Faculty').parent.find_next_siblings():
                 if facultyNames == end:
@@ -80,7 +80,7 @@ def scrape_faculty_names(u):
                 else:
                     faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
-
+            '''
             # generate emeriti list
             for emeritiNames in data.find(string='Emeriti').parent.find_next_siblings():
                 if emeritiNames == last_sentence:
@@ -88,7 +88,7 @@ def scrape_faculty_names(u):
                 else:
                     emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
-
+            '''
         # url in list to look for
         if url == url_list[3]:
             # generate faculty list
@@ -108,7 +108,7 @@ def scrape_faculty_names(u):
                 else:
                     faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
-
+            '''
             # get list of courtesy
             for courtesyNames in data.find(string='Courtesy').parent.find_next_siblings():
                 if courtesyNames == end:
@@ -124,9 +124,9 @@ def scrape_faculty_names(u):
                 else:
                     emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
-
+            '''
         # look for urls in list
-        if url == url_list[1] or url == url_list[6] or url == url_list[11]:
+        if url == url_list[1] or url == url_list[6] or url == url_list[10]:
             # get list of faculty
             for facultyNames in data.find(string='Faculty').parent.find_next_siblings():
                 if facultyNames == middle_part2:
@@ -134,7 +134,7 @@ def scrape_faculty_names(u):
                 else:
                     faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
-
+            '''
             # get list of special staff
             for specialNames in data.find(string='Special Staff').parent.find_next_siblings():
                 if specialNames == end:
@@ -157,9 +157,9 @@ def scrape_faculty_names(u):
             for parFacNames in data.find(string='Participating Faculty').parent.find_next_siblings():
                 participating = parFacNames.get_text().split(',')[0]
                 pf_list.append(participating)
-
+            '''
         # look for url in list
-        if url == url_list[9]:
+        if url == url_list[8]:
             # get list of faculty
             for facultyNames in data.find(string='Faculty').parent.find_next_siblings():
                 if facultyNames == middle_part1:
@@ -167,7 +167,7 @@ def scrape_faculty_names(u):
                 else:
                     faculty = facultyNames.get_text().split(',')[0]
                     faculty_list.append(faculty)
-
+            '''
             # get list of courtesy
             for courtesyNames in data.find(string='Courtesy').parent.find_next_siblings():
                 if courtesyNames == middle_part2:
@@ -191,22 +191,28 @@ def scrape_faculty_names(u):
                 else:
                     emeriti = emeritiNames.get_text().split(',')[0]
                     emeriti_list.append(emeriti)
-
+            '''
         # Add faculty names to the overall list
         faculty_names.extend(faculty_list)
 
     return faculty_names
 
+def save_to_json(data, filename='faculty_list.json'):
+    with open(filename, 'w', encoding='utf-8') as json_file:
+        json.dump(data, json_file, ensure_ascii=False, indent=4)
+
 def return_faculty_list():
-    url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, neuro, earthsci, anth, geo]
+    url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, earthsci, anth, geo]
     faculty_list = scrape_faculty_names(url_list)
+    save_to_json(faculty_list)
     return faculty_list
 
 # example use case for importing it to different file
-# get_faculty_list = return_faculty_list()
 
+#uncommenting this so it can be ran through web scraping file
+get_faculty_list = return_faculty_list()
 
-# print("done")
+print("done")
 
 
 # Print or use faculty_list as needed

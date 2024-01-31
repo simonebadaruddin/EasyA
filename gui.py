@@ -1,6 +1,8 @@
-# GUI.py takes choices from the user and graphs them. Created 01/12/24
-# by Simone Badaruddin and Nithi Deivanayagam.
-# It takes data to graph from Grade_grapher.py
+# gui.py creates a Graphical User Interface (GUI) which takes choices
+# from the user and presents 2 graphs back to the user.
+# Created 01/12/24
+# By Simone Badaruddin and Nithi Deivanayagam.
+# gui.py takes graphs created by Grade_grapher.py
 # Modifications made to add multiple dropdown menus on 01/26/24
 
 # The graphing library
@@ -15,11 +17,11 @@ import numpy as np
 root = tk.Tk()
 root.geometry("1000x1000")
 
-# Create the pink frame
-pink_frame = tk.Frame(root, bg="Pink")
-pink_frame.pack(side="top", fill="x")
+# Create a white frame
+frame = tk.Frame(root, bg="White")
+frame.pack(side="top", fill="x")
 
-# Create the white frame
+# Create a larger white frame
 white_frame = tk.Frame(root)
 white_frame.pack(side="top", fill="both", expand=True)
 
@@ -46,35 +48,8 @@ def get_data():
 def plot():
     """
     Our plotting function gets the selections inputted by the user plus
-    the corresponding data from Grade_grapher.py and plots the
+    the corresponding graphed data from Grade_grapher.py and plots the
     resulting graph whenever the "Plot Graph" button is pressed.
-
-    graph1_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
-
-    graph1_x_axis_data:
-
-    graph1_y_axis_data:
-        % A's
-
-    graph1_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
-
-    ########
-
-    graph2_x_axis_data:
-
-    graph2_y_axis_data:
-        % D's / F's
-
-    graph2_title:
-        A single class name, A single department name, a single
-        department name and class level combination, or a single
-        department name plus class level combination
     """
     global canvas, ax1, ax2  # Declare ax1 and ax2 as global variables
 
@@ -86,19 +61,19 @@ def plot():
     x, y1, y2 = get_data()
 
     # Plot the graphs
-    ax1.bar(x, y1, label='Graph 1', color='slateblue')
-    ax1.set_title('Graph 1')
-    ax1.set_xlabel('X Axis Label for Graph 1')
-    ax1.set_ylabel('Y Axis Label for Graph 1')
-    ax1.tick_params(axis='both', labelsize=5)
-    ax1.legend()
-
-    ax2.bar(x, y2, label='Graph 2', color='violet')
-    ax2.set_title('Graph 2')
-    ax2.set_xlabel('X Axis Label for Graph 2')
-    ax2.set_ylabel('Y Axis Label for Graph 2')
-    ax2.tick_params(axis='both', labelsize=5)
-    ax2.legend()
+    # ax1.bar(x, y1, label='Graph 1', color='slateblue')
+    # ax1.set_title('Graph 1')
+    # ax1.set_xlabel('X Axis Label for Graph 1')
+    # ax1.set_ylabel('Y Axis Label for Graph 1')
+    # ax1.tick_params(axis='both', labelsize=5)
+    # ax1.legend()
+    #
+    # ax2.bar(x, y2, label='Graph 2', color='violet')
+    # ax2.set_title('Graph 2')
+    # ax2.set_xlabel('X Axis Label for Graph 2')
+    # ax2.set_ylabel('Y Axis Label for Graph 2')
+    # ax2.tick_params(axis='both', labelsize=5)
+    # ax2.legend()
 
     # Create a new canvas if it doesn't exist
     if canvas is None:
@@ -134,21 +109,45 @@ def create_dropdown_menu(frame, options, selected_option):
 
 def main():
     # Tkinter Application + Visuals
-    label = tk.Label(pink_frame, text="Group 3 Easy A", font="Helvetica", bg="Pink")
+    label = tk.Label(white_frame, text="Group 3 Easy A", font="Helvetica", fg="Black", bg="White")
     label.config(font=("Courier", 50))
     label.pack()
 
-    # Department dropdown
-    department = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
+    # Individual Class dropdown
+    individual_class = ["CS 210", "CS 211"]
+    selected_individual_class = create_dropdown_menu(white_frame, individual_class, "Select individual class")
+
+    # Subject dropdown
+    subject = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
                   "General Science", "Human Physiology", "Mathematics", "Neuroscience",
                   "Physics", "Psychology"]
-    selected_department = create_dropdown_menu(white_frame, department, "Select department")
+    selected_subject = create_dropdown_menu(white_frame, subject, "Select department")
 
     # Class level dropdown
     class_level = ["100", "200", "300", "400", "500", "600"]
     selected_class_level = create_dropdown_menu(white_frame, class_level, "Select class level")
 
-    # Create button to plot with prev. plot func, link plotted data here #FIXME
+    # Faculty only decision dropdown
+    faculty_only = ["yes", "no"]
+    selected_faculty_only = create_dropdown_menu(white_frame, faculty_only, "Faculty only")
+
+    # By class or professor dropdown
+    class_or_professor = ["class", "professor"]
+    class_or_professor = create_dropdown_menu(white_frame, class_or_professor, "Filter by")
+
+    # Class count dropdown
+    class_count = ["yes", "no"]
+    class_count = create_dropdown_menu(white_frame, class_count, "Class count")
+
+    # Input names query box
+    teacher_entry_label = tk.Label(white_frame, text="Enter teacher names (comma-separated):", font=("Helvetica", 12))
+    teacher_entry_label.pack(pady=5, side=tk.TOP)
+
+    teacher_entry_var = tk.StringVar()
+    teacher_entry = tk.Entry(white_frame, textvariable=teacher_entry_var)
+    teacher_entry.pack(pady=5, side=tk.TOP)
+
+    # Create button to plot with prev. plot func, link plotted data here
     tk.Button(white_frame, text="Plot Graph", command=plot).pack(pady=10, side=tk.BOTTOM)
 
     # Place label
@@ -157,3 +156,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

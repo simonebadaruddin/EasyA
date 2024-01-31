@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 matplotlib_practice.py
-practice.jpg
+*.jpg
