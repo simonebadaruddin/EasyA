@@ -38,6 +38,53 @@ def get_data():
     return x_data, y_data1, y_data2
 
 
+def plot():
+    """
+    Our plotting function gets the selections inputted by the user plus
+    the corresponding graphed data from Grade_grapher.py and plots the
+    resulting graph whenever the "Plot Graph" button is pressed.
+    """
+    global canvas, ax1, ax2  # Declare ax1 and ax2 as global variables
+
+    # Clear previous graphs
+    ax1.clear()
+    ax2.clear()
+
+    # Get data (replace with actual data retrieval logic)
+    x, y1, y2 = get_data()
+
+    # Plot the graphs
+    # ax1.bar(x, y1, label='Graph 1', color='slateblue')
+    # ax1.set_title('Graph 1')
+    # ax1.set_xlabel('X Axis Label for Graph 1')
+    # ax1.set_ylabel('Y Axis Label for Graph 1')
+    # ax1.tick_params(axis='both', labelsize=5)
+    # ax1.legend()
+    #
+    # ax2.bar(x, y2, label='Graph 2', color='violet')
+    # ax2.set_title('Graph 2')
+    # ax2.set_xlabel('X Axis Label for Graph 2')
+    # ax2.set_ylabel('Y Axis Label for Graph 2')
+    # ax2.tick_params(axis='both', labelsize=5)
+    # ax2.legend()
+
+    # Create a new canvas if it doesn't exist
+    if canvas is None:
+        # Create a canvas which requires:
+        # (a) matplotlib figure
+        # (b) tkinter application
+        canvas = FigureCanvasTkAgg(fig, master=white_frame)  # Use white_frame as the master
+        # Integrate canvas into the white_frame
+        canvas.get_tk_widget().pack()
+
+        toolbar = NavigationToolbar2Tk(canvas, white_frame, pack_toolbar=False)
+        toolbar.update()
+        toolbar.pack(anchor="w", fill=tk.X)
+
+    # Explicitly update the canvas
+    canvas.draw_idle()
+
+
 def create_dropdown_menu(frame, options, selected_option):
     selected_var = tk.StringVar()
     selected_var.set(selected_option)
