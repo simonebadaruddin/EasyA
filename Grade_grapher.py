@@ -255,8 +255,6 @@ class Courses_By_Prof_Grapher(Grapher):
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
         # for all the instances of the class they have taught and the second element being the number of instances the instructor
         # taught the course
-        print(f"names_list: {names_list}")
-        print(f"faculty: {self._Grapher__faculty}")
         grades_for_courses_by_prof_As = {}
         grades_for_courses_by_prof_DsFs = {}
         for course in self.natty_science_course_data: # iterate through the courses in natty_science_course_data dict
@@ -303,20 +301,24 @@ class Courses_By_Prof_Grapher(Grapher):
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
         # The second element in the tuple is a list with 2 values, this sorts the tuples in terms of the quotient of its
-        # first and second terms
+        # first and second elements
         course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True ) # sorts in descending order
         course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] ) # sorts in ascending order
 
-        if len(course_data_list_As) > 20:
+        if len(course_data_list_As) > 20: # checks that the course data is less than 21 items long
+            # if they are above 20 items long, this cuts out the middle, only keeping the highest and lowest 10 items
             del course_data_list_As[10:-10]
             del course_data_list_DsFs[10:-10]
             
-
+        # course_profs_list_As (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        # course_grades_list_As (list[float]): list of the average %As for each instructor for the classes they taught in category
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
+        # create a matplotlib Figure and Axes:
         fig, ax = plt.subplots()
 
+        # 
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
         ax.set_title(f"{category}", fontweight='bold')
         ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
@@ -331,7 +333,7 @@ class Courses_By_Prof_Grapher(Grapher):
 
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.1)
 
         x_tick_positions = [x for x in range(len(course_profs_list_DsFs))]
 
