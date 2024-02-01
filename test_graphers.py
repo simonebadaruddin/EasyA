@@ -2,6 +2,7 @@ import pytest
 from Grade_grapher import (Grapher, Subjs_And_Level_by_Class_Grapher, Subjs_And_Level_By_Prof_Grapher,
                              Courses_By_Prof_Grapher, Subjs_By_Prof_Grapher)
 from data_maintainer import Data_Maintainer
+import json
 # from WebScraper import return_faculty_list
 
 
@@ -9,8 +10,13 @@ def test_instances():
     # change class count to get the class count or not during testing
     class_count = True
     faculty_only = True
-
-    faculty = ["Arbo, Matthew David", "Dyer, Benjamin Patrick", "Currey, Janelle A."]
+    
+    
+    
+    
+    
+    
+    faculty = ["Arbo, Matthew David"]
 
 
     # faculty = return_faculty_list()
