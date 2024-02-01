@@ -255,8 +255,6 @@ class Courses_By_Prof_Grapher(Grapher):
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
         # for all the instances of the class they have taught and the second element being the number of instances the instructor
         # taught the course
-        print(f"names_list: {names_list}")
-        print(f"faculty: {self._Grapher__faculty}")
         grades_for_courses_by_prof_As = {}
         grades_for_courses_by_prof_DsFs = {}
         for course in self.natty_science_course_data: # iterate through the courses in natty_science_course_data dict
