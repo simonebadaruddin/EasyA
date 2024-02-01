@@ -315,38 +315,66 @@ class Courses_By_Prof_Grapher(Grapher):
         # course_grades_list_As (list[float]): list of the average %As for each instructor for the classes they taught in category
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
-        # create a matplotlib Figure and Axes:
-        fig, ax = plt.subplots()
-
-        # 
-        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
-        ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
-        for side in ["top", "right"]:
-            ax.spines[side].set_visible(False)
-        
-        plt.savefig('As_graph.jpg')
-
-        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
-        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
-
-        fig, ax = plt.subplots()
-
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.1)
-
+        # set the x bar positions based on how many items are in the lists:
         x_tick_positions = [x for x in range(len(course_profs_list_DsFs))]
 
 
+        # create a matplotlib Figure and Axes:
+        fig, ax = plt.subplots()
+        
+
+        # configure the graph options:
+
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        # set the title to the category, and make it bold:
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=8, fontweight='bold')
+        # set the bar positions along the x-axis:
         ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
         ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=10, rotation=55)
-        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
+        # label the y axis as %As:
+        ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
+
+        # Save the created graph as As_graph.jpg:
+        plt.savefig('As_graph.jpg')
+
+        # course_profs_list_DsFs (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
+        course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        # course_grades_list_DsFs (list[float]): list of the average %Ds and Fs for each instructor for the classes they taught in category
+        course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
+
+        # create the next plot:
+        fig, ax = plt.subplots()
+
+        # configure the graph options:
+
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.1)
+        # set the title to the category, and make it bold:
+        ax.set_title(f"{category}", fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=8, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=10, rotation=55)
+        # label the y axis as %DsFs:
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
+        for side in ["top", "right"]:
+            ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
         plt.tight_layout()
         
+        # Save the created graph as DsFs_graph.jpg:
         plt.savefig('DsFs_graph.jpg', dpi=300)
 
         return
