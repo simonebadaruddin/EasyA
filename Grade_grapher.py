@@ -80,7 +80,7 @@ class Grapher(ABC):
             raise AttributeError("one positional argument missing: parsing by faculty requires a faculty list")
         
         # filter names_list:
-        names_list = self.filter_names(names_list, faculty_only)
+        names_list = set(self.filter_names(names_list, faculty_only))
         
         # parse the data
         parsed_data = self.parse_data(names_list)
@@ -255,6 +255,8 @@ class Courses_By_Prof_Grapher(Grapher):
         # value dicts have instructor names as keys and lists with the first element being the total %As or total %Ds and %Fs, 
         # for all the instances of the class they have taught and the second element being the number of instances the instructor
         # taught the course
+        print(f"names_list: {names_list}")
+        print(f"faculty: {self._Grapher__faculty}")
         grades_for_courses_by_prof_As = {}
         grades_for_courses_by_prof_DsFs = {}
         for course in self.natty_science_course_data: # iterate through the courses in natty_science_course_data dict
@@ -305,6 +307,11 @@ class Courses_By_Prof_Grapher(Grapher):
         course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True ) # sorts in descending order
         course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] ) # sorts in ascending order
 
+        if len(course_data_list_As) > 20:
+            del course_data_list_As[10:-10]
+            del course_data_list_DsFs[10:-10]
+            
+
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
@@ -326,13 +333,19 @@ class Courses_By_Prof_Grapher(Grapher):
 
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
+        x_tick_positions = [x for x in range(len(course_profs_list_DsFs))]
+
+
         ax.set_title(f"{category}", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=8, fontweight='bold')
+        ax.set_xticks(x_tick_positions)
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=10, rotation=55)
         ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        plt.tight_layout()
         
-        plt.savefig('DsFs_graph.jpg')
+        plt.savefig('DsFs_graph.jpg', dpi=300)
 
         return
 
@@ -780,13 +793,13 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
         course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
         course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(15,10))
 
         ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
 
         ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
         ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
-        ax.set_xticklabels(course_profs_list_DsFs, rotation=45, fontsize=10)
+        ax.set_xticklabels(course_profs_list_DsFs, fontsize=5, rotation=45)
         ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
