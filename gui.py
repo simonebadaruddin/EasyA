@@ -1,27 +1,26 @@
-# gui.py creates a Graphical User Interface (GUI) which takes choices
+# a gui.py creates a Graphical User Interface (GUI) which takes choices
 # from the user and presents 2 graphs back to the user.
 # Created 01/12/24
 # By Simone Badaruddin and Nithi Deivanayagam.
 # gui.py takes graphs created by Grade_grapher.py
 # Modifications made to add multiple dropdown menus on 01/26/24
 
-# The graphing library
-import matplotlib.pyplot as plt
-# Used to integrate tkinter & matplotlib + create our canvas
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 # The Graphical User Interface (GUI) Library
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 import numpy as np
 import json
 
-from Grade_grapher import Subjs_And_Level_By_Prof_Grapher
+from Grade_grapher import (Grapher, Subjs_And_Level_by_Class_Grapher, Subjs_And_Level_By_Prof_Grapher,
+                           Courses_By_Prof_Grapher, Subjs_By_Prof_Grapher)
 from data_maintainer import Data_Maintainer
 
 #
 DM = Data_Maintainer()
 DM.update_grade_data()
 COURSE_DATA = DM.get_grade_data()
+CLASSES = list(COURSE_DATA.keys())
 
 #
 with open("faculty_list.json", "r") as file:
@@ -39,8 +38,8 @@ frame.pack(side="top", fill="x")
 white_frame = tk.Frame(root)
 white_frame.pack(side="top", fill="both", expand=True)
 
-# Create matplotlib figure with access to subplots
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+# Create fig
+fig = figsize=(8, 4)
 
 # Create canvas in global scope
 canvas = None
@@ -65,57 +64,42 @@ def plot():
     the corresponding graphed data from Grade_grapher.py and plots the
     resulting graph whenever the "Plot Graph" button is pressed.
     """
-    global canvas, ax1, ax2  # Declare ax1 and ax2 as global variables
-
-    # Clear previous graphs
-    ax1.clear()
-    ax2.clear()
-
-    # Get data (replace with actual data retrieval logic)
-    x, y1, y2 = get_data()
-
-    # Plot the graphs
-    # ax1.bar(x, y1, label='Graph 1', color='slateblue')
-    # ax1.set_title('Graph 1')
-    # ax1.set_xlabel('X Axis Label for Graph 1')
-    # ax1.set_ylabel('Y Axis Label for Graph 1')
-    # ax1.tick_params(axis='both', labelsize=5)
-    # ax1.legend()
-    #
-    # ax2.bar(x, y2, label='Graph 2', color='violet')
-    # ax2.set_title('Graph 2')
-    # ax2.set_xlabel('X Axis Label for Graph 2')
-    # ax2.set_ylabel('Y Axis Label for Graph 2')
-    # ax2.tick_params(axis='both', labelsize=5)
-    # ax2.legend()
+    global canvas
 
     # Create a new canvas if it doesn't exist
     if canvas is None:
         # Create a canvas which requires:
-        # (a) matplotlib figure
+        # (a) matplotlib jpegs
         # (b) tkinter application
-        canvas = FigureCanvasTkAgg(fig, master=white_frame)  # Use white_frame as the master
         # Integrate canvas into the white_frame
-        canvas.get_tk_widget().pack()
+        canvas = tk.Canvas(white_frame)  # Create a new canvas using tkinter
+        canvas.pack(fill=tk.BOTH, expand=True)
 
-        toolbar = NavigationToolbar2Tk(canvas, white_frame, pack_toolbar=False)
-        toolbar.update()
-        toolbar.pack(anchor="w", fill=tk.X)
+    # Clear previous content on the canvas
+    canvas.delete("all")
 
-    # Explicitly update the canvas
-    canvas.draw_idle()
+    # Get data (replace with actual data retrieval logic)
+    x, y1, y2 = get_data()
+
+    # Example: Load a sample image (replace this with your actual image loading logic)
+    image_path = "As_graph.jpg"
+    img = Image.open(image_path)
+    img = img.resize((300, 300))  # Adjust the size as needed
+    photo = ImageTk.PhotoImage(img)
+
+    # Display the image on the canvas
+    canvas.create_image(10, 10, anchor=tk.NW, image=photo)
+
+    # Update the canvas
+    canvas.update()
 
 
 def create_dropdown_menu(frame, options, selected_option):
     selected_var = tk.StringVar()
     selected_var.set(selected_option)
 
-    def on_select(callback=None, *args):
-        callback(selected_var.get())
-
-    selected_var.trace_add('write', on_select)
-
-    dropdown_menu = tk.OptionMenu(frame, selected_var, *options)
+    # Instead of above code, use ttk.Combobox for dropdown menu in order to handle str's
+    dropdown_menu = ttk.Combobox(frame, textvariable=selected_var, values=options)
     dropdown_menu.pack(pady=15, side=tk.TOP)
 
     return selected_var
@@ -132,31 +116,29 @@ def main():
 
         if (selected_subject.get() and selected_class_level.get() and
                 class_or_professor.get() == "professor"):
-            # Create an instance of Subjs_And_Level_By_Prof_Grapher
-            grapher = Subjs_And_Level_By_Prof_Grapher(COURSE_DATA, FACULTY)
             # Set faculty_only if the user selected "yes" in the dropdown
-            grapher.set_faculty(selected_faculty_only.get() == "yes")
-
+            received_faculty = selected_faculty_only.get()
+            faculty_only = True if received_faculty == "yes" else False
+            # Create an instance of Subjs_And_Level_By_Prof_Grapher
+            grapher = Subjs_And_Level_By_Prof_Grapher(COURSE_DATA, FACULTY, faculty_only=faculty_only)
 
             # Get the selected subject, class level, and teacher names
             subject = selected_subject.get()
             class_level = selected_class_level.get()
-            teacher_names = teacher_entry_var.get()
+            teacher_names = teacher_entry_var.get() if teacher_entry_var.get() else []
 
             # Graph the data
-            grapher.graph_data(subject, level=class_level, names_list=teacher_names)
+            grapher.graph_data(subject, level=class_level, names_list=teacher_names, faculty_only=faculty_only)
 
             # Add resultant graphs to canvas
-            canvas.draw_idle()
+            canvas.update()
 
     # Individual Class dropdown
-    individual_class = ["CS 210", "CS 211"]
-    selected_individual_class = create_dropdown_menu(white_frame, individual_class, "Select individual class")
+    selected_individual_class = create_dropdown_menu(white_frame, CLASSES, "Select individual class")
 
     # Subject dropdown
-    subject = ["Biology", "Chemistry", "Biochemistry", "Computer Science", "Earth Sciences",
-                  "General Science", "Human Physiology", "Mathematics", "Neuroscience",
-                  "Physics", "Psychology"]
+    subject = [ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS',
+                'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STAT' ]
     selected_subject = create_dropdown_menu(white_frame, subject, "Select department")
 
     # Class level dropdown
@@ -164,11 +146,11 @@ def main():
     selected_class_level = create_dropdown_menu(white_frame, class_level, "Select class level")
 
     # Faculty only decision dropdown
-    faculty_only = ["yes", "no"]
+    faculty_only = ["Yes", "No"]
     selected_faculty_only = create_dropdown_menu(white_frame, faculty_only, "Faculty only")
 
     # By class or professor dropdown
-    class_or_professor = ["class", "professor"]
+    class_or_professor = ["Class", "Professor"]
     class_or_professor = create_dropdown_menu(white_frame, class_or_professor, "Filter by")
 
     # Class count dropdown
@@ -192,4 +174,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
