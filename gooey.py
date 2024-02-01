@@ -95,32 +95,18 @@ def graph_choices():
     else:
         return
     
-    time.sleep(1)
 
     As_img = Image.open('As_graph.jpg')
     DsFs_img = Image.open('DsFs_graph.jpg')
 
-    width, height = 200, 200
-    As_img = As_img.resize((width, height))
-    DsFs_img = DsFs_img.resize((width, height))
-
-    As_pic = ImageTk.PhotoImage(As_img)
-    DsFs_pic = ImageTk.PhotoImage(DsFs_img)
-
-    canvas.create_image(0, 0, anchor=tk.NW, image=As_pic)
-    canvas.create_image(0, width, anchor=tk.NW, image=DsFs_pic)
-
-
+    As_img.show()
+    DsFs_img.show()
 
 
 root = tk.Tk()
 root.title("Group 3 Easy A")
 
-# Create a canvas to display images
-canvas = tk.Canvas(root, width=400, height=400)
-canvas.pack()
-
-root.geometry("800x1000")
+root.geometry("800x600")
 
 # Create a white frame
 frame = tk.Frame(root, bg="White")
