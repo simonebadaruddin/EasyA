@@ -5,9 +5,27 @@
 # gui.py takes graphs created by Grade_grapher.py
 # Modifications made to add multiple dropdown menus on 01/26/24
 
+# The graphing library
+import matplotlib.pyplot as plt
+# Used to integrate tkinter & matplotlib + create our canvas
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 # The Graphical User Interface (GUI) Library
 import tkinter as tk
+from tkinter import ttk
 import numpy as np
+import json
+
+from Grade_grapher import Subjs_And_Level_By_Prof_Grapher
+from data_maintainer import Data_Maintainer
+
+#
+DM = Data_Maintainer()
+DM.update_grade_data()
+COURSE_DATA = DM.get_grade_data()
+
+#
+with open("faculty_list.json", "r") as file:
+    FACULTY = json.load(file)
 
 # Initialize Tkinter
 root = tk.Tk()
@@ -20,6 +38,9 @@ frame.pack(side="top", fill="x")
 # Create a larger white frame
 white_frame = tk.Frame(root)
 white_frame.pack(side="top", fill="both", expand=True)
+
+# Create matplotlib figure with access to subplots
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
 # Create canvas in global scope
 canvas = None
@@ -106,6 +127,28 @@ def main():
     label.config(font=("Courier", 50))
     label.pack()
 
+    def on_plot_button_click(natty_science_course_data=None):
+        # Call the appropriate function based on user choices
+
+        if (selected_subject.get() and selected_class_level.get() and
+                class_or_professor.get() == "professor"):
+            # Create an instance of Subjs_And_Level_By_Prof_Grapher
+            grapher = Subjs_And_Level_By_Prof_Grapher(COURSE_DATA, FACULTY)
+            # Set faculty_only if the user selected "yes" in the dropdown
+            grapher.set_faculty(selected_faculty_only.get() == "yes")
+
+
+            # Get the selected subject, class level, and teacher names
+            subject = selected_subject.get()
+            class_level = selected_class_level.get()
+            teacher_names = teacher_entry_var.get()
+
+            # Graph the data
+            grapher.graph_data(subject, level=class_level, names_list=teacher_names)
+
+            # Add resultant graphs to canvas
+            canvas.draw_idle()
+
     # Individual Class dropdown
     individual_class = ["CS 210", "CS 211"]
     selected_individual_class = create_dropdown_menu(white_frame, individual_class, "Select individual class")
@@ -149,4 +192,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
