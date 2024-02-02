@@ -13,8 +13,8 @@ class test_basics(unittest.TestCase):
         obj = Data_Maintainer('other')
         file = obj.get_data_file()
         self.assertEqual(file, 'other')
- 
-       
+
+
     def test_getters(self):
         dm = Data_Maintainer()
 
@@ -117,14 +117,21 @@ class test_upgrade_grade_data(unittest.TestCase):
         pass
 
 class test_discrepancy_handling(unittest.TestCase):
-    def test_basic(self):
+    def test_search(self):
         dm = Data_Maintainer()
         dm.update_grade_data()
-        #dm.discrepancy_search(["Leahy",  "John F.", "Davis", "Howard P."])
         f = open('faculty_list.json', 'r')
         scraped_faculty_list = json.loads(f.read())
         f.close()
-        #print(type(scrapped_faculty_list))
+        dm.discrepancy_search(scraped_faculty_list)
+
+    def test_replace(self):
+        dm = Data_Maintainer()
+        dm.update_grade_data()
+        dm.replace_faculty_name("Bone, Christopher E.", "Bone, Christopher")
+        f = open('faculty_list.json', 'r')
+        scraped_faculty_list = json.loads(f.read())
+        f.close()
         dm.discrepancy_search(scraped_faculty_list)
  
 

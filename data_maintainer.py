@@ -44,6 +44,88 @@ class Data_Maintainer:
             can see any potential discrepencies that should be handled."""
 
         # Create a list of just the instructor names in the grade data
+        instructors = self.get_grade_data_instructors()
+     
+        # Create a list of similar name pairs
+        similar_name_pairs = []
+        for name in scraped_faculty_list:
+            # check for names with 80% or greater similarity
+            close_matches = get_close_matches(name, instructors, cutoff=.8)
+            # remove any exact matches in close matches
+            close_matches = list(set(close_matches))   
+            for n in close_matches:
+                if n == name:
+                    close_matches.remove(n)         
+            # if there are any close matches to this name, (besides an exact match)
+            # add them to the list
+            if len(close_matches) > 1:
+                    similar_name_pairs.append({name:close_matches})
+        
+        # Display the list of possible duplicates
+        print("\n-------------------------------------------------")
+        print("Faculty in scraped list : Potential duplicate names in grade data")
+        print("-------------------------------------------------")
+        for name in similar_name_pairs:
+            print(name)
+        print("-------------------------------------------------\n")
+
+    def replace_faculty_name(self, curr_grade_data_name, name_update):
+        """ Alter __grade_data to replace a current name representation to
+            a representation consistent with scraped data"""
+        try:
+            ##### Thinking of having the admin just enter it in the desired form
+            ## first get names into grade data form "Last, First Middle"
+            ## fix arg1
+            #curr_grade_data_name = curr_grade_data_name.split(" ")
+            #if len(curr_grade_data_name) > 1:
+            #    last_name = curr_grade_data_name[-1]
+            #    # if there is a middle name
+            #    if len(curr_grade_data_name[:-1])>1: 
+            #        first_middle = f"{curr_grade_data_name[0]} {curr_grade_data_name[1]}"
+            #    else: # there is no middle name
+            #        first_middle = curr_grade_data_name[0]
+            #    name_to_replace = f"{last_name}, {first_middle}"
+            #    print(f"name_to_replace: {name_to_replace}")
+    
+            name_to_replace = curr_grade_data_name
+            #print(f"name_to_replace: {name_to_replace}")
+
+            ##### Thinking of having the admin just enter it in the desired form
+            ## fix arg2
+            #name_update = name_update.split(" ")
+            #if len(name_update) > 1:
+            #    last_name = name_update[-1]
+            #    # if there is a middle name
+            #    if len(name_update[:-1])>1: 
+            #        first_middle = f"{name_update[0]} {name_update[1]}"
+            #    else: # there is no middle name
+            #        first_middle = name_update[0]
+            #    new_name = f"{last_name}, {first_middle}"
+            #    print(f"new_name: {new_name}")
+
+            new_name = name_update
+            #print(f"new_name: {new_name}")
+
+            for course in self.__grade_data:
+                instructor = self.__grade_data[course][0]["instructor"]
+                if instructor == name_to_replace:
+                    old_name = instructor
+                    self.__grade_data[course][0]["instructor"] =  new_name
+                    updated_name = self.__grade_data[course][0]["instructor"]
+            print("\nSuccess: Stored grade data has been changed.")
+            print(f"'{old_name}' has been replaced with '{updated_name}' in stored grade data.\n")
+        
+        except:
+            print("\nError: Entered names are not in the expected form, please correct and try again.")
+            print("Recall: \n    arg1: name as it exists in grade data \n    arg2: name to replace it with")
+            print("No changes have been made.\n")
+        
+
+    # ----------- Helper methods ---------------------
+
+    def get_grade_data_instructors(self):
+        """ Return a list of the instructors stored in grade data
+         with names in the form : "First Middle Last" (if there is a middle)"""
         instructors = []
         for course in self.__grade_data:
             instructor = self.__grade_data[course][0]["instructor"]
@@ -56,35 +138,7 @@ class Data_Maintainer:
                 # add each name to the list 
             else: # otherwise append the single name
                 instructors.append(instructor)
-
-        
-        # Create a list of similar name pairs
-        similar_name_pairs = []
-        for name in scraped_faculty_list:
-            # check for names with 80% or greater similarity
-            close_matches = get_close_matches(name, instructors, cutoff=.8)
-            # remove any exact matches in close matches
-            close_matches = list(set(close_matches))            
-            # if there are any close matches to this name, (besides an exact match)
-            # add them to the list
-            if len(close_matches) > 1:
-                    similar_name_pairs.append({name:close_matches})
-        
-        # Display the list of possible duplicates
-        print("\n-------------------------------------------------")
-        print("Faculty in grade data : Potential duplicate names")
-        print("-------------------------------------------------")
-        for name in similar_name_pairs:
-            print(name)
-        print("-------------------------------------------------\n")
-
-    def update_faculty_name(self, curr_grade_data_name, name_update):
-        """ Alter __grade_data to change a current name representation to
-            a representation consistent with scraped data"""
-        pass
-        
-
-    # ----------- Helper methods ---------------------
+        return instructors
 
     def nat_sci_filter(self, all_courses):
         # this function takes a course data python dictionary and 
