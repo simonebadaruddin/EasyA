@@ -69,43 +69,10 @@ class Data_Maintainer:
             print(name)
         print("-------------------------------------------------\n")
 
-    def replace_faculty_name(self, curr_grade_data_name, name_update):
+    def replace_faculty_name(self, name_to_replace, new_name):
         """ Alter __grade_data to replace a current name representation to
             a representation consistent with scraped data"""
         try:
-            ##### Thinking of having the admin just enter it in the desired form
-            ## first get names into grade data form "Last, First Middle"
-            ## fix arg1
-            #curr_grade_data_name = curr_grade_data_name.split(" ")
-            #if len(curr_grade_data_name) > 1:
-            #    last_name = curr_grade_data_name[-1]
-            #    # if there is a middle name
-            #    if len(curr_grade_data_name[:-1])>1: 
-            #        first_middle = f"{curr_grade_data_name[0]} {curr_grade_data_name[1]}"
-            #    else: # there is no middle name
-            #        first_middle = curr_grade_data_name[0]
-            #    name_to_replace = f"{last_name}, {first_middle}"
-            #    print(f"name_to_replace: {name_to_replace}")
-    
-            name_to_replace = curr_grade_data_name
-            #print(f"name_to_replace: {name_to_replace}")
-
-            ##### Thinking of having the admin just enter it in the desired form
-            ## fix arg2
-            #name_update = name_update.split(" ")
-            #if len(name_update) > 1:
-            #    last_name = name_update[-1]
-            #    # if there is a middle name
-            #    if len(name_update[:-1])>1: 
-            #        first_middle = f"{name_update[0]} {name_update[1]}"
-            #    else: # there is no middle name
-            #        first_middle = name_update[0]
-            #    new_name = f"{last_name}, {first_middle}"
-            #    print(f"new_name: {new_name}")
-
-            new_name = name_update
-            #print(f"new_name: {new_name}")
-
             for course in self.__grade_data:
                 instructor = self.__grade_data[course][0]["instructor"]
                 if instructor == name_to_replace:
