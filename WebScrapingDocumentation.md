@@ -26,9 +26,9 @@ In the python terminal there are three external libraries to install. Here are t
 #### Running the WebScraper File in another Python File
 To run the WebScraper file in another File, here are the lines of code needed:
     - from WebScraper import return_faculty_list
-        - get_faculty_list = return_faculty_list()
-        - print(get_faculty_list) -- (this line is optional; it prints out the names of the faculty in the terminal)
-        - print('done') -- (this line is optional it just tells you when it is done running)
+    - get_faculty_list = return_faculty_list()
+    - print(get_faculty_list) -- (this line is optional; it prints out the names of the faculty in the terminal)
+    - print('done') -- (this line is optional it just tells you when it is done running)
 
 #### Runtime
 The web scraper file takes about two and a half minutes total to run and scrape all 11 departments.
