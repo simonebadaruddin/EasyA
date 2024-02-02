@@ -3,7 +3,7 @@
 import data_maintainer
 
 
-def new_main():
+def main():
     """
 
     """
@@ -11,8 +11,8 @@ def new_main():
     grade_data = grade_data_obj.get_grade_data()
     # if there is no stored grade data, check for local 'gradedata.json' file
     if grade_data is None:
-        # default, use local 'gradedata.json'
-        grade_data_obj.update_grade_data('gradedata.json')
+        # default uses local 'gradedata.json'
+        grade_data_obj.update_grade_data()
     else:
         # otherwise, grade data has already been stored/updated.
 
