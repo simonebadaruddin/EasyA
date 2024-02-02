@@ -13,6 +13,7 @@ The third function is called return_faculty_list. This function calls the first 
 
 #### Installation Requirements
 In the python terminal there are three external libraries to install. Here are the commands that must be ran:
+
         > - pip install requests (possibly may need to do: py -m pip install reuqests)
         > - pip install html5lib (possibly may need to do: py -m pip install html5lib)
         > - pip install bs4 (possibly may need to do: py -m pip install bs4)
@@ -23,12 +24,15 @@ In the python terminal there are three external libraries to install. Here are t
         >        - print(get_faculty_list) -- (this line is optional; it prints out the names of the faculty in the terminal)
         >        - print("done") -- (this line is optional it just tells you when it is done running)
 
+
 #### Running the WebScraper File in another Python File
 To run the WebScraper file in another File, here are the lines of code needed:
+
         > - from WebScraper import return_faculty_list
         > - get_faculty_list = return_faculty_list()
         > - print(get_faculty_list) -- (this line is optional; it prints out the names of the faculty in the terminal)
         > - print('done') -- (this line is optional it just tells you when it is done running)
+
 
 #### Runtime
 The web scraper file takes about two and a half minutes total to run and scrape all 11 departments.
