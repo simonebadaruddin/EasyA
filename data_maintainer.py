@@ -2,10 +2,11 @@
 This file contains methods to update and maintain grade data.
 
 Origninal Author: Erin Cohen
-Updated By: --- (enter here if you update)
 """
 import json
 import re
+from difflib import SequenceMatcher as sm
+from difflib import get_close_matches 
 
 class Data_Maintainer:
     def __init__(self, data_file='gradedata.json'):
@@ -18,18 +19,6 @@ class Data_Maintainer:
         self.__grade_data = None 
 
 
-    #TODO:
-    #  the admin functionality needs a way to fix any discrepencies between the faculty list
-    # and the instructor names in the grade data e.g. a prompt that says 'these names in the 
-    # faculty list are not in the grade data:'
-        """
-        When replacing the system data, ideally, discrepancies between names found in
-        “gradedata.js” and the names found in the scraped instructor data would be easy to resolve
-        using the administrator tools, to ensure that the data in your tables is clean, consistent and
-        accurate. (Optionally, as the two sources of data are brought into alignment, the tools could
-        generate statistics such as lists of names from both data sources that have yet to find a match,
-        so you can see how your data resolving process needs to be further improved.)"""
-
     # ----------- Administrator Functions ---------------------
 
     def update_grade_data(self, new_data_file='gradedata.json'):
@@ -41,7 +30,6 @@ class Data_Maintainer:
         print("Grade Data has been successfully updated.")
         return
 
-
     # possibly change this to 3 separate functions; add, remove and replace.
     # this would be good for ease of administrator use, they do not need to know anything about
     # the format of the set or every natural science course code to update/add/remove one code
@@ -49,6 +37,52 @@ class Data_Maintainer:
         # this function updates the set of natural science course codes
         # ie. updating CIS to CS
         self.__natural_sciences = new_set
+
+    def discrepancy_search(self, scraped_faculty_list):
+        """ Compare the given list of names and the faculty in data set and search for any pairs of names that are 
+            very similar but not identical. Return the resulting list of name close matches so an administrator
+            can see any potential discrepencies that should be handled."""
+
+        # Create a list of just the instructor names in the grade data
+        instructors = []
+        for course in self.__grade_data:
+            instructor = self.__grade_data[course][0]["instructor"]
+            # The data has names stored as "Last, First middle" (if there is a middle)
+            # so we need to change it to the form "First middle Last" (if there is a middle)
+            if "," in instructor: # split the strings into first and last name
+                instructor = instructor.split(", ") 
+                instructor = f"{instructor[1]} {instructor[0]}"
+                instructors.append(instructor)
+                # add each name to the list 
+            else: # otherwise append the single name
+                instructors.append(instructor)
+
+        
+        # Create a list of similar name pairs
+        similar_name_pairs = []
+        for name in scraped_faculty_list:
+            # check for names with 80% or greater similarity
+            close_matches = get_close_matches(name, instructors, cutoff=.8)
+            # remove any exact matches in close matches
+            close_matches = list(set(close_matches))            
+            # if there are any close matches to this name, (besides an exact match)
+            # add them to the list
+            if len(close_matches) > 1:
+                    similar_name_pairs.append({name:close_matches})
+        
+        # Display the list of possible duplicates
+        print("\n-------------------------------------------------")
+        print("Faculty in grade data : Potential duplicate names")
+        print("-------------------------------------------------")
+        for name in similar_name_pairs:
+            print(name)
+        print("-------------------------------------------------\n")
+
+    def update_faculty_name(self, curr_grade_data_name, name_update):
+        """ Alter __grade_data to change a current name representation to
+            a representation consistent with scraped data"""
+        pass
+        
 
     # ----------- Helper methods ---------------------
 
