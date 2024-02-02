@@ -184,6 +184,13 @@ def return_faculty_list():
     save_to_json(faculty_list)
     return faculty_list
 
+def get_faculty_as_py_list():
+    with open('faculty_list.json', 'r') as f:
+        scraped_faculty_list = json.loads(f.read())
+    return scraped_faculty_list
+
+# print(get_faculty_as_py_list())
+# print(type(get_faculty_as_py_list()))
 # get_faculty_list = return_faculty_list()
 # print(get_faculty_list)
 # print("done")
