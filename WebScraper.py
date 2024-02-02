@@ -25,7 +25,6 @@ psy = "https://web.archive.org/web/20141107202211/http://catalog.uoregon.edu/art
 earthsci = "https://web.archive.org/web/20141128094827/http://catalog.uoregon.edu/arts_sciences/geologicalsciences/#facultytext"
 anth = "https://web.archive.org/web/20141107201352/http://catalog.uoregon.edu/arts_sciences/anthropology/#facultytext"
 geo = "https://web.archive.org/web/20141128094244/http://catalog.uoregon.edu/arts_sciences/geography/#facultytext"
-# neuro = "https://web.archive.org/web/20141107202132/http://catalog.uoregon.edu/arts_sciences/neuroscience/"
 
 # url set to empty string
 url = ""
@@ -160,16 +159,6 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # neuro part -- is commented out because I don't know if it's needed -- it says participating faculty
-        '''
-        # look for url in list
-        if url == url_list[11]:
-            # get list of participating faculty
-            for parFacNames in data.find(string='Participating Faculty').parent.find_next_siblings():
-                participating = parFacNames.get_text().split(',')[0]
-                pf_list.append(participating)
-        '''
-
         # Add faculty names to the overall list
         faculty_names.extend(faculty_list)
 
@@ -185,7 +174,8 @@ def save_to_json(data, filename='faculty_list.json'):
 
 # function return_faculty_list
 # use url_list
-# faculty_list = scrape_faculty_names(url_list); call scrape_faculty_names function
+# faculty_list: scrape_faculty_names(url_list)
+# calls the scrape_faculty_names function
 # call save_to_json function -> use faculty_list
 # return faculty_list
 def return_faculty_list():
@@ -194,19 +184,10 @@ def return_faculty_list():
     save_to_json(faculty_list)
     return faculty_list
 
-# example use case for importing it to different file
+# get_faculty_list = return_faculty_list()
+# print(get_faculty_list)
+# print("done")
 
-# uncommenting this so it can be ran through web scraping file
 
-# call return_faculty_list function which will go through scrape_faculty_names and save_to_json function
-get_faculty_list = return_faculty_list()
-
-# print done when finished
-print("done")
-
-'''
-Print or use faculty_list as needed
-print(faculty_list)
-'''
 
 
