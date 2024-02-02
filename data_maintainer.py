@@ -93,6 +93,10 @@ class Data_Maintainer:
     def get_grade_data_instructors(self):
         """ Return a list of the instructors stored in grade data
          with names in the form : "First Middle Last" (if there is a middle)"""
+        """instructors = []
+        for course in self.__grade_data:
+            for instance in self.__grade_data[course]:
+                if "," in (instructor := instance["instructor"]):"""
         instructors = []
         for course in self.__grade_data:
             instructor = self.__grade_data[course][0]["instructor"]
