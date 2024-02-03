@@ -1,6 +1,6 @@
 # Web Scraper Documentation
 
-## File Name: WebScraper.py 
+## File Name: FacultyNameScraper.py 
 
 ### Description
 The WebScraper.py scrapes faculty names from 11 different departments. The scraped information is from the WayBack Machine links that contain the department faculty lists. There are three different fuctions doing different parts to make the WebScraper work in full. 
@@ -33,8 +33,8 @@ In the python terminal there are three external libraries to install. Here are t
 #### Running the WebScraper File in another Python File
 To run the WebScraper file in another File, here are the lines of code needed:
 
-        > - from WebScraper import return_faculty_list
-        > - from WebScraper import get_faculty_as_py_list()
+        > - from FacultyNameScraper import return_faculty_list
+        > - from FacultyNameScraper import get_faculty_as_py_list()
         > - get_faculty_list = return_faculty_list()
         > - get_faculty_py_list = get_faculty_as_py_list()
         > - print(get_faculty_py_list) -- (this line is optional; it prints out the names of the faculty in the terminal)
