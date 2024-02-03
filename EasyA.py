@@ -215,5 +215,7 @@ names_box.pack()
 plot_button = ttk.Button(root, text="Plot Graphs", command=graph_choices)
 plot_button.pack(pady=10)
 
-root.mainloop()
+exit_button = ttk.Button(root, text="Exit Program", command=exit)
+exit_button.pack(pady=10)
 
+root.mainloop()
