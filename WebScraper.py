@@ -3,6 +3,7 @@ WebScraper: CS 422 Project 1
 Author: Isabella Cortez
 Credit: YouTube, GeeksforGeeks
 This file scrapes faculty names off of the Wayback Machine for 11 different departments
+Date Modified: 02/03/2024
 """
 
 # import statements (importing BeautifulSoup Libraries, requests, json and time)
@@ -83,8 +84,8 @@ def scrape_faculty_names(u):
         # last_sentence: string to find is the date in... sentence
         last_sentence = BeautSoup.find('p', string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
 
-        # urls in list to find
-        # url in position looking for 2 (cis), 7 (psy), 9 (anth)
+        # find urls in list 
+        # looking for url in position 2 (cis), 7 (psy), 9 (anth)
         # list is zero indexed
         if url == url_list[2] or url == url_list[7] or url == url_list[9]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -102,8 +103,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 3 (envs)
+        # find urls in list 
+        # looking for url in position 3 (envs)
         # list is zero indexed
         if url == url_list[3]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -121,8 +122,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 0 (bio), 4 (huphys), 5 (math), 8 (earthsci)
+        # find urls in list 
+        # looking for url in position 0 (bio), 4 (huphys), 5 (math), 8 (earthsci)
         # list is zero indexed
         if url == url_list[0] or url == url_list[4] or url == url_list[5] or url == url_list[8]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -140,8 +141,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 1 (biochem), 6 (physics), 10 (geo)
+        # find urls in list 
+        # looking for url in position 1 (biochem), 6 (physics), 10 (geo)
         # list is zero indexed
         if url == url_list[1] or url == url_list[6] or url == url_list[10]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -165,28 +166,31 @@ def scrape_faculty_names(u):
     # return faculty names
     return faculty_names
 
-# function save_to_json
-# open json file up
-# dump info to json file
+# define function save_to_json
 def save_to_json(data, filename='faculty_list.json'):
+    # create and open json file up
     with open(filename, 'w', encoding='utf-8') as json_file:
+        # dump faculty information to json file
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
-# function return_faculty_list
-# use url_list
-# faculty_list: scrape_faculty_names(url_list)
-# calls the scrape_faculty_names function
-# call save_to_json function -> use faculty_list
-# return faculty_list
+# define function return_faculty_list
 def return_faculty_list():
+    # use the same url_list as defined above (to loop through)
     url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, earthsci, anth, geo]
+    # faculty_list: calls the scrape_faculty_names function (uses url_list and goes through tht list in the scrape_faculty_names)
     faculty_list = scrape_faculty_names(url_list)
+    # call save_to_json function -> use faculty_list
     save_to_json(faculty_list)
+    # returns faculty_list
     return faculty_list
 
+# define function get_faculty_as_py_list
 def get_faculty_as_py_list():
+    # opens the json file (faculty_list.json)
     with open('faculty_list.json', 'r') as f:
+        # sets the faculty list to json.loads
         scraped_faculty_list = json.loads(f.read())
+    # returns list as python list
     return scraped_faculty_list
 
 # print(get_faculty_as_py_list())
