@@ -52,7 +52,10 @@ class Data_Maintainer:
             # check for names with 80% or greater similarity
             close_matches = get_close_matches(name, instructors, cutoff=.8)
             # remove any exact matches in close matches
-            close_matches = list(set(close_matches))   
+            close_matches = list(set(close_matches))  
+            # !!! can replace with:
+            # if name in close_matches:
+                # close_matches.remove(name) 
             for n in close_matches:
                 if n == name:
                     close_matches.remove(n)         
@@ -72,7 +75,7 @@ class Data_Maintainer:
     def replace_faculty_name(self, name_to_replace, new_name):
         """ Alter __grade_data to replace a current name representation to
             a representation consistent with scraped data"""
-        try:
+        try: # !!! same problem as below
             for course in self.__grade_data:
                 instructor = self.__grade_data[course][0]["instructor"]
                 if instructor == name_to_replace:
@@ -93,10 +96,10 @@ class Data_Maintainer:
     def get_grade_data_instructors(self):
         """ Return a list of the instructors stored in grade data
          with names in the form : "First Middle Last" (if there is a middle)"""
-        """instructors = []
-        for course in self.__grade_data:
-            for instance in self.__grade_data[course]:
-                if "," in (instructor := instance["instructor"]):"""
+        # !!! instructors = []
+        # for course in self.__grade_data:
+        #     for instance in self.__grade_data[course]:
+        #         if "," in (instructor := instance["instructor"]):
         instructors = []
         for course in self.__grade_data:
             instructor = self.__grade_data[course][0]["instructor"]
