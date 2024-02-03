@@ -10,7 +10,6 @@ Date Modified: 02/03/2024
 import requests
 from bs4 import BeautifulSoup
 import json
-import time
 from time import sleep
 import timeit
 
@@ -45,7 +44,7 @@ def scrape_faculty_names(u):
     # go through url_list and scrape depending on what page it is
     for index in range(len(url_list)):
         # wait every 10 seconds to scrape
-        time.sleep(10)
+        sleep(10)
 
         '''
         time.time()
