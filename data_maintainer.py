@@ -107,7 +107,8 @@ class Data_Maintainer:
             # so we need to change it to the form "First middle Last" (if there is a middle)
             if "," in instructor: # split the strings into first and last name
                 instructor = instructor.split(", ") 
-                instructor = f"{instructor[1]} {instructor[0]}"
+                instructor = f"{instructor[1]} {instructor[0]}" # I think this may rearrange names so theyre middle name or initial 
+                # first followed by first name and last name
                 instructors.append(instructor)
                 # add each name to the list 
             else: # otherwise append the single name

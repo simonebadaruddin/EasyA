@@ -3,8 +3,8 @@ Module containing Grapher Python class and its subclasses
 """
 
 
-from matplotlib import pyplot as plt
-from typing import Dict, List
+from matplotlib import pyplot as plt # used for graphing and creating graph images
+from typing import Dict, List # for increased typing capabilities
 from abc import ABC, abstractmethod
 
 
@@ -187,7 +187,7 @@ class Grapher(ABC):
     
     
 # ==================================================================================================================================
-# --------------------------------- Courses_By_Prof_Grapher Subclass definition --------------------------------------------------------
+# --------------------------------- Courses_By_Prof_Grapher Grapher Subclass definition --------------------------------------------------------
 # ==================================================================================================================================
 
 
@@ -229,6 +229,7 @@ class Courses_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
 
     # ================== Data Parsing Method =======================================================================================
@@ -284,8 +285,6 @@ class Courses_By_Prof_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if level: # level isn't an available argument for this particular subgraph 
-            raise TypeError(f"graph_data() method given 1 extra keyword argument: level. Courses_By_Prof_Grapher object does not have a level option.")
         if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
@@ -386,7 +385,7 @@ class Courses_By_Prof_Grapher(Grapher):
 
 
 # ==================================================================================================================================
-# --------------------------------- Subjs_By_Prof_Grapher Subclass definition --------------------------------------------------------
+# --------------------------------- Subjs_By_Prof_Grapher Grapher Subclass definition --------------------------------------------------------
 # ==================================================================================================================================
 
 
@@ -428,7 +427,12 @@ class Subjs_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits fully from the Base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
+
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -629,11 +633,33 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
+        
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
     def parse_data(self, names_list=[]) -> Dict[str, Dict[str, List[str]]]:
+        """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
+        specified by the Grapher subclass and the methods used.
+        
+        The categories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
+        science subjects for each of the instructors who taught it, along with the number of times they taught it.
+        This is iteratively parsed from the data and represented as a dict with keys that are names of the courses
+        (e.g. MATH111, PSY201) and values that are dicts. The inner dict has the names of all the instructors who taught that 
+        class as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
+        %Ds and %Fs for all the instances of the class they taught, stored as a float; and the second element being the number 
+        of instances they taught the class  (e.g. if an instructor has taught MATH 111 3 times and the %As were 
+        45%, 65%, and 55% then the first element in the list will be 110.0, and the second element will be 3). The average 
+        percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
+        when graphing. 
+
+        Returns:
+            The dicts of parsed natty_science_courses data described above
+        """
         # grades_for_subj_and_lvl_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science subjects and 
         # level represented by subject code concatenated with a level 100-600; values are dicts. Nested value dicts have 
         # instructor names as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances 
@@ -836,8 +862,13 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
-        """Constructor fully inherited from Grapher base class."""
+
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
+        
     
     # ================== Data Parsing Method =======================================================================================
 
