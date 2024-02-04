@@ -316,7 +316,7 @@ class Courses_By_Prof_Grapher(Grapher):
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
         # set the x bar positions based on how many items are in the lists:
-        x_tick_positions = [x for x in range(len(course_profs_list_DsFs))]
+        x_tick_positions = [x for x in range(len(course_profs_list_As))]
 
 
         # create a matplotlib Figure and Axes:
@@ -334,7 +334,7 @@ class Courses_By_Prof_Grapher(Grapher):
         # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
         ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
         # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
-        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=10, rotation=55)
+        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=10, rotation=55)
         # label the y axis as %As:
         ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         # get rid of the top and right sides of the graph box for visual appeal:

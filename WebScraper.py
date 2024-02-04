@@ -199,7 +199,6 @@ def return_faculty_list():
 # uncommenting this so it can be ran through web scraping file
 
 # call return_faculty_list function which will go through scrape_faculty_names and save_to_json function
-get_faculty_list = return_faculty_list()
 
 # print done when finished
 print("done")
