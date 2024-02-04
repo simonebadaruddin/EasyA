@@ -1,4 +1,4 @@
-"""Maybe the GUI for group 3"""
+"""the GUI for group 3"""
 
 import tkinter as tk # interface library
 from tkinter import ttk # more modern interface designs
