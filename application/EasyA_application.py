@@ -1,14 +1,55 @@
-"""the GUI for group 3"""
+"""
+EasyA_application.py
+Original Author: Luke Marshall
+Module containing the tkinter EasyA interface and input/output processing
+Contributers: Nithi, Simone
+Later additions made by: ___________
 
+This module contains the tkinter interface for the Group 3 CS422 EasyA group project.
+The interface includes several dropdownn menus:
+Course dropdown: allows a user to choose one of any of the courses in the grade data
+that are in the natural science departments; a choice of class supercedes any other dichotomous
+choices from other dropdowns
+Subject dropdown: allows a user to choose one of any of the subjects in the natural science departments
+levels dropdown: allows a user to choose one of any of the levels of courses [1-6]00
+display dropdown: allows a user to determine if they would like their subject and level data to 
+be displayed categorized by instructor or by class in that subject and level; can only be 
+used when a subject and level are chosen.
+grade dropdown: allows user to choose if they would like the grade data to be displayed in terms of 
+%As, or %Ds and Fs; default is in %As
+faculty dropdown: allows user to determine if they would like the grade data to be displayed for all
+instructors or for only the faculty
+class count dropdown: allows the user to choose if they would like the number of class instances that the
+data for each x-axis variable (instructors or class) should be shown along with the class
+
+After the user uses the dropdowns to make their choices, they press the 'Plot Graph' button.
+This sends the interface input from the dropdowns to the backend where it can be processed.
+All of the dropdowns have default text, and some allow for the option of 'None', which are both
+checked for in order to find the dropdowns which have input that should be used to graph.
+One of 4 grapher subclasses are instantiated based on the dropdons that were used, and the arguments
+for this instantiation are garnered from the dropdown input. The graphing method is used on this object,
+with data from the dropdowns used as arguments for displaying the graph how the user wants.
+
+The object creates two jpg images in the users application directory, one for %As and the other for %Ds and Fs.
+Depending if the user has used the grading dropdown and which choice they made if they did, one or the other of
+these images will open.
+
+At this point the user may choose to close the image and either return to the interface and make more choices and
+graph more, or hit the 'Exit' button to close the program."""
+
+# libraries
 import tkinter as tk # interface library
-from tkinter import ttk # more modern interface designs
+from tkinter import ttk, messagebox # more modern interface designs
 from data_maintainer import Data_Maintainer # Data_Maintainer object from local data_maintainer file
-from Grade_grapher import ( Grapher, Subjs_And_Level_by_Class_Grapher, Subjs_And_Level_By_Prof_Grapher, 
+from Grade_grapher import ( Subjs_And_Level_by_Class_Grapher, Subjs_And_Level_By_Prof_Grapher, 
                         Subjs_By_Prof_Grapher, Courses_By_Prof_Grapher ) # Grade graphing objects from local grade_grapher module
 import json # json file usage library
 from PIL import Image # pillow library for interacting with images
 
 
+# ==================================================================================================================================
+# ----------------------------------------------- Data for Dropdowns -----------------------------------------------------------------
+# ==================================================================================================================================
 
 
 # Get the course data from the grade maintainer module
@@ -50,6 +91,11 @@ DISPLAY_PROMPT = "For class or instructors?" # displays
 GRADE_PROMPT = "Choose %As or %DsFs?" # grading category
 FACULTY_PROMPT = "Show data for faculty only?" # faculty only or not
 CLASS_COUNT_PROMPT = "Display class count?" # class count option
+
+
+# ==================================================================================================================================
+# ------------------------------------------------------ Graphing -----------------------------------------------------------------
+# ==================================================================================================================================
 
 
 def graph_choices():
@@ -121,9 +167,22 @@ def graph_choices():
 
     img.show() # display the image on the monitor
 
+# ==================================================================================================================================
+# ------------------------------------------------- Exiting ------------------------------------------------------------------------
+# ==================================================================================================================================
 
-root = tk.Tk()
-root.title("Group 3 Easy A")
+def exit(): # called when the user presses the 'Exit' button
+    if messagebox.askyesno("Exit", "Do you want to quit EasyA?"): # asks user in pop-up box if they'd like to exit
+        # citation: https://docs.python.org/3/library/tkinter.messagebox.html
+        root.destroy() # destroys the interface and exits the program
+
+# ==================================================================================================================================
+# ---------------------------------------------- Root Creation ------------------------------------------------------------------------
+# ==================================================================================================================================
+
+# root (tk): the main tkinter object on which all other specifications are built
+root = tk.Tk() # initialize the tkinter base platform
+root.title("Group 3 Easy A") # title the interface window
 
 # set the size of the tkinter window at start
 root.geometry("800x800")
@@ -136,29 +195,43 @@ frame.pack(side="top", fill="x")
 white_frame = tk.Frame(root)
 white_frame.pack(side="top", fill="both", expand=True)
 
+# create the title on the page itself
 label = tk.Label(white_frame, text="Group 3 Easy A")
 label.config(font=("Times New Roman", 50))
 label.pack()
 
+# ==================================================================================================================================
+# ------------------------------------------------- Dropdown Creation -----------------------------------------------------------------
+# ==================================================================================================================================
+"""
+All dropdowns have the same format for creation:
+create the label for the dropdown: this creates the text that will be displayed above each dropdown and formats it
+    format: text, Times New Roman size 15 font, centered on the interface, with a 1 pixel raised border to separate 
+    the text from the rest of the interface, and a 2 pixel pad between the text and the border
+configure the dropdown: this configures the dropdown with the name it will attach to its store value when the 'Plot Graph' 
+button is pressed, what options are to be displayed by in the dropdown, the state of the dropdown 
+(read-only so no user shenanigans), and the default text to be displayed in the dropdown before any choices are made. 
+"""
+
 # create label for course choice:
 courses_label = ttk.Label(root, text="If a course is chosen it will display over any other choices made, set to 'None' to reset.", relief="raised", borderwidth=1)
-courses_label.config(padding=(2, 2), anchor="center", font=("Times New Roman", 15))
-courses_label.pack()
+courses_label.config(padding=(2, 2), anchor="center", font=("Times New Roman", 15)) # set the label style
+courses_label.pack() # set the label in the interface
 # configure dropdown for Courses
-chosen_course = tk.StringVar()
-course_dropdown = ttk.Combobox(root, textvariable=chosen_course, values=ALL_COURSES, state="readonly")
-course_dropdown.set(COURSE_DD_TXT)
-course_dropdown.pack()
+chosen_course = tk.StringVar() # create object to store the chosen option
+course_dropdown = ttk.Combobox(root, textvariable=chosen_course, values=ALL_COURSES, state="readonly") # make dropdown, set options, 
+course_dropdown.set(COURSE_DD_TXT) # set default text                                                           set read-only
+course_dropdown.pack() # set the box in the interface
 
 # create label for subject and level choices:
 subject_and_level_label = ttk.Label(root, text="A subject can be chosen on its own or with a level. the level option cannot be used on its own. The instructor vs classes option may only be used if both a subject and a level are chosen", relief="raised", borderwidth=1, wraplength=500)
-subject_and_level_label.config(padding=(2, 2), anchor="center", font=("Times New Roman", 15))
-subject_and_level_label.pack()
+subject_and_level_label.config(padding=(2, 2), anchor="center", font=("Times New Roman", 15)) 
+subject_and_level_label.pack() 
 # Configure dropdown for subjects
-chosen_subject = tk.StringVar()
-subj_dropdown = ttk.Combobox(root, textvariable=chosen_subject, values=SUBJECTS, state="readonly")
-subj_dropdown.set(SUBJ_DD_TXT)
-subj_dropdown.pack()
+chosen_subject = tk.StringVar() 
+subj_dropdown = ttk.Combobox(root, textvariable=chosen_subject, values=SUBJECTS, state="readonly") 
+subj_dropdown.set(SUBJ_DD_TXT) 
+subj_dropdown.pack() 
 
 # Configure dropdown for levels
 chosen_level = tk.StringVar()
@@ -176,6 +249,10 @@ display_options_dropdown.pack()
 grade_label = ttk.Label(root, text="Choose the grading category (default %As)", relief="raised", borderwidth=1, wraplength=500)
 grade_label.config(padding=(2,2), anchor="center", font=("Times New Roman", 15))
 grade_label.pack()
+# create secondary label explaining color usage:
+grade_label2 = ttk.Label(root, text="Color variants help discriminate between the graph types. %As are shown in blue, %DsFs are shown in red", relief="raised", borderwidth=1, wraplength=500)
+grade_label2.config(padding=(2,2), anchor="center", font=("Times New Roman", 15))
+grade_label2.pack()
 # Configure dropdown for grading category:
 chosen_grading = tk.StringVar()
 grading_dropdown = ttk.Combobox(root, textvariable=chosen_grading, values=CAT, state="readonly")
@@ -211,11 +288,19 @@ chosen_names = tk.StringVar()
 names_box = ttk.Entry(root, textvariable=chosen_names)
 names_box.pack()
 
+# ==================================================================================================================================
+# --------------------------------------------------- Button Creation -----------------------------------------------------------------
+# ==================================================================================================================================
 
-plot_button = ttk.Button(root, text="Plot Graphs", command=graph_choices)
-plot_button.pack(pady=10)
+# create plot graph button
+# when pressed the button will call the graph_choices() function which will create graphs depending on user input
+plot_button = ttk.Button(root, text="Plot Graph", command=graph_choices)
+plot_button.pack(pady=10) # pad the button for visual clarity
 
+# create exit button
+# when pressed the button will call the exit() function which will exit the program if the user checks yes oon the message box
 exit_button = ttk.Button(root, text="Exit Program", command=exit)
-exit_button.pack(pady=10)
+exit_button.pack(pady=10) # pad the button for visual clarity
 
+# causes the interface to be created according to the specifications
 root.mainloop()

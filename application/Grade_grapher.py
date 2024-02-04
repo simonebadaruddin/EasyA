@@ -18,10 +18,10 @@ graph_data: uses the parsed data from the attribute corresponding to user input 
 according to a category from user input.
 """
 
-
+# Libraries:
 from matplotlib import pyplot as plt # used for graphing and creating graph images
 from typing import Dict, List # for increased typing capabilities
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod # for use in the Grapher base class to make it abstract
 
 
 # ==================================================================================================================================
@@ -159,11 +159,11 @@ class Grapher(ABC):
         Returns: the faculty attribute"""
         return self.__faculty
     
-    # ================== Data Parsing Method =======================================================================================
+    # ================== Data Parsing Methods =======================================================================================
 
     def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
         """If names list is empty a list of all the names from the data is created.
-        Takes names list and filters out non-faculty members if the faculty_only paremeter is set to True
+        Takes names list and filters out non-faculty members if the faculty_only parameter is set to True
         
         args: 
             names_list (List[str]): A list of names the user wants to use in limited graphing; or an empty list by default so 
@@ -261,6 +261,9 @@ class Courses_By_Prof_Grapher(Grapher):
         percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
         when graphing. 
 
+        Args:
+            names_list (list[str]): a list of names that are in the grade data, and should be in the parsed grade data
+
         Returns:
             The dicts of parsed natty_science_courses data described above
         """
@@ -297,6 +300,25 @@ class Courses_By_Prof_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        """Graphs the data based on user input and the particular parcing that takes place in the object.
+        Implemented in each subclass to make graphing unique to the type of graph. 
+        
+        Creates jpgs of graphs, one for %As and the other for %Ds and Fs. The graphs are for single courses. The y-axis 
+        corresponds to grade percentages and the x-axis corresponds to instructors or faculty who have taught the class.
+        Plots the graph based on a subset of the data in the As_data and DsFs_data. The subset of data is retrieved using the
+        category argument. The x-axis labels for the graphs are determined by the faculty_only argument, which causes the label
+        to be 'Faculty' if true and 'Instructors' otherwise. The class_count argument determines if the professors names 
+        have the number of classes that the data was garnered from attached or not.
+        
+        Args:
+            category (str): the name of a course (e.g. MATH111, PSY201)
+            level (NoneType): not used in this Grapher subclass, can be ignored
+            faculty_only (bool): determines the level to which the data has been parsed and what the x-axis label should be
+            class_count (bool): determines if the class count that the data for each x-axis category (instructors/faculty) has 
+            been garnered from should be included with the category label
+            
+        Returns:
+            nothing, but saves two jpgs to the directory: As_graph and DsFs_graph"""
         if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
@@ -463,6 +485,9 @@ class Subjs_By_Prof_Grapher(Grapher):
         percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
         when graphing. 
 
+        Args:
+            names_list (list[str]): a list of names that are in the grade data, and should be in the parsed grade data
+
         Returns:
             The dicts of parsed natty_science_courses_data described above
         """
@@ -505,7 +530,25 @@ class Subjs_By_Prof_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-
+        """Graphs the data based on user input and the particular parcing that takes place in the object.
+        Implemented in each subclass to make graphing unique to the type of graph. 
+        
+        Creates jpgs of graphs, one for %As and the other for %Ds and Fs. The graphs are bar graphs for single subjects. 
+        The y-axis corresponds to grade percentages and the x-axis corresponds to instructors or faculty who have taught 
+        within the subject. Plots the graph based on a subset of the data in the As_data and DsFs_data. The subset of data 
+        is retrieved using the category argument. The x-axis labels for the graphs are determined by the faculty_only 
+        argument, which causes the label to be 'Faculty' if true and 'Instructors' otherwise. The class_count argument 
+        determines if the professors names have the number of classes that the data was garnered from attached or not.
+        
+        Args:
+            category (str): the name of a subject (e.g. MATH, PSY)
+            level (NoneType): not used in this Grapher subclass, can be ignored
+            faculty_only (bool): determines the level to which the data has been parsed and what the x-axis label should be
+            class_count (bool): determines if the class count that the data for each x-axis category (instructors/faculty) has 
+            been garnered from should be included with the category label
+            
+        Returns:
+            nothing, but saves two jpgs to the directory: As_graph and DsFs_graph"""
         if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try: 
@@ -669,6 +712,9 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
         when graphing. 
 
+        Args:
+            names_list (list[str]): a list of names that are in the grade data, and should be in the parsed grade data
+
         Returns:
             The dicts of parsed natty_science_courses data described above
         """
@@ -723,6 +769,24 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         return [grades_for_subj_and_lvl_by_prof_As, grades_for_subj_and_lvl_by_prof_DsFs]
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        """Graphs the data based on user input and the particular parcing that takes place in the object.
+        Implemented in each subclass to make graphing unique to the type of graph. 
+        
+        Creates jpgs of graphs, one for %As and the other for %Ds and Fs. The graphs are bar graphs for single subjects in a 
+        single level. The y-axis corresponds to grade percentages and the x-axis corresponds to instructors or faculty who 
+        have taught within the subject at the specified level. Plots the graph based on a subset of the data in the As_data 
+        and DsFs_data. The subset of data is retrieved using the category and level arguments. The class_count argument 
+        determines if the professors names have the number of classes that the data was garnered from attached or not.
+        
+        Args:
+            category (str): the name of a subject (e.g. MATH, PSY)
+            level (str): a number [1-6]00, which determines the level that the subject should be limited to
+            faculty_only (bool): not used in this subclass
+            class_count (bool): determines if the class count that the data for each x-axis category (instructors/faculty) has 
+            been garnered from should be included with the category label
+            
+        Returns:
+            nothing, but saves two jpgs to the directory: As_graph and DsFs_graph"""
         if not level: # level argument necessary for this graph
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
         if not category: # category necessary for this graph
@@ -897,7 +961,10 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
         second element being the number of instances the class was taught (e.g. if MATH111 has been taught 3 times and the 
         %As were 45%, 65%, and 55% then the first element in the list will be 110.0, and the second element will be 3). The 
         average percentage of the grades can then be calculated from the two list items by dividing the first element by the 
-        second when graphing. 
+        second when graphing.
+
+        Args:
+            names_list (list[str]): a list of names that are in the grade data, and should be used in collecting the parsed data 
 
         Returns:
             The dicts of parsed natty_science_courses data described above
@@ -950,6 +1017,24 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
+        """Graphs the data based on user input and the particular parcing that takes place in the object.
+        Implemented in each subclass to make graphing unique to the type of graph. 
+        
+        Creates jpgs of graphs, one for %As and the other for %Ds and Fs. The graphs are bar graphs for single subjects in a 
+        single level. The y-axis corresponds to grade percentages and the x-axis corresponds to classes which were 
+        taught within the subject at the specified level. Plots the graph based on a subset of the data in the As_data 
+        and DsFs_data. The subset of data is retrieved using the category and level arguments. The class_count argument 
+        determines if the professors names have the number of classes that the data was garnered from attached or not.
+        
+        Args:
+            category (str): the name of a subject (e.g. MATH, PSY)
+            level (str): a number [1-6]00, which determines the level that the subject should be limited to
+            faculty_only (bool): not used in this subclass
+            class_count (bool): determines if the class count that the data for each x-axis category (instructors/faculty) has 
+            been garnered from should be included with the category label
+            
+        Returns:
+            nothing, but saves two jpgs to the directory: As_graph and DsFs_graph"""
         if not level: # level argument necessary for this graph
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
         if not category: # category necessary for this graph
