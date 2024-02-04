@@ -126,7 +126,7 @@ root = tk.Tk()
 root.title("Group 3 Easy A")
 
 # set the size of the tkinter window at start
-root.geometry("800x900")
+root.geometry("800x800")
 
 # Create a white frame
 frame = tk.Frame(root, bg="White")
