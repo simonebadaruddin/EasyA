@@ -3,8 +3,8 @@ Module containing Grapher Python class and its subclasses
 """
 
 
-from matplotlib import pyplot as plt
-from typing import Dict, List
+from matplotlib import pyplot as plt # used for graphing and creating graph images
+from typing import Dict, List # for increased typing capabilities
 from abc import ABC, abstractmethod
 
 
@@ -187,7 +187,7 @@ class Grapher(ABC):
     
     
 # ==================================================================================================================================
-# --------------------------------- Courses_By_Prof_Grapher Subclass definition --------------------------------------------------------
+# --------------------------------- Courses_By_Prof_Grapher Grapher Subclass definition --------------------------------------------------------
 # ==================================================================================================================================
 
 
@@ -229,6 +229,7 @@ class Courses_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
 
     # ================== Data Parsing Method =======================================================================================
@@ -284,8 +285,6 @@ class Courses_By_Prof_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if level: # level isn't an available argument for this particular subgraph 
-            raise TypeError(f"graph_data() method given 1 extra keyword argument: level. Courses_By_Prof_Grapher object does not have a level option.")
         if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
         try:
@@ -324,6 +323,11 @@ class Courses_By_Prof_Grapher(Grapher):
         
 
         # configure the graph options:
+        
+        # fontsize (int): size of the font of the x-axis categories
+        fontsize = 12 # set font size
+        if (num_bars := len(course_data_list_As)) > 13: # decrease font size by one for every extra bar past 13 bars
+            fontsize -= (num_bars - 13)
 
         # set the graph to plot %As for each professor, and make the bars blue:
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
@@ -332,9 +336,9 @@ class Courses_By_Prof_Grapher(Grapher):
         # set the bar positions along the x-axis:
         ax.set_xticks(x_tick_positions)
         # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
-        ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontweight='bold')
+        ax.set_xlabel(f"{'Instructors' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
         # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
-        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=10, rotation=55)
+        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=fontsize, rotation=55)
         # label the y axis as %As:
         ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
         # get rid of the top and right sides of the graph box for visual appeal:
@@ -344,7 +348,7 @@ class Courses_By_Prof_Grapher(Grapher):
         plt.tight_layout()
 
         # Save the created graph as As_graph.jpg:
-        plt.savefig('As_graph.jpg')
+        plt.savefig('As_graph.jpg', dpi=300)
 
         # course_profs_list_DsFs (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
@@ -357,17 +361,17 @@ class Courses_By_Prof_Grapher(Grapher):
         # configure the graph options:
 
         # set the graph to plot %As for each professor, and make the bars blue:
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.1)
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
         # set the title to the category, and make it bold:
         ax.set_title(f"{category}", fontweight='bold')
         # set the bar positions along the x-axis:
         ax.set_xticks(x_tick_positions)
         # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=8, fontweight='bold')
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
         # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
-        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=10, rotation=55)
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=fontsize, rotation=55)
         # label the y axis as %DsFs:
-        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=15, fontweight='bold')
         # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
@@ -381,7 +385,7 @@ class Courses_By_Prof_Grapher(Grapher):
 
 
 # ==================================================================================================================================
-# --------------------------------- subjs_By_Prof_Grapher Subclass definition --------------------------------------------------------
+# --------------------------------- Subjs_By_Prof_Grapher Grapher Subclass definition --------------------------------------------------------
 # ==================================================================================================================================
 
 
@@ -423,7 +427,12 @@ class Subjs_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits fully from the Base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
+
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -484,51 +493,101 @@ class Subjs_By_Prof_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if level:
-            raise TypeError(f"graph_data() method given 1 extra keyword argument: level. subjs_By_Prof_Grapher object does not have a level option.")
-        if not category:
+
+        if not category: # category is a necessary argument for this subgraph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
-        try:
+        try: 
+            # course_data_dict_(As/DsFs) (Dict[str, List[float, int]]): the inner dict of the As_data and DsFs_data 
+            # corresponding to category
             course_data_dict_As = self._Grapher__As_data[category]
             course_data_dict_DsFs = self._Grapher__DsFs_data[category]
             
-        except KeyError as e:
-            print(f"KeyError has occured: {e}")
+        except KeyError as e: # the category is not in the data
+            print(f"KeyError has occured: {e}") 
         
+        # course_data_list_(As/DsFs) (Tuple[str, List[float, int]]): a list of tuples of the key-value pairs in course_data_dict_(As/DsFs)
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
+        # The second element in the tuple is a list with 2 values, this sorts the tuples in terms of the quotient of its
+        # first and second elements
         course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
         course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] )
 
+        if len(course_data_list_As) > 20: # checks that the course data is less than 21 items long
+            # if they are above 20 items long, cut out the middle, only keep the highest and lowest 10 items
+            del course_data_list_As[10:-10]
+            del course_data_list_DsFs[10:-10]
+
+        # course_profs_list_As (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        # course_grades_list_As (list[float]): list of the average %As for each instructor for the classes they taught in category
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
+        # set the x bar positions based on how many items are in the lists:
+        x_tick_positions = [x for x in range(len(course_profs_list_As))]
+
+        # create a matplotlib Figure and Axes:
         fig, ax = plt.subplots()
 
+        # configure the graph options:
+
+        # fontsize (int): size of the font of the x-axis categories
+        fontsize = 12 # set font size
+        if (num_bars := len(course_data_list_As)) > 13: # decrease font size by one for every extra bar past 13 bars
+            fontsize -= (num_bars - 13)
+
+        # set the graph to plot %As for each professor, and make the bars blue:
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        # set the title to the category, and make it bold:
         ax.set_title(f"All {category} Classes", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %As:
         ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
         
-        plt.savefig('As_graph.jpg')
+        # Save the created graph as As_graph.jpg:
+        plt.savefig('As_graph.jpg', dpi=300)
 
+        # course_profs_list_DsFs (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        # course_grades_list_DsFs (list[float]): list of the average %Ds and Fs for each instructor for the classes they taught in category
         course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
 
+        # create the matplotlib Figue and Axes next plot:
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        # configure the graph options:
 
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        # set the title to the category, and make it bold:
         ax.set_title(f"All {category} Classes", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or Instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %DsFs:
         ax.set_ylabel("%\nDsFs", rotation=0, labelpad=15, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
         
-        plt.savefig('DsFs_graph.jpg')
+        # Save the created graph as DsFs_graph.jpg:
+        plt.savefig('DsFs_graph.jpg', dpi=300)
 
         return
     
@@ -574,11 +633,33 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
+        
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
     
     # ================== Data Parsing Method =======================================================================================
 
     def parse_data(self, names_list=[]) -> Dict[str, Dict[str, List[str]]]:
+        """Parses the natty_science_courses attribute into categories and data appropriate to the graph and its options 
+        specified by the Grapher subclass and the methods used.
+        
+        The categories for this parser are grade data in terms of %A or %Ds and %Fs for each of the courses in the natural
+        science subjects for each of the instructors who taught it, along with the number of times they taught it.
+        This is iteratively parsed from the data and represented as a dict with keys that are names of the courses
+        (e.g. MATH111, PSY201) and values that are dicts. The inner dict has the names of all the instructors who taught that 
+        class as keys. The values for the inner dict are a lists, with the first element in each being the total %As or 
+        %Ds and %Fs for all the instances of the class they taught, stored as a float; and the second element being the number 
+        of instances they taught the class  (e.g. if an instructor has taught MATH 111 3 times and the %As were 
+        45%, 65%, and 55% then the first element in the list will be 110.0, and the second element will be 3). The average 
+        percentage of the grades can then be calculated from the two list items by dividing the first element by the second 
+        when graphing. 
+
+        Returns:
+            The dicts of parsed natty_science_courses data described above
+        """
         # grades_for_subj_and_lvl_by_prof_(As/DsFs) (dict{str: dict{str: list[int, int]}}): keys are natural science subjects and 
         # level represented by subject code concatenated with a level 100-600; values are dicts. Nested value dicts have 
         # instructor names as keys and lists with the first element being the total %As or %Ds and %Fs for the class instances 
@@ -630,59 +711,112 @@ class Subjs_And_Level_By_Prof_Grapher(Grapher):
         return [grades_for_subj_and_lvl_by_prof_As, grades_for_subj_and_lvl_by_prof_DsFs]
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if not level:
+        if not level: # level argument necessary for this graph
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
-        if not category:
+        if not category: # category necessary for this graph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
-        if not isinstance(category, str):
+        if not isinstance(category, str): # check category is correct type
             raise TypeError("category positional argument should be a string.")
-        if not isinstance(level, str):
+        if not isinstance(level, str): # check level is the correct type
             raise TypeError("level positional argument should be a string.")
-        if not level in set(['100', '200', '300', '400', '500', '600']):
+        if not level in set(['100', '200', '300', '400', '500', '600']): 
+            # check that level is in its allowed values 
             raise AttributeError(f"level {level} is not an appropriate level")
 
-        category += str(level)
+        category += str(level) # concatenate the category and level and store in level, to use as key to dict
         try:
+            # course_data_dict_(As/DsFs) (Dict[str, List[float, int]]): the inner dict of the As_data and DsFs_data 
+            # corresponding to category
             course_data_dict_As = self._Grapher__As_data[category]
             course_data_dict_DsFs = self._Grapher__DsFs_data[category]
 
-        except KeyError as e:
+        except KeyError as e: # the category is not in the data
             print(f"KeyError has occured: {e}")
         
+        # course_data_list_(As/DsFs) (Tuple[str, List[float, int]]): a list of tuples of the key-value pairs in course_data_dict_(As/DsFs)
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
+        # The second element in the tuple is a list with 2 values, this sorts the tuples in terms of the quotient of its
+        # first and second elements
         course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
         course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1] )
 
+        if len(course_data_list_As) > 20: # checks that the course data is less than 21 items long
+            # if they are above 20 items long, cut out the middle, only keep the highest and lowest 10 items
+            del course_data_list_As[10:-10]
+            del course_data_list_DsFs[10:-10]
+
+        # course_profs_list_As (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        # course_grades_list_As (list[float]): list of the average %As for each instructor for the classes they taught in category
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
+        # set the x bar positions based on how many items are in the lists:
+        x_tick_positions = [x for x in range(len(course_profs_list_As))]
+
+        # create a matplotlib Figure and Axes:
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_As, course_grades_list_As, width=0.25, color='blue')
+        # configure the graph options:
+
+        # fontsize (int): size of the font of the x-axis categories
+        fontsize = 12 # set font size
+        if (num_bars := len(course_data_list_As)) > 13: # decrease font size by one for every extra bar past 13 bars
+            fontsize -= (num_bars - 13)
+
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        # set the title to the category, and make it bold:
         ax.set_title(f"{category.rstrip(level)} {level}-level", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %As:
         ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
         
-        plt.savefig('As_graph.jpg')
+        # Save the created graph as As_graph.jpg:
+        plt.savefig('As_graph.jpg', dpi=300)
 
+        # course_profs_list_DsFs (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        # course_grades_list_DsFs (list[float]): list of the average %Ds and Fs for each instructor for the classes they taught in category
         course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
 
+        # create the matplotlib Figue and Axes next plot:
         fig, ax = plt.subplots()
 
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red', width=0.8)
+        # configure the graph options:
 
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        # set the title to the category, and make it bold:
         ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
-        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontweight='bold')
-        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or Instructors if not; in bold:
+        ax.set_xlabel(f"{'Instructor' if not faculty_only else 'Faculty'}", fontsize=10, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %DsFs:
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=15, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
         
-        plt.savefig('DsFs_graph.jpg')
+        # make the layout autosize to the graph
+        plt.tight_layout()
+        
+        # Save the created graph as DsFs_graph.jpg:
+        plt.savefig('DsFs_graph.jpg', dpi=300)
 
         return
 
@@ -728,7 +862,13 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
         faculty only, class counts included)
     """
     def __init__(self, natty_science_course_data: Dict[str, List[Dict[str, str]]], faculty: List[str], names_list=[], faculty_only=False) -> None:
+        """Constructor method inherits everything from the base class, initializes all class attributes"""
         super().__init__(natty_science_course_data, faculty, names_list, faculty_only)
+
+    def filter_names(self, names_list=[], faculty_only=False) -> List[str]:
+        """Inherited fully from the base class, filters names based on if a names list is given and if faculty_only is true"""
+        return super().filter_names(names_list, faculty_only)
+        
     
     # ================== Data Parsing Method =======================================================================================
 
@@ -781,59 +921,110 @@ class Subjs_And_Level_by_Class_Grapher(Grapher):
     # =================== Graphing Method ======================================================================================
     
     def graph_data(self, category: str, level=None, faculty_only=False, class_count=False) -> None:
-        if not level:
+        if not level: # level argument necessary for this graph
             raise TypeError(f"graph_data() method missing 1 keyword argument: level.")
-        if not category:
+        if not category: # category necessary for this graph
             raise TypeError(f"graph_data() method missing 1 positional argument: category")
-        if not isinstance(category, str):
+        if not isinstance(category, str): # check category is correct type
             raise TypeError("category positional argument should be a string.")
-        if not isinstance(level, str):
+        if not isinstance(level, str): # check level is the correct type
             raise TypeError("level positional argument should be a string.")
         if not level in set(['100', '200', '300', '400', '500', '600']):
+            # check that level is in its allowed values
             raise AttributeError(f"level {level} is not an appropriate level")
         
-        category += str(level)
+        category += str(level) # concatenate the category and level and store in level, to use as key to dict
         try:
+            # course_data_dict_(As/DsFs) (Dict[str, List[float, int]]): the inner dict of the As_data and DsFs_data 
+            # corresponding to category
             course_data_dict_As = self._Grapher__As_data[category]
             course_data_dict_DsFs = self._Grapher__DsFs_data[category]
             
-        except KeyError as e:
+        except KeyError as e: # the category is not in the data
             print(f"KeyError has occured: {e}")
         
+        # course_data_list_(As/DsFs) (Tuple[str, List[float, int]]): a list of tuples of the key-value pairs in course_data_dict_(As/DsFs)
         course_data_list_As = list(course_data_dict_As.items())
         course_data_list_DsFs = list(course_data_dict_DsFs.items())
 
+        # The second element in the tuple is a list with 2 values, this sorts the tuples in terms of the quotient of its
+        # first and second elements
         course_data_list_As.sort( key = lambda item: item[1][0]/item[1][1] )
         course_data_list_DsFs.sort( key = lambda item: item[1][0]/item[1][1], reverse=True )
 
+        if len(course_data_list_As) > 20: # checks that the course data is less than 21 items long
+            # if they are above 20 items long, cut out the middle, only keep the highest and lowest 10 items
+            del course_data_list_As[10:-10]
+            del course_data_list_DsFs[10:-10]
+
+        # course_profs_list_As (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_As = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_As]
+        # course_grades_list_As (list[float]): list of the average %As for each instructor for the classes they taught in category
         course_grades_list_As = [round(item[1][0]/item[1][1]) for item in course_data_list_As]
 
+        # set the x bar positions based on how many items are in the lists:
+        x_tick_positions = [x for x in range(len(course_profs_list_As))]
+
+        # create a matplotlib Figure and Axes:
         fig, ax = plt.subplots()
 
+        # configure graph options:
+
+        # fontsize (int): size of the font of the x-axis categories
+        fontsize = 12 # set font size
+        if (num_bars := len(course_data_list_As)) > 13: # decrease font size by one for every extra bar past 13 bars
+            fontsize -= (num_bars - 13)
+
+        # set the graph to plot %As for each professor, and make the bars blue:
         ax.bar(course_profs_list_As, course_grades_list_As, color='blue')
+        # set the title to the category, and make it bold:
         ax.set_title(f"{category.rstrip(level)} {level}-level", fontweight='bold')
-        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or instructors if not; in bold:
+        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontsize=10, fontweight='bold')
+        # set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_As, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %As:
         ax.set_ylabel("%\nAs", rotation=0, labelpad=10, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
         
-        plt.savefig('As_graph.jpg')
+        # Save the created graph as As_graph.jpg:
+        plt.savefig('As_graph.jpg', dpi=300)
 
+        # course_profs_list_DsFs (list[str]): list of instructor names; concatenated with their class counts if the class_count argument is set
         course_profs_list_DsFs = [f"({item[1][1]}) {item[0]}" if class_count else item[0] for item in course_data_list_DsFs]
+        # course_grades_list_DsFs (list[float]): list of the average %Ds and Fs for each instructor for the classes they taught in category
         course_grades_list_DsFs = [round(item[1][0]/item[1][1]) for item in course_data_list_DsFs]
 
+        # create the matplotlib Figue and Axes next plot:
         fig, ax = plt.subplots(figsize=(15,10))
 
-        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        # configure the graph options:
 
+        # set the graph to plot %As for each professor, and make the bars blue:
+        ax.bar(course_profs_list_DsFs, course_grades_list_DsFs, color='red')
+        # set the title to the category, and make it bold:
         ax.set_title(f"All {category.rstrip(level)} {level}-level", fontweight='bold')
-        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontweight='bold')
-        ax.set_xticklabels(course_profs_list_DsFs, fontsize=5, rotation=45)
-        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=10, fontweight='bold')
+        # set the bar positions along the x-axis:
+        ax.set_xticks(x_tick_positions)
+        # label the x-axis to be Faculty if the faculty_only is set to True, or Instructors if not; in bold:
+        ax.set_xlabel(f"{'Class' if not faculty_only else 'Class (faculty only)'}", fontsize=10, fontweight='bold')
+        #set the bar labels, their orientation around the tick marks, their font size, and their rotation in reference to the x-axis
+        ax.set_xticklabels(course_profs_list_DsFs, ha='right', fontsize=fontsize, rotation=55)
+        # label the y axis as %DsFs:
+        ax.set_ylabel("%\nDsFs", rotation=0, labelpad=15, fontweight='bold')
+        # get rid of the top and right sides of the graph box for visual appeal:
         for side in ["top", "right"]:
             ax.spines[side].set_visible(False)
+        # make the layout autosize to the graph
+        plt.tight_layout()
         
-        plt.savefig('DsFs_graph.jpg')
+        # Save the created graph as DsFs_graph.jpg:
+        plt.savefig('DsFs_graph.jpg', dpi=300)
 
         return   

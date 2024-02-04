@@ -1,5 +1,6 @@
 from data_maintainer import Data_Maintainer 
 import unittest
+import json
 
 class test_basics(unittest.TestCase):
     def test_obj_creation(self):
@@ -12,15 +13,15 @@ class test_basics(unittest.TestCase):
         obj = Data_Maintainer('other')
         file = obj.get_data_file()
         self.assertEqual(file, 'other')
-        
+
 
     def test_getters(self):
         dm = Data_Maintainer()
 
         # test that the getters return the correct attributes
         nats = dm.get_nat_sci()
-        nat_sci = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                  'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        nat_sci = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                        'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STAT' ])
         self.assertEqual(nats, nat_sci)
         gd = dm.get_grade_data()
         d = None
@@ -33,7 +34,8 @@ class test_basics(unittest.TestCase):
             dm.__grade_data
         with self.assertRaises(AttributeError):
             dm.__data_file
-        
+       
+
     def test_setters(self):
         # set data file
         dm = Data_Maintainer()
@@ -42,11 +44,11 @@ class test_basics(unittest.TestCase):
         self.assertEqual(file, "non_file")
         # set natural sciences
         nats = dm.get_nat_sci()
-        nat_sci = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CIS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                  'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        nat_sci = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                        'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STAT' ])
         self.assertEqual(nats, nat_sci)
-        new_nat = set([ 'ANTH', 'ASTR', 'BI', 'CH', 'CS', 'CIT', 'CPSY', 'ERTH', 'ENVS', 
-                                  'GEOG', 'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY' ])
+        new_nat = set([ 'ANTH', 'ASTR', 'BI', 'BIOE', 'CH', 'CIS', 'CIT', 'CPSY', 'DSCI', 'ERTH', 'ENVS', 
+                                        'HPHY', 'MATH', 'NEUR', 'PHYS', 'PSY', 'SPSY', 'STAT' ])
         dm.set_nat_sci(new_nat)
         nats = dm.get_nat_sci()
         self.assertEqual(nats, new_nat)
@@ -114,6 +116,24 @@ class test_upgrade_grade_data(unittest.TestCase):
         # remove test file
         pass
 
+class test_discrepancy_handling(unittest.TestCase):
+    def test_search(self):
+        dm = Data_Maintainer()
+        dm.update_grade_data()
+        f = open('faculty_list.json', 'r')
+        scraped_faculty_list = json.loads(f.read())
+        f.close()
+        dm.discrepancy_search(scraped_faculty_list)
+
+    def test_replace(self):
+        dm = Data_Maintainer()
+        dm.update_grade_data()
+        dm.replace_faculty_name("Bone, Christopher E.", "Bone, Christopher")
+        f = open('faculty_list.json', 'r')
+        scraped_faculty_list = json.loads(f.read())
+        f.close()
+        dm.discrepancy_search(scraped_faculty_list)
+ 
 
 if __name__ == '__main__' :
     unittest.main()

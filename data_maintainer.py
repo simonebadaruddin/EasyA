@@ -2,10 +2,11 @@
 This file contains methods to update and maintain grade data.
 
 Origninal Author: Erin Cohen
-Updated By: --- (enter here if you update)
 """
 import json
 import re
+from difflib import SequenceMatcher as sm
+from difflib import get_close_matches 
 
 class Data_Maintainer:
     def __init__(self, data_file='gradedata.json'):
@@ -18,18 +19,6 @@ class Data_Maintainer:
         self.__grade_data = None 
 
 
-    #TODO:
-    #  the admin functionality needs a way to fix any discrepencies between the faculty list
-    # and the instructor names in the grade data e.g. a prompt that says 'these names in the 
-    # faculty list are not in the grade data:'
-        """
-        When replacing the system data, ideally, discrepancies between names found in
-        “gradedata.js” and the names found in the scraped instructor data would be easy to resolve
-        using the administrator tools, to ensure that the data in your tables is clean, consistent and
-        accurate. (Optionally, as the two sources of data are brought into alignment, the tools could
-        generate statistics such as lists of names from both data sources that have yet to find a match,
-        so you can see how your data resolving process needs to be further improved.)"""
-
     # ----------- Administrator Functions ---------------------
 
     def update_grade_data(self, new_data_file='gradedata.json'):
@@ -41,7 +30,6 @@ class Data_Maintainer:
         print("Grade Data has been successfully updated.")
         return
 
-
     # possibly change this to 3 separate functions; add, remove and replace.
     # this would be good for ease of administrator use, they do not need to know anything about
     # the format of the set or every natural science course code to update/add/remove one code
@@ -50,7 +38,82 @@ class Data_Maintainer:
         # ie. updating CIS to CS
         self.__natural_sciences = new_set
 
+    def discrepancy_search(self, scraped_faculty_list):
+        """ Compare the given list of names and the faculty in data set and search for any pairs of names that are 
+            very similar but not identical. Return the resulting list of name close matches so an administrator
+            can see any potential discrepencies that should be handled."""
+
+        # Create a list of just the instructor names in the grade data
+        instructors = self.get_grade_data_instructors()
+     
+        # Create a list of similar name pairs
+        similar_name_pairs = []
+        for name in scraped_faculty_list:
+            # check for names with 80% or greater similarity
+            close_matches = get_close_matches(name, instructors, cutoff=.8)
+            # remove any exact matches in close matches
+            close_matches = list(set(close_matches))  
+            # !!! can replace with:
+            # if name in close_matches:
+                # close_matches.remove(name) 
+            for n in close_matches:
+                if n == name:
+                    close_matches.remove(n)         
+            # if there are any close matches to this name, (besides an exact match)
+            # add them to the list
+            if len(close_matches) > 1:
+                    similar_name_pairs.append({name:close_matches})
+        
+        # Display the list of possible duplicates
+        print("\n-------------------------------------------------")
+        print("Faculty in scraped list : Potential duplicate names in grade data")
+        print("-------------------------------------------------")
+        for name in similar_name_pairs:
+            print(name)
+        print("-------------------------------------------------\n")
+
+    def replace_faculty_name(self, name_to_replace, new_name):
+        """ Alter __grade_data to replace a current name representation to
+            a representation consistent with scraped data"""
+        try: # !!! same problem as below
+            for course in self.__grade_data:
+                instructor = self.__grade_data[course][0]["instructor"]
+                if instructor == name_to_replace:
+                    old_name = instructor
+                    self.__grade_data[course][0]["instructor"] =  new_name
+                    updated_name = self.__grade_data[course][0]["instructor"]
+            print("\nSuccess: Stored grade data has been changed.")
+            print(f"'{old_name}' has been replaced with '{updated_name}' in stored grade data.\n")
+        
+        except:
+            print("\nError: Entered names are not in the expected form, please correct and try again.")
+            print("Recall: \n    arg1: name as it exists in grade data \n    arg2: name to replace it with")
+            print("No changes have been made.\n")
+        
+
     # ----------- Helper methods ---------------------
+
+    def get_grade_data_instructors(self):
+        """ Return a list of the instructors stored in grade data
+         with names in the form : "First Middle Last" (if there is a middle)"""
+        # !!! instructors = []
+        # for course in self.__grade_data:
+        #     for instance in self.__grade_data[course]:
+        #         if "," in (instructor := instance["instructor"]):
+        instructors = []
+        for course in self.__grade_data:
+            instructor = self.__grade_data[course][0]["instructor"]
+            # The data has names stored as "Last, First middle" (if there is a middle)
+            # so we need to change it to the form "First middle Last" (if there is a middle)
+            if "," in instructor: # split the strings into first and last name
+                instructor = instructor.split(", ") 
+                instructor = f"{instructor[1]} {instructor[0]}" # I think this may rearrange names so theyre middle name or initial 
+                # first followed by first name and last name
+                instructors.append(instructor)
+                # add each name to the list 
+            else: # otherwise append the single name
+                instructors.append(instructor)
+        return instructors
 
     def nat_sci_filter(self, all_courses):
         # this function takes a course data python dictionary and 

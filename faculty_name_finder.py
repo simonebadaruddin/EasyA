@@ -3,13 +3,13 @@ WebScraper: CS 422 Project 1
 Author: Isabella Cortez
 Credit: YouTube, GeeksforGeeks
 This file scrapes faculty names off of the Wayback Machine for 11 different departments
+Date Modified: 02/03/2024
 """
 
 # import statements (importing BeautifulSoup Libraries, requests, json and time)
 import requests
 from bs4 import BeautifulSoup
 import json
-import time
 from time import sleep
 import timeit
 
@@ -25,7 +25,6 @@ psy = "https://web.archive.org/web/20141107202211/http://catalog.uoregon.edu/art
 earthsci = "https://web.archive.org/web/20141128094827/http://catalog.uoregon.edu/arts_sciences/geologicalsciences/#facultytext"
 anth = "https://web.archive.org/web/20141107201352/http://catalog.uoregon.edu/arts_sciences/anthropology/#facultytext"
 geo = "https://web.archive.org/web/20141128094244/http://catalog.uoregon.edu/arts_sciences/geography/#facultytext"
-# neuro = "https://web.archive.org/web/20141107202132/http://catalog.uoregon.edu/arts_sciences/neuroscience/"
 
 # url set to empty string
 url = ""
@@ -45,7 +44,7 @@ def scrape_faculty_names(u):
     # go through url_list and scrape depending on what page it is
     for index in range(len(url_list)):
         # wait every 10 seconds to scrape
-        time.sleep(10)
+        sleep(10)
 
         '''
         time.time()
@@ -84,8 +83,8 @@ def scrape_faculty_names(u):
         # last_sentence: string to find is the date in... sentence
         last_sentence = BeautSoup.find('p', string="The date in parentheses at the end of each entry is the first year on the University of Oregon faculty.")
 
-        # urls in list to find
-        # url in position looking for 2 (cis), 7 (psy), 9 (anth)
+        # find urls in list 
+        # looking for url in position 2 (cis), 7 (psy), 9 (anth)
         # list is zero indexed
         if url == url_list[2] or url == url_list[7] or url == url_list[9]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -103,8 +102,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 3 (envs)
+        # find urls in list 
+        # looking for url in position 3 (envs)
         # list is zero indexed
         if url == url_list[3]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -122,8 +121,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 0 (bio), 4 (huphys), 5 (math), 8 (earthsci)
+        # find urls in list 
+        # looking for url in position 0 (bio), 4 (huphys), 5 (math), 8 (earthsci)
         # list is zero indexed
         if url == url_list[0] or url == url_list[4] or url == url_list[5] or url == url_list[8]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -141,8 +140,8 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # urls in list to find
-        # url in position looking for 1 (biochem), 6 (physics), 10 (geo)
+        # find urls in list 
+        # looking for url in position 1 (biochem), 6 (physics), 10 (geo)
         # list is zero indexed
         if url == url_list[1] or url == url_list[6] or url == url_list[10]:
             # facultyNames: look for the word Faculty and anything strings underneath it
@@ -160,52 +159,45 @@ def scrape_faculty_names(u):
                     # add the faculty names to faculty_list
                     faculty_list.append(faculty)
 
-        # neuro part -- is commented out because I don't know if it's needed -- it says participating faculty
-        '''
-        # look for url in list
-        if url == url_list[11]:
-            # get list of participating faculty
-            for parFacNames in data.find(string='Participating Faculty').parent.find_next_siblings():
-                participating = parFacNames.get_text().split(',')[0]
-                pf_list.append(participating)
-        '''
-
         # Add faculty names to the overall list
         faculty_names.extend(faculty_list)
 
     # return faculty names
     return faculty_names
 
-# function save_to_json
-# open json file up
-# dump info to json file
+# define function save_to_json
 def save_to_json(data, filename='faculty_list.json'):
+    # create and open json file up
     with open(filename, 'w', encoding='utf-8') as json_file:
+        # dump faculty information to json file
         json.dump(data, json_file, ensure_ascii=False, indent=4)
 
-# function return_faculty_list
-# use url_list
-# faculty_list = scrape_faculty_names(url_list); call scrape_faculty_names function
-# call save_to_json function -> use faculty_list
-# return faculty_list
+# define function return_faculty_list
 def return_faculty_list():
+    # use the same url_list as defined above (to loop through)
     url_list = [bio, biochem, cis, envs, huphys, math, physics, psy, earthsci, anth, geo]
+    # faculty_list: calls the scrape_faculty_names function (uses url_list and goes through tht list in the scrape_faculty_names)
     faculty_list = scrape_faculty_names(url_list)
+    # call save_to_json function -> use faculty_list
     save_to_json(faculty_list)
+    # returns faculty_list
     return faculty_list
 
-# example use case for importing it to different file
+# define function get_faculty_as_py_list
+def get_faculty_as_py_list():
+    # opens the json file (faculty_list.json)
+    with open('faculty_list.json', 'r') as f:
+        # sets the faculty list to json.loads
+        scraped_faculty_list = json.loads(f.read())
+    # returns list as python list
+    return scraped_faculty_list
 
-# uncommenting this so it can be ran through web scraping file
+# print(get_faculty_as_py_list())
+# print(type(get_faculty_as_py_list()))
+# get_faculty_list = return_faculty_list()
+# print(get_faculty_list)
+# print("done")
 
-# call return_faculty_list function which will go through scrape_faculty_names and save_to_json function
 
-# print done when finished
-print("done")
-
-'''
-Print or use faculty_list as needed
-print(faculty_list)
-'''
 
 
