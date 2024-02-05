@@ -1,6 +1,7 @@
 # Group 3 EasyA
 ## CS422 Winter 2024 Group Project 1
 ### Created 2/4/2024
+### Written 2/4/2024 by Luke Marshall
 ##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
 
 ## This is a directional and explanatory document. 

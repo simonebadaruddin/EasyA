@@ -8,8 +8,8 @@
 It is necessary to check for required libraries in the directory and install them if they are not found. Make sure you are in your terminal, in the `application` directory.
 
 The `Grade_grapher.py` file requires the use of graphing capabilies to create and produce the graphs, the matplotlib library is used for this purpose
-    - Type `pip show matplotplib` into the command line of the terminal and hit enter.
-    - If nothing appears, use `pip install matplotlib` to install the json library.
+- Type `pip show matplotplib` into the command line of the terminal and hit enter.
+- If nothing appears, use `pip install matplotlib` to install the json library.
 
 NOTE: above you are instructed to use the `pip` command. If you are getting an error when this is attempted, you may need to use `pip3` in its place.
 
