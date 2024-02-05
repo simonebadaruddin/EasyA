@@ -160,10 +160,9 @@ def graph_choices():
     graph.graph_data(category, level=selected_level, faculty_only=selected_faculty, class_count=selected_class_count)
     # Creates 2 jpg images in the directory to open depending on user input
     
-    if selected_grading: # if the grading option wasn't chosen or %As was chosen
-        img = Image.open('As_graph.jpg') # open the As jpg
-    else: # if %DsFs was chosen
-        img = Image.open('DsFs_graph.jpg') # open the DsFs jpg
+    # if the grading option wasn't chosen or %As was chosen open the As jpg, if %DsFs was chosen open the DsFs jpg
+    # img (Image): an opened Image object for use in displaying requested graph
+    img = Image.open('As_graph.jpg') if selected_grading else Image.open('DsFs_graph.jpg')
 
     img.show() # display the image on the monitor
 
