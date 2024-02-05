@@ -1,24 +1,26 @@
 # Instructions for Administrator System Usage
+## Project 1 for CS422, Winter 2024
+### Written by Luke Marshall 2/2/2024
 
-The function of the admin system is to allow an administrator to replace the grade data collected from the University of Oregon. The system additionally allows the admin to view and make changes to the list of faculty names. The faculty names are used to limit the data being graphed in the user application to only that of the faculty in the natural science departments.
+The function of the admin system is to allow an administrator to replace the grade data collected from the University of Oregon. The system additionally allows the admin to view discrepencies in the names between those found on the web and those in the grade data. The faculty names are used to limit the data being graphed in the user application to only that of the faculty in the natural science departments if a user so chooses.
 
 ## Dependencies
 
-The local dependencies include the `data_maintainer.py` and `Webscraper.py` files that should be in the directory. If those files are not included in the downloaded package, please re-download the package and see that they are included.
+The local dependencies include the `data_maintainer.py` and `Webscraper.py` files that should be in the `application` directory. If those files are not included in the downloaded package, please re-download the package and see that they are included.
 
-The modules are only garunteed to work if using Python versions 3.10-3.12.
+The modules are only guaranteed to work if using Python versions 3.10-3.12.
 
-NOTE: below you are instructed to use the `pip` command. If you are using a newer MacOS or Linux device to run the program, you may need to use `pip3` in its place.
+NOTE: below you are instructed to use the `pip` command. If you are getting an error when this is attempted, you may need to use `pip3` in its place.
 
 ### The `data_maintainer.py` file includes its own dependencies that must be accounted for:
 
-It is necessary to check for required libraries in the directory and install them if they are not found. Make sure you are in your terminal, in the `EasyA` directory.
+It is necessary to check for required libraries in the directory and install them if they are not found. Make sure you are in your terminal, in the `application` directory.
 
 1. The data maintainer file requires the use of regular expressions to filter the grade data for the data that is related to the natural science departments, the re library is used to do this:
     - Type `pip show re` into the command line of the terminal and hit enter.
     - If nothing appears, use `pip install re` to install the regex library.
 
-2. The data maintainer file requires the use of json file functionality to store the filtered grade data, the json library is used to do this:
+2. The data maintainer file requires the use of json file functionality to access the grade data and the faculty list, the json library is used to do this:
     - Type `pip show json` into the command line of the terminal and hit enter.
     - If nothing appears, use `pip install json` to install the json library.
 
@@ -27,7 +29,7 @@ It is necessary to check for required libraries in the directory and install the
 
 ### The `WebScraper.py` file includes its own dependencies that must be accounted for:
 
-It is necessary to check for required libraries in the directory and install them if they are not found. Make sure you are in your terminal, in the `EasyA` directory.
+It is necessary to check for required libraries in the directory and install them if they are not found. Make sure you are in your terminal, in the `application` directory.
 
 1. The web scraper file requires the use of web and URL functionality to go to the required natural science department pages and scrape the faculty names, the requests library is used to do this:
     - Type `pip show requests` into the command line of the terminal and hit enter.
@@ -49,7 +51,7 @@ It is necessary to check for required libraries in the directory and install the
 ### Step One: Replace data in `grade_data.json`
 1. Take the file in the format of `gradedata.js` and replace it with the new `gradedata.js` which has the new grade data.
 2. Open the new `gradedata.js` file.
-3. Highlight the text found inside from the first curly brace around the data, after the equals sign; to the last curly brace, before the ending semicolon. Do not include any spaces or characters before or after the first or last curly brace.
+3. Highlight the text found inside from the first curly brace around the data, after the equals sign; to the last curly brace, before the ending semicolon. Do not include any spaces or characters before or after the first or last curly brace. Images have been included below to illistrate the process.
 
 ![starting highlight after equals sign, right at first curly brace](./start.png)
 
@@ -62,12 +64,13 @@ It is necessary to check for required libraries in the directory and install the
 
 ### Step Two: Run the `Admin.py` Module
 1. Type `Python Admin.py` into the command line, and hit enter
-    - `Python3 Admin.py` may be required if using MacOS or Linux
-    - Ensure you are running this with the terminal inside of the EasyA directory
-2. Wait 2-5 minutes for the web scraper to complete and come up with the scraped list of naturalscience department faculty.
+    - `Python3 Admin.py` may be required if nothing happends or an error appears
+    - Ensure you are running this with the terminal inside of the `application` directory
+2. Wait 2-5 minutes for the web scraper to complete and come up with the scraped list of natural science department faculty.
 3. When prompts start to be printed, answer them according to the instructions given in the prompt
     - This process will link names in the grade data to names garnered from the web scraping.
-    - The output of the process will be a `translated_faculty.json` file with the names found in the grade data corresponding to the faculty names found during web scraping.
+    - The outcome of this will be that the grade data will have the names somewhat as they are on the web
+4. An automatic process will adjust the names in `faculty_names.json` to better match those in the grade data, please wait until a prompt lets you know this process is finished before moving on.
 
 ### Step Three: Test the User side
-With the data now updated, see `USER.md` for directions on how to use the EasyA system and try out a few different graphs to make sure the data replacement works. If it does not work, make sure you have replaced the data in `gradedata.json` correctly.
+With the data now updated, see `USER.md` for directions on how to use the EasyA system and try out a few different graphs to make sure the data replacement works. If it does not work, make sure you have replaced the data in `gradedata.json` exactly according to the instructions.
