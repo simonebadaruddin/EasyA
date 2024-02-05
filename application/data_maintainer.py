@@ -75,13 +75,19 @@ class Data_Maintainer:
     def replace_faculty_name(self, name_to_replace, new_name):
         """ Alter __grade_data to replace a current name representation to
             a representation consistent with scraped data"""
-        try: # !!! same problem as below
+        try: 
             for course in self.__grade_data:
-                instructor = self.__grade_data[course][0]["instructor"]
-                if instructor == name_to_replace:
-                    old_name = instructor
-                    self.__grade_data[course][0]["instructor"] =  new_name
-                    updated_name = self.__grade_data[course][0]["instructor"]
+                term = len(self.__grade_data[course])   
+                # for each term of grade data for this course             
+                for i in range(term-1): 
+                    instructor = self.__grade_data[course][i]["instructor"]
+                    if instructor == name_to_replace:
+                        old_name = instructor
+                        self.__grade_data[course][i]["instructor"] =  new_name
+                        updated_name = self.__grade_data[course][i]["instructor"]
+            # Todo:
+            # update the grade_data file itself
+            
             print("\nSuccess: Stored grade data has been changed.")
             print(f"'{old_name}' has been replaced with '{updated_name}' in stored grade data.\n")
         
@@ -96,23 +102,22 @@ class Data_Maintainer:
     def get_grade_data_instructors(self):
         """ Return a list of the instructors stored in grade data
          with names in the form : "First Middle Last" (if there is a middle)"""
-        # !!! instructors = []
-        # for course in self.__grade_data:
-        #     for instance in self.__grade_data[course]:
-        #         if "," in (instructor := instance["instructor"]):
         instructors = []
         for course in self.__grade_data:
-            instructor = self.__grade_data[course][0]["instructor"]
-            # The data has names stored as "Last, First middle" (if there is a middle)
-            # so we need to change it to the form "First middle Last" (if there is a middle)
-            if "," in instructor: # split the strings into first and last name
-                instructor = instructor.split(", ") 
-                instructor = f"{instructor[1]} {instructor[0]}" # I think this may rearrange names so theyre middle name or initial 
-                # first followed by first name and last name
-                instructors.append(instructor)
-                # add each name to the list 
-            else: # otherwise append the single name
-                instructors.append(instructor)
+            term = len(course[0]) # the number of terms stored in this course data set
+            for i in range(term-1):
+                # for each term of grade data for this course
+                instructor = self.__grade_data[course][i]["instructor"]
+                # The data has names stored as "Last, First middle" (if there is a middle)
+                # so we need to change it to the form "First middle Last" (if there is a middle)
+                if "," in instructor: # split the strings into first and last name
+                    instructor = instructor.split(", ") 
+                    instructor = f"{instructor[1]} {instructor[0]}" # I think this may rearrange names so theyre middle name or initial 
+                    # first followed by first name and last name
+                    instructors.append(instructor)
+                    # add each name to the list 
+                else: # otherwise append the single name
+                    instructors.append(instructor)
         return instructors
 
     def nat_sci_filter(self, all_courses):
