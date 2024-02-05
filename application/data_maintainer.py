@@ -62,7 +62,7 @@ class Data_Maintainer:
             # if there are any close matches to this name, (besides an exact match)
             # add them to the list
             if len(close_matches) > 1:
-                    similar_name_pairs.append({name:close_matches})
+                similar_name_pairs.append({name:close_matches})
         
         # Display the list of possible duplicates
         print("\n-------------------------------------------------")
@@ -85,7 +85,7 @@ class Data_Maintainer:
                         old_name = instructor
                         self.__grade_data[course][i]["instructor"] =  new_name
                         updated_name = self.__grade_data[course][i]["instructor"]
-            # Todo:
+            # TODO:
             # update the grade_data file itself
             
             print("\nSuccess: Stored grade data has been changed.")
