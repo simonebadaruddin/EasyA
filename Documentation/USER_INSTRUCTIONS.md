@@ -1,6 +1,7 @@
 # Instructions for EasyA User System
 ## Project 1 for CS422, Winter 2024
 ### Written by Luke Marshall 2/4/2024
+##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
 
 ## Dependencies
 
@@ -55,6 +56,36 @@ After the dependencies have all been downloaded, the EasyA application may be in
 1. First, type `Python EasyA_application.py` into the terminal. If an error comes up, you might try using `Python3` in your command instead. At this point the EasyA interface should appear on the screen as it is in the image below. 
 
 ![EasyA tkinter interface](./EasyA_interface.png)
+
 If the interface opens and you do not see the `Plot Graph` and `Exit` buttons at the botton of the interface, use your mouse to click and drag one of the corners down to reveal what is hidden.
 
+2. Choose graphing options that suit your needs. In order fromtop to bottom:
+    - The courses dropdown allows you to select any course in the natural science department.
+        - choices here supercede any conflicting choices made in subject, level, or class; so there is a `None` option to reset the dropdown without having to close the interface.
+    - The subject dropdown allows you to choose from any of the subjects in the natural science departments
+    - The subject level dropdown allows you to choose which level (1-6)00 you would like to specify for a subject to be graphed
+        - must be used at least in tandem with a subject choice
+    - The class or instructors dropdown allows you to choose what the x-axis variable should be when graphing a subject and level, either classes in that subject and level, or instructors who taught classes in the subject in that level
+        - Must be used with the subject and level dropdowns
+    - The grade percentages dropdown allows you to choose which of the twop grading percentages, either by As or by Ds and Fs, the graph y-axis variiable should be
+        - Either option works with any of the aforementioned allowable graphing options
+        - A choice of %As produces a bar graph with descending blue bars, and a choice of %DsFs produces a bar graph with ascending red bars; this helps denote the difference in what is usually sought after in a class or instructor
+    - The faculty dropdown allows you to specify whether the graphs should only include data for the faculty members in the natural science department, or everyone who taught in the departments during the years the data was collected.
+        - Either option works with any of the aforementioned allowable graphing options
+    - The class count dropdown allows you to choose if the x-axis variables (instructors or class) should have either the number of classes that the instructor taught, or the number of times that class was taught that the data was garnered from.
+        - Either option works with any of the aforementioned allowable graphing options
 
+3. The text box at the bottom is if you would like to further specify a subset of instructors that you would like represented in the graphing. If any names are enterered into the text box, they should be separated by semicolons. They will be the only names that appear on any graphs produced, so many graphing options will produce a blank graph unless the choices made include the instructor specified.
+    - Any names typed into the box should be exactly as they appear in the gradedata.json file (using Ctrl-f and searching the first or last name of the instructor will be the easiest way to find this representation)
+    - If the faculty dropdown is used to choose faculty-only, the names will be further filtered by if they are in the faculty list 
+
+4. Press the `Plot Graph` button on the bottom of the screen
+    - This will produce the graph as requested as a pop-up image
+
+5. Exit out of the graph when you are done with it and either press the `Exit` button or choose other options and plot another graph.
+
+6. If you choose to press the `Exit` button a popup will ask you if you would really like to leave the application. 
+    - choosing no will close the popup and the interface will remain available
+    - choosing yes will result in the interface closing and the program ending
+ 
+**Troubleshooting**: If you hit the `Plot Graph` button and the graph image fails to appear, enter back into your `EasyA/application` directory. The images will be saved in the directory as `As_graph.jpg` and `DsFs_graph.jpg`. Double click either one to view the version most recent graph requested.  

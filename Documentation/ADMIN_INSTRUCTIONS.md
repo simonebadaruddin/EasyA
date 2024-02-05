@@ -1,6 +1,7 @@
 # Instructions for Administrator System Usage
 ## Project 1 for CS422, Winter 2024
 ### Written by Luke Marshall 2/2/2024
+##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
 
 The function of the admin system is to allow an administrator to replace the grade data collected from the University of Oregon. The system additionally allows the admin to view discrepencies in the names between those found on the web and those in the grade data. The faculty names are used to limit the data being graphed in the user application to only that of the faculty in the natural science departments if a user so chooses.
 

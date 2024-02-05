@@ -1,7 +1,7 @@
 # Group 3 EasyA
 ## CS422 Winter 2024 Group Project 1
 ### Created 2/4/2024
-### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
+##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
 
 ## This is a directional and explanatory document. 
 The first two sections are for users and for administrators to point them towards their individual quickstart guides. The thir portion is an overview of the entire EasyA application system.
