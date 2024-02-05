@@ -1,4 +1,4 @@
-# Programmers Documenmntation for the Grade Grapher Module
+# Programmers Documentation for the Grade Grapher Module
 ## Project 1 CS422 Winter 2024
 ## Written 2/4/2024 by Luke Marshall
 ##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
