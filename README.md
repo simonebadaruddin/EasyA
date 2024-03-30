@@ -1,22 +1,107 @@
-# Group 3 EasyA
-## CS422 Winter 2024 Group Project 1
-### Written 2/4/2024 by Luke Marshall
-##### Simone Badaruddin, Erin Cohen, Isabella Cortez, Nithi Deivanayagam, Luke Marshall
+# EasyA
+A system called EasyA that students can use to figure out which professors in which classes are giving the most As, and which professors are giving the fewest Ds or Fs. Created by Group BCCDM
 
-## This is a directional and explanatory document. 
-The first two sections are for users and for administrators to point them towards their individual quickstart guides. The thir portion is an overview of the entire EasyA application system.
+# Project Plan:
 
-## For Users:
-In order to get started, please enter into the `Documentation` directory and read the file named `USER_INSTRUCTIONS.md`. This will give detailed instructions on how to install the program dependecies and subsequently how to run the program.
+## Management Plan:
 
-## For Administrators:
-In order to get started, please enter into the `Documentation` directory and read the file named `ADMIN_INSTRUCTIONS.md`. This will give detailed instructions on how to replace the grade data, install all dependencies, and run the data maintainer program to change the resulting documents so they are ready for use in the program.
+### Team organization
+Our team is organized with distinct roles for each member:
+- Nithi will create the Project 1 Plan document
+- Luke will build graph objects that include parsing
+- Erin will translate, document, and annotate the project in Jupyter Notebook.
+- Simone will accept and read the JavaScript file into the Python module, isolate and validate the data, accept and validate input from the command line to collect user option choices on how to display the data in the graphs.
+- Isabella will web scrape faculty names using BeautifulSoup; monitor and report individual and project progress.
 
-# EasyA Overview
+### Decision making
+- Decisions within the team are made through collaborative discussions.
+- Communication will primarily occur through text and Discord.
+- The team is an equal-status delegation.
 
-## Administrator Subsystem
-The admin subsystem is broken down into six main parts: uploading new data, filtering and validating the new data, getting the faculty names off the web, solving discrepancies between the faculty names from the web and possible matches in the new data, and translating the faculty names list into a format that matches the names in the grade data. The last five portions are done either automatically or with some help from the admin, all through `Admnin.py` in the `application` directory. Each step is explained in detail in the `ADMIN_INSTRUCTIONS.md` file. The first step is for the admin to replace the grade data, this is done manually by copying and pasting the data object into the `gradedata.json` file, most likely from a `gradedata.js` file that includes other unecessary and cluttering information and functions. The second step for the admin is to run the `Admin.py` file in the `application` directory, which enacts the actual next five steps. The module will automatically filter and perform surface-level validation of the new data as steps two and three. The next process that will occur is the `Data_maintainer` object defined within `Admin.py` will call the web scraping function in the `faculty_name_finder.py` file which will create a list of faculty names in a json file, this this the fourth step. As step five the `Data_Maintainer` object then reads the json file of faculty names and performs similarity checks on the names in the grade data, collecting the similar names in a list that will be reported to the admin after the process is over. Step five continues with reporting the names to the admin and, through a series of prompts, asking them if they would like to replace the names in the grade data with those found during web scraping, making them definitively part of the faculty which will be used during parsing later if the user wants only faculty data shown in their graphs. The sixth and final step of the admin process is automated, and is to replace the faculty list in the `faculty_list.json` with an equivalent faculty list, only with the names in the format as they have been replaced in the grade data. At the end of this process the directory will have a grade data json document, ready for filtering and parsing, and a faculty list json document, with the names as they are in the grade data. This will allow the user process of defining and making graphs based on user input simple and straightforward.
+### Work breakdown schedule
+Our work breakdown schedule outlines 11 milestones, with specific tasks assigned to each team member. 
+1. Create initial plan, group chat, Github during the first meeting.
+2. Finalize initial plan during the second meeting.
+3. Finalize outline of code during the third meeting.
+4. Start code production individually in between third and fourth meetings.
+5. Code checkpoint during fourth meeting.
+    - Everyone knows what they are doing and has started implementing their part of the project
+    - Initial code review
+6. Finish rough draft of code and documentation in between fourth and fifth meetings 
+7. Second code checkpoint during the fifth meeting.
+    - Group peer review
+8. Make revisions individually based on review in between fifth and sixth meetings.
+9. Finalize code and documentation in sixth meeting
+    - Code walk through 
+    - Practice presentation
+10. Turn in project 02/05/24
+11. Present project to the class 02/06/24
 
-## User Subsystem
-The user subsystem is slightly more complex than the admin system because of it includes branches in control flow caused by user input. The user subsystem is further broken down into the direct use of three main modules, `Grade_grapher.py`, `data_maintainer.py`, and  `EasyA_application.py`. The non-Python module files used during the process are `gradedata.json`, `faculty_list.json`, `As_graph.jpg`, and/or `DsFs_graph.jpg`. The process starts with the user reading the instructions in the `USER_INSTRUCTIONS.md` file in the `application` directory. Next they will run the `EasyA_application.py` module. This will open a tk interface. The interface allows the user to use seven dropdown menus to choose between every possible combination of options including singular courses, singular subjects, singular subjects and level (and further by instructor or by class), or a combination of one of those four with the option of only displaying faculty data, displaying class count data with the x-axis variables, and/or displaying the grading statistics in terms of percentages of As the instructor/class gave out or percentage of Ds and Fs. All of these choices are for producing custom graphs; as is required in the system design requirements. The interface also allows the user to type instructor names into a text box in order to further limit the subset of instructors whose data will show on a graph. If the user chooses to use the faculty-only dropdown option, this list of names will be even further reduced to only those in the faculty list. Once the options are chosen and the `Plot Graph` button has been clicked, a graph with the user-requested design will show as a pop-up. In circumstances the images of the graphs do not appear on screen they may be accessed in the `application` directory as `As_graph.jpg` and `DsFs_graph.jpg`, as both are created in the graph-making process but only one or the other is normally shown based on user input. 
-Creation of the graphs comes down to which Grapher subclass is used to parse the data, which names are given to the parser to include in the data, and which arguments are given to the graphing method of the object created. Depending on if a single course, a single subject, a single subject with a level and by instructors, or a single subject with a level and by class is chosen by the user, one of four Grapher subclasses will be created. A names list will be passed into the object during creation. If the user places names in the text box this will be the list of names, otherwise it will be empty and the object will automatically populate the list with every name in the grade data. The list of faculty names is passed into the object during instaiation as well. If the user chooses that the faculty data should be the only data graphed, then the names list, given or created, will be filtered using the faculty names. The course data is also passed into the object during creation via the `Data_Maintainer` object. This data is automatically parsed using the names list resulting from all the prior processes. the data is parsed into two attributes: As_data and DsFs_data. The graphing method for the object is then used to produce the graph images in the directory. The actual choice in the category that caused the creation of the object (e.g. MATH111 if a single course was chosen and the corresponding object instatiated), is then used to specify which graph should be plotted. The names (instructors/class) and grading percentages (As or Ds and Fs) are a given after this point, but the particular choices made (category, faculty-only) will be used to specify the title of the graph and the x-axis label. After this the images of the graphs will be loaded into the `application` directory. This allows the user choice between a graph showing the grade percentages in As vs Ds and Fs to be implemented as only one or the other is shown. The user can then look the graph over and see if it fits their inquiry specifications, close the image window, and either choose more options to graph, or press the `Exit` button. If the `Exit` button is pressed, it will result in a pop-up window asking if they would llike to end the application. If the User presses no, the pop-up closes and the interface stays open. If the user presses yes, the interface will close and the application will end. 
+Each individual team meamber's project schedule consists of meeting these targets within their own task as laid out in team organization.
+ 
+### Monitoring and reporting
+Throughout the project individual team members will be in charge of keeping track of what they have done, and reporting will be to the group during code review meetings. 
+
+## Meeting schedule:
+Our team has organized a series of meetings as follows:
+- Friday, 01/12/24: In-person
+- Monday, 01/15/24: Zoom/Discord
+- Thursday, 01/18/24: In-person
+- Thursday, 01/25/24: In-person
+- Thursday, 02/01/24: In-person
+- Saturday, 02/03/24: In-person
+
+These meetings are essential for discussing project updates, addressing any challenges, and ensuring effective communication among team members.
+Our team communicates through a group text and Discord.
+
+## Build Plan
+Each part of the build will occur at once, with each team member assigned to that part of the build working to finish at the same time as all the others. When project parts rely on others (e.g. when input to one portion relies on output from another), the team members tasked with those parts will communicate to resolve the dependencies. The sequence of steps that we will use to build the system depend upon the task. Each team member will have the responsibility of managing their portion of the project so that it is completed up to what is expected at each of the milestones and the output of their portion matches the expected input of any other.
+
+### Rationale for Build Plan:
+The system is divided and assigned in order to use each team member's expertise effectively. The chosen steps align with the project requirements and contribute to a comprehensive and well-organized system. Risks, such as potential delays or issues with data correctness, are incorporated through regular monitoring and reporting, providing prompt identification and resolution of any challenges that may arise during the project. The collaborative decision-making process within the team also contributes to risk reduction. 
+
+# SDS:
+## Description of the product:
+The product, EasyA (or JustPass), is a system designed for students to evaluate and compare instructors' grading histories. It aims to help students make informed decisions when selecting classes or instructors. The system will provide side-by-side visualizations of grading patterns, allowing users to see the distribution of As and Ds/Fs as average percentages of the grades given for different instructors teaching the same class, across different class levels, across one subject and level and different classes, or across one subject and level across instructors (see assignment outline for full description). Users, students, and administrators will be able to interact with the system to view data in various ways, such as by class, subject, or instructor. The system will utilize grade data from the years 2013-2016 at the University of Oregon, provided by the Daily Emerald. 
+
+## Overall Design Description:
+The major parts of the system include:
+-  Data input, parsing, and storage: 
+  - Handles the acquisition of grade data from the provided source and stores it in a structured format.
+- Data processing and analysis: 
+  - Analyzes the grade data to generate meaningful visualizations and insights through side-by-side graphs.
+- User interface (UI): 
+  - Provides an interactive interface for users to explore and compare grading histories. 
+  - Allows users to choose different views and options.
+- System administration tools: 
+  - Facilitates the process of updating the system with new data, including a program for administrators to replace all data quickly and easily
+
+## System Structure:
+The system has a number of individual components that the the group has tasked its members with individually implementing:
+1. Data input, parsing, and storage: 
+    - The system accepts gradedata.js as input to retrieve the data.
+      - To change the data used, the admin will need to replace this file with another which holds the new data but in the same format. 
+    - Upon validation, the data in the file will be parsed into particular Python dictionaries depending on command line input from the user specifying what type of graphs need to be displayed and with which options.
+2. User input
+    - The user will be shown a series of messages through their terminal.
+    - The messages will prompt them for input as to which graphs they would like displayed, and which options they would like to format the graphs with.
+    - Upon validation of the user input, the correct graphs will be displayed side-by-side through the use of functions and a graphing object.
+3. Data processing: 
+    - The user input will define the processing and parsing that the data from the input file will undergo.
+    - The appropriate data will end up in a Python dictionary.
+4. Graph creation:
+    - The graphs will be created through the use of a graph object which accepts the appropriate Python dicts as input, creates the figure objects as processing, and outputs the figure object as an output.
+
+The system is a series of steps that begins with file and user input processing, data processing based on that data and user input, and finally output of the requested graphs in a side-by-side view based on the data, user input, and processing.
+ 
+## Static Model and Dynamic Model:
+- Static Model: 
+  - Utilizes class diagrams to represent the structure of major components (Data Ingestion, Data Processing, UI, Admin Tools) and their relationships.
+- Dynamic Model: 
+  - Uses sequence diagrams to illustrate the interactions and flow of information between the major subsystems during tasks such as data analysis and user interactions.
+
+## Design Rationale:
+The design choice prioritizes simplicity, modularity, and ease of use. Breaking the system into distinct components allows for independent development and maintenance of each part. The choice of data storage option (local) provides centralization. The use of standard libraries and limited external imports (matplotlib) aligns with the programming constraints and provides a straightforward implementation. The design aims to fulfill the project requirements efficiently while maintaining clarity and user-friendly interactions.
+
+
+
